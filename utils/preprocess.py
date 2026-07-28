@@ -42,3 +42,39 @@ class DataPreprocessor:
 
         self.df.to_csv(output_path, index=False)
         print(f"\n✅ Cleaned dataset saved to {output_path}")
+
+
+    def handle_missing_values(self):
+        """ Handle Missing Values"""
+
+        print("\n==============Missing Values Before==================")
+        print(self.df.isnull().sum())
+
+        # Remove rows with missing values 
+        self.df.dropna(inplace=True)
+
+        print("\n================Missing Values After==================")
+        print(self.df.isnull().sum())
+
+        print("\n✅ Missing values handled successfully")
+
+    def remove_duplicates_(self):
+        """Remove Duplicates Records"""
+
+        before = self.df.shape[0]
+
+        self.df.drop_duplicates(inplace=True)
+
+        after = self.df.shape[0]
+
+        print(f"\n✅ Removed {before-after} duplicate rows")
+
+    def clean_text_columns(self):
+        """Clean text columns """
+
+        text_columns = self.df.select_dtypes(include="object").columns
+
+        for column in text_columns:
+            self.df[column] = self.df[column].str.strip()
+
+    print("\n ✅ Text columns cleaned successfully")

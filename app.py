@@ -1,6 +1,9 @@
 from flask import Flask, render_template
-
+from config import Config
 app = Flask(__name__)
+
+# Load Configuration
+app.config["SECRET_KEY"] = Config.SECRET_KEY
 
 # Home / Dashboard
 @app.route("/")
@@ -22,5 +25,9 @@ def analytics():
 def prediction():
     return render_template("prediction.html")
 
-if __name__ == "main":
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(
+        host=Config.HOST,
+        port=Config.PORT,
+        debug=Config.DEBUG
+    )
