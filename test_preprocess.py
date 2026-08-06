@@ -1,33 +1,67 @@
-import utils.preprocess
+"""
+=========================================================
+        TEST PREPROCESSING MODULE
+=========================================================
 
-print(utils.preprocess.__file__)
+Workflow
+
+1. Load Dataset 
+2. Display Dataset Information
+3. Drop Unnecessary Columns 
+4. Convert Total Values
+5. Handle Missing Values
+6. Remove Duplicate Records
+7. Save Cleaned Dataset
+
+==========================================================
+"""
 
 from utils.preprocess import DataPreprocessor
 
-processor = DataPreprocessor("data/raw/customer_churn.csv")
+# -------------------------------------------------------
+# INPUT DATASET
+# -------------------------------------------------------
 
-processor.load_data()
+INPUT_DATA_PATH = "data/raw/customer_data.csv"
 
-processor.dataset_info()
+# ------------------------------------------------------
+# OUTPUT DATASET 
+# ------------------------------------------------------
 
-processor.check_missing_values()
+OUTPUT_DATA_PATH = "data/processed/cleaned_customer_data.csv"
 
-processor.check_duplicates()
+def main():
 
-processor.load_data()
+    print("=" * 60)
+    print(" CUSTOMER INTELLIGENCE DATA PREPROCESSING")
+    print("=" * 60)
 
-processor.dataset_info()
+    processor = DataPreprocessor(INPUT_DATA_PATH)
 
-processor.check_missing_values()
+    print("\nLoading Dataset...\n")
+    processor.load_data()
 
-processor.handle_missing_values()
+    print("\nDataset Information...\n")
+    processor.dataset_info()
 
-processor.check_duplicates()
+    print("\nDropping Unnecessary Columns...\n")
+    processor.drop_unnecessary_columns()
 
-processor.remove_duplicates_()
+    print("\nConverting Total Charges...\n")
+    processor.convert_total_charges()
 
-processor.clean_text_columns()
+    print("\nHandling Missing Values...\n")
+    processor.handle_missing_values()
 
-processor.save_cleaned_data(
-    "data/processed/cleaned_customer_data.csv"
-)
+    print("\nRemoving Duplicate Record...\n")
+    processor.remove_duplicates()
+
+    print("\nSaving Clean Dataset...\n")
+    processor.save_cleaned_dataset(OUTPUT_DATA_PATH)
+
+    print("\n" + "=" * 60)
+    print("PREPROCESSING COMPLETED SUCCESSFULLY")
+
+
+if __name__ == "__main__":
+    main()

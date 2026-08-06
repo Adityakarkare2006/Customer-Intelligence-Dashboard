@@ -1,65 +1,110 @@
-import pandas as pd
-import numpy as np
+"""
+=======================================================
+    CUSTOMERS INTELLIGENCE DASHBOARD
+        DATA PREPROCESSING MODULE
+=======================================================
+
+This module performs:
+
+1. Load Raw Dataset 
+2. Drop Unnecessary Columns 
+3. Convert Total Charges To Numberic
+4. Handle Missing Values 
+5. Remove Duplicates Records
+6. Save Cleaned Dataset
+
+Author : Aditya Karkare (Andy)
+=======================================================
+"""
+
+import pandas as pd 
+
 
 class DataPreprocessor:
-
-    def __init__(self, file_path):
-        self.file_path = file_path
+    def __init__(self, input_path):
+        self.input_path = input_path
         self.df = None
 
+    # -------------------------------------------------------
+    # Load Dataset
+    # -------------------------------------------------------
+
     def load_data(self):
-        """Load dataset"""
-        self.df = pd.read_csv(self.file_path)
+        self.df = pd.read_csv(self.input_path)
+
         print("✅ Dataset Loaded Successfully")
+        print(f"Dataset Shape : {self.df.shape}")
+
         return self.df
 
+    # --------------------------------------------------------
+    # Dataset Information
+    # --------------------------------------------------------
+
     def dataset_info(self):
-        """Display dataset information"""
 
-        print("\n============ DATASET INFORMATION ================== ")
-        print(f"Shape : {self.df.shape}")
+        print("\n======= DATASET INFORMATION =========")
+        self.df.info()
 
-        print("\nColumns:")
-        print(self.df.columns.tolist())
+    # --------------------------------------------------------
+    # Drop Unnecessary Columns
+    # --------------------------------------------------------
 
-        print("\nData TYpes:")
-        print(self.df.dtypes)
+    def drop_unnecessary_columns(self):
 
-    def check_missing_values(self):
-        """Check missing Values"""
+        columns_to_drop = [
+            "CustomerID",
+            "Count",
+            "Country",
+            "State",
+            "City",
+            "Zip Code",
+            "Lat Long",
+            "Latitude",
+            "Longitude",
+            "Churn Label",
+            "Churn Score",
+            "Churn Reason"
+        ]
 
-        print("\n================ MISSING VALUES ==================")
-        print(self.df.isnull().sum())
+        self.df.drop(columns=columns_to_drop, inplace=True)
 
-    def check_duplicates(self):
-        """Check duplicate records"""
+        print("\n✅ Unnecessary Columns Removed")
 
-        print("\n================= DUPLICATE RECORDS ==================")
-        print(self.df.duplicated().sum())
+    # ----------------------------------------------
+    # Convert Total Charges 
+    # ----------------------------------------------
 
-    def save_cleaned_data(self, output_path):
-        """Save cleaned dataset"""
+    def convert_total_charges(self):
+        self.df["Total Charges"] = pd.to_numeric(
+            self.df["Total Charges"],
+            errors="coerce"
+        )
 
-        self.df.to_csv(output_path, index=False)
-        print(f"\n✅ Cleaned dataset saved to {output_path}")
+        print("\n✅ Total Charges Converted To Numeric")
 
+    # -----------------------------------------------------
+    # Handle Missing Values
+    # -----------------------------------------------------
 
     def handle_missing_values(self):
-        """ Handle Missing Values"""
 
-        print("\n==============Missing Values Before==================")
+        print("\n Missing Values Before")
         print(self.df.isnull().sum())
 
-        # Remove rows with missing values 
         self.df.dropna(inplace=True)
 
-        print("\n================Missing Values After==================")
+        print("\nMissing Values After")
         print(self.df.isnull().sum())
 
-        print("\n✅ Missing values handled successfully")
+        print("\n✅ Missing Values Removed")
 
-    def remove_duplicates_(self):
-        """Remove Duplicates Records"""
+
+    # ----------------------------------------------------
+    # Removes Duplicate Records
+    # ----------------------------------------------------
+
+    def remove_duplicates(self):
 
         before = self.df.shape[0]
 
@@ -67,14 +112,16 @@ class DataPreprocessor:
 
         after = self.df.shape[0]
 
-        print(f"\n✅ Removed {before-after} duplicate rows")
+        print(f"\n✅ Removed {before-after} Duplicate Rows")
 
-    def clean_text_columns(self):
-        """Clean text columns """
 
-        text_columns = self.df.select_dtypes(include="object").columns
+    # -----------------------------------------------------
+    # Save Clean Forest
+    # -----------------------------------------------------
 
-        for column in text_columns:
-            self.df[column] = self.df[column].str.strip()
+    def save_cleaned_dataset(self, output_path):
 
-    print("\n ✅ Text columns cleaned successfully")
+        self.df.to_csv(output_path, index=False)
+
+        print("\n✅ Cleaned Dataset Saved Successfully")
+        print(output_path)
