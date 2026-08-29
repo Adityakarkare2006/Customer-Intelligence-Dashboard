@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}Customer 360° | {{ customer.CustomerID }}{% endblock %}
+{% block page_title %}Customer 360° Profile{% endblock %}
+{% block breadcrumb %}Comprehensive Subscriber Health & Risk Assessment{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/customers.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="customer-detail-container fade-in">
+
+    <!-- Top Navigation Bar -->
+    <div class="detail-top-nav">
+        <a href="{{ url_for('customers') }}" class="btn-secondary btn-sm">
+            <i class="ri-arrow-left-line"></i>
+            <span>Back to Customers</span>
+        </a>
+        <div class="detail-actions">
+            <a href="{{ url_for('prediction') }}" class="btn-primary btn-sm">
+                <i class="ri-brain-line"></i>
+                <span>Run New Prediction</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Profile Card -->
+    <div class="customer-profile-card">
+        <div class="profile-header-wrap">
+            <div class="customer-large-avatar">
+                {{ customer.CustomerID[:2] | upper }}
+            </div>
+            <div class="profile-title-details">
+                <div class="id-badge-row">
+                    <h1>{{ customer.CustomerID }}</h1>
+                    {% if customer['Churn Label'] == 'Yes' %}
+                        <span class="status-badge status-churn">CHURNED</span>
+                    {% else %}
+                        <span class="status-badge status-retained">ACTIVE / RETAINED</span>
+                    {% endif %}
+                    <span class="badge-risk {{ customer['Risk Level'] | lower }}">
+                        {{ customer['Risk Level'] }} RISK
+                    </span>
+                </div>
+                <p class="profile-geo-subtext">
+                    <i class="ri-map-pin-line"></i> {{ customer.City }}, {{ customer.State }} {{ customer.ZipCode }} • Joined with {{ customer['Tenure Months'] }} months tenure
+                </p>
+            </div>
+        </div>
+
+        <!-- Churn Risk Metric Gauge Banner -->
+        <div class="risk-gauge-banner">
+            <div class="gauge-metric-box">
+                <span class="gauge-label">Calculated Churn Risk Score</span>
+                <div class="gauge-value-row">
+                    <strong class="gauge-number">{{ customer['Churn Score'] }}</strong>
+                    <span class="gauge-max">/ 100</span>
+                </div>
+                <div class="risk-meter-track">
+                    <div class="risk-meter-fill {% if customer['Churn Score'] >= 80 %}high{% elif customer['Churn Score'] >= 60 %}medium{% else %}low{% endif %}"
+                         style="width: {{ customer['Churn Score'] }}%;"></div>
+                </div>
+                <div class="meter-labels">
+                    <span>Low Risk (0-59)</span>
+                    <span>Medium Risk (60-79)</span>
+                    <span>High Risk (80-100)</span>
+                </div>
+            </div>
+
+            <!-- AI Recommendation for this customer -->
+            <div class="ai-recommendation-box">
+                <div class="rec-header">
+                    <i class="ri-sparkling-fill"></i>
+                    <strong>AI Retention Recommendation</strong>
+                </div>
+                <p class="rec-body">
+                    {% if prediction %}
+                        {{ prediction.recommendation }}
+                    {% elif customer['Churn Score'] >= 80 %}
+                        High churn vulnerability. Proactively offer a loyalty discount, prioritize support tickets, and incentivize a transition to a multi-year contract.
+                    {% elif customer['Churn Score'] >= 60 %}
+                        Moderate attrition risk. Engage via personalized retention outreach and encourage automated payment enrollment.
+                    {% else %}
+                        Healthy account with strong retention signals. Maintain quality service and consider cross-selling premium add-on services.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3-Column Attributes Grid -->
+    <div class="customer-attributes-grid">
+
+        <!-- Card 1: Demographics -->
+        <div class="card attribute-card">
+            <div class="card-header">
+                <h3><i class="ri-user-smile-line"></i> Demographics</h3>
+            </div>
+            <div class="attr-list">
+                <div class="attr-row">
+                    <span class="attr-name">Gender</span>
+                    <span class="attr-val">{{ customer.Gender }}</span>
+                </div>
+                <div class="attr-row">
+                    <span class="attr-name">Senior Citizen</span>
+                    <span class="attr-val">{{ customer['Senior Citizen'] }}</span>
+                </div>
+                <div class="attr-row">
+                    <span class="attr-name">Partner</span>
+                    <span class="attr-val">{{ customer.Partner }}</span>
+                </div>
+                <div class="attr-row">
+                    <span class="attr-name">Dependents</span>
+                    <span class="attr-val">{{ customer.Dependents }}</span>
+                </div>
+                <div class="attr-row">
+                    <span class="attr-name">Location</span>
+                    <span class="attr-val">{{ customer.City }}, {{ customer.State }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Subscribed Services -->
+        <div class="card attribute-card">
+            <div class="card-header">
+                <h3><i class="ri-router-line"></i> Subscribed Services</h3>
+            </div>
+            <div class="attr-list">
+                <div class="attr-row">
+                    <span class="attr-name">Internet Service</span>
+                    <span class="attr-val font-semibold">{{ customer['Internet Service'] }}</span>
+                </div>
+                <div class="attr-row">
+                    <span class="attr-name">Phone Service</span>
+                    <span class="attr-val">{{ customer['Phone Service'] }}</span>
+                </div>
+                <div class="attr-row">
+                    <span class="attr-name">Multiple Lines</span>
+                    <span class="attr-val">{{ customer['Multiple Lines'] }}</span>
+                </div>
+                <div class="attr-row">
+                    <span class="attr-name">Online Security</span>
+                    <span class="attr-val">{{ customer['Online Security'] }}</span>
+                </div>
+                <div class="attr-row">
+                    <span class="attr-name">Online Backup</span>
+                    <span class="attr-val">{{ customer['Online Backup'] }}</span>
+                </div>
+                <div class="attr-row">
+                    <span class="attr-name">Device Protection</span>
+                    <span class="attr-val">{{ customer['Device Protection'] }}</span>
+                </div>
+                <div class="attr-row">
+                    <span class="attr-name">Tech Support</span>
+                    <span class="attr-val">{{ customer['Tech Support'] }}</span>
+                </div>
+                <div class="attr-row">
+                    <span class="attr-name">Streaming TV / Movies</span>
+                    <span class="attr-val">{{ customer['Streaming TV'] }} / {{ customer['Streaming Movies'] }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Contract & Billing -->
+        <div class="card attribute-card">
+            <div class="card-header">
+                <h3><i class="ri-bill-line"></i> Contract & Billing</h3>
+            </div>
+            <div class="attr-list">
+                <div class="attr-row">
+                    <span class="attr-name">Contract Type</span>
+                    <span class="attr-val"><span class="contract-badge">{{ customer.Contract }}</span></span>
+                </div>
+                <div class="attr-row">
+                    <span class="attr-name">Payment Method</span>
+                    <span class="attr-val">{{ customer['Payment Method'] }}</span>
+                </div>
+                <div class="attr-row">
+                    <span class="attr-name">Paperless Billing</span>
+                    <span class="attr-val">{{ customer['Paperless Billing'] }}</span>
+                </div>
+                <div class="attr-row">
+                    <span class="attr-name">Monthly Charges</span>
+                    <span class="attr-val text-accent font-bold">₹{{ "%.2f"|format(customer['Monthly Charges']) }}</span>
+                </div>
+                <div class="attr-row">
+                    <span class="attr-name">Total Charges</span>
+                    <span class="attr-val font-bold">₹{{ "%.2f"|format(customer['Total Charges']) }}</span>
+                </div>
+                <div class="attr-row">
+                    <span class="attr-name">Customer Lifetime Value (CLTV)</span>
+                    <span class="attr-val font-semibold">₹{{ customer.CLTV }}</span>
+                </div>
+                {% if customer['Churn Reason'] != 'None' %}
+                    <div class="attr-row churn-reason-row">
+                        <span class="attr-name">Reported Churn Reason</span>
+                        <span class="attr-val text-danger">{{ customer['Churn Reason'] }}</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

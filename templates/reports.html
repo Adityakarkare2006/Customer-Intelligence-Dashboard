@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}Executive Reports | Customer Intelligence Hub{% endblock %}
+{% block page_title %}Executive Churn Report{% endblock %}
+{% block breadcrumb %}Comprehensive Dataset Findings & Risk Distribution Report{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="reports-container fade-in" id="printableReport">
+
+    <!-- ========================================== -->
+    <!-- REPORT HEADER & EXPORT ACTIONS -->
+    <!-- ========================================== -->
+    <div class="report-header-card card">
+        <div class="report-header-info">
+            <div class="report-badge">
+                <i class="ri-file-shield-line"></i>
+                <span>Verified Dataset Report</span>
+            </div>
+            <h1>Customer Intelligence & Retention Executive Report</h1>
+            <p>Generated dynamically from 7,043 customer accounts and Logistic Regression Machine Learning evaluations.</p>
+        </div>
+
+        <div class="report-actions no-print">
+            <a href="{{ url_for('export_csv') }}" class="btn-primary" title="Export full dataset to CSV">
+                <i class="ri-file-excel-2-line"></i>
+                <span>Export Dataset CSV</span>
+            </a>
+            <button type="button" class="btn-secondary" onclick="window.print();" title="Print or save as PDF">
+                <i class="ri-printer-line"></i>
+                <span>Print / Save PDF</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SECTION 1: EXECUTIVE KPI SUMMARY -->
+    <!-- ========================================== -->
+    <div class="report-section-title">
+        <h2>1. Executive KPI Summary</h2>
+        <p>Core subscriber counts and retention metrics calculated across the entire dataset.</p>
+    </div>
+
+    <div class="report-kpi-grid">
+        <div class="card report-metric-card">
+            <span class="metric-label">Total Subscribers</span>
+            <h3 class="metric-val text-primary">{{ "{:,}".format(report.total_customers) }}</h3>
+            <span class="metric-sub">100% active sample</span>
+        </div>
+
+        <div class="card report-metric-card">
+            <span class="metric-label">Churned Subscribers</span>
+            <h3 class="metric-val text-danger">{{ "{:,}".format(report.churned_customers) }}</h3>
+            <span class="metric-sub">{{ report.churn_rate }}% attrition</span>
+        </div>
+
+        <div class="card report-metric-card">
+            <span class="metric-label">Retained Subscribers</span>
+            <h3 class="metric-val text-success">{{ "{:,}".format(report.retained_customers) }}</h3>
+            <span class="metric-sub">{{ report.retention_rate }}% active retention</span>
+        </div>
+
+        <div class="card report-metric-card">
+            <span class="metric-label">Model Accuracy</span>
+            <h3 class="metric-val text-accent">{{ report.model_accuracy }}%</h3>
+            <span class="metric-sub">ML evaluation score</span>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SECTION 2: CHURN RISK TIER BREAKDOWN -->
+    <!-- ========================================== -->
+    <div class="report-section-title mt-4">
+        <h2>2. Subscriber Churn Risk Segmentation</h2>
+        <p>Customer base categorized by predictive churn score tiers (High ≥80, Medium 60-79, Low <60).</p>
+    </div>
+
+    <div class="report-risk-grid">
+        <div class="card risk-tier-card high-tier">
+            <div class="tier-badge-row">
+                <span class="badge-risk high">HIGH RISK (≥80)</span>
+                <span class="tier-pct">{{ report.high_risk_pct }}% of base</span>
+            </div>
+            <h3 class="tier-count">{{ "{:,}".format(report.high_risk_count) }} Accounts</h3>
+            <p class="tier-desc">Immediate attrition vulnerability. Requires priority retention discounts and dedicated account specialist engagement.</p>
+            <div class="tier-bar-track"><div class="tier-bar-fill high" style="width: {{ report.high_risk_pct }}%;"></div></div>
+        </div>
+
+        <div class="card risk-tier-card medium-tier">
+            <div class="tier-badge-row">
+                <span class="badge-risk medium">MEDIUM RISK (60-79)</span>
+                <span class="tier-pct">{{ report.med_risk_pct }}% of base</span>
+            </div>
+            <h3 class="tier-count">{{ "{:,}".format(report.med_risk_count) }} Accounts</h3>
+            <p class="tier-desc">Moderate retention fragility. Proactively send engagement touchpoints, satisfaction surveys, and annual plan upgrade offers.</p>
+            <div class="tier-bar-track"><div class="tier-bar-fill medium" style="width: {{ report.med_risk_pct }}%;"></div></div>
+        </div>
+
+        <div class="card risk-tier-card low-tier">
+            <div class="tier-badge-row">
+                <span class="badge-risk low">LOW RISK (<60)</span>
+                <span class="tier-pct">{{ report.low_risk_pct }}% of base</span>
+            </div>
+            <h3 class="tier-count">{{ "{:,}".format(report.low_risk_count) }} Accounts</h3>
+            <p class="tier-desc">Stable loyal customer segment. Maintain standard service excellence and identify cross-selling opportunities.</p>
+            <div class="tier-bar-track"><div class="tier-bar-fill low" style="width: {{ report.low_risk_pct }}%;"></div></div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SECTION 3: CONTRACT & BILLING DISTRIBUTIONS -->
+    <!-- ========================================== -->
+    <div class="report-section-title mt-4">
+        <h2>3. Contract & Payment Breakdown</h2>
+        <p>Statistical distribution across contractual agreements and billing methods.</p>
+    </div>
+
+    <div class="report-2col-grid">
+        <div class="card breakdown-table-card">
+            <div class="card-header">
+                <h3>Contract Distribution</h3>
+            </div>
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>Contract Tier</th>
+                        <th>Subscribers</th>
+                        <th>Share</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Month-to-month</strong></td>
+                        <td>{{ "{:,}".format(report.month_to_month) }}</td>
+                        <td>{{ "%.1f"|format((report.month_to_month / report.total_customers * 100) if report.total_customers else 0) }}%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>One year</strong></td>
+                        <td>{{ "{:,}".format(report.one_year) }}</td>
+                        <td>{{ "%.1f"|format((report.one_year / report.total_customers * 100) if report.total_customers else 0) }}%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Two year</strong></td>
+                        <td>{{ "{:,}".format(report.two_year) }}</td>
+                        <td>{{ "%.1f"|format((report.two_year / report.total_customers * 100) if report.total_customers else 0) }}%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card breakdown-table-card">
+            <div class="card-header">
+                <h3>Payment Methods</h3>
+            </div>
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Subscribers</th>
+                        <th>Share</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Electronic check</strong></td>
+                        <td>{{ "{:,}".format(report.electronic_check) }}</td>
+                        <td>{{ "%.1f"|format((report.electronic_check / report.total_customers * 100) if report.total_customers else 0) }}%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mailed check</strong></td>
+                        <td>{{ "{:,}".format(report.mailed_check) }}</td>
+                        <td>{{ "%.1f"|format((report.mailed_check / report.total_customers * 100) if report.total_customers else 0) }}%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bank transfer (auto)</strong></td>
+                        <td>{{ "{:,}".format(report.bank_transfer) }}</td>
+                        <td>{{ "%.1f"|format((report.bank_transfer / report.total_customers * 100) if report.total_customers else 0) }}%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Credit card (auto)</strong></td>
+                        <td>{{ "{:,}".format(report.credit_card) }}</td>
+                        <td>{{ "%.1f"|format((report.credit_card / report.total_customers * 100) if report.total_customers else 0) }}%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SECTION 4: TOP HIGH RISK SUBSCRIBERS -->
+    <!-- ========================================== -->
+    <div class="report-section-title mt-4">
+        <h2>4. Priority Accounts Requiring Retention Action</h2>
+        <p>Top 10 customer accounts exhibiting critical churn risk scores.</p>
+    </div>
+
+    <div class="card table-card mb-4">
+        <div class="table-wrapper">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Customer ID</th>
+                        <th>Contract</th>
+                        <th>Monthly Charge</th>
+                        <th>Tenure</th>
+                        <th>Risk Score</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in report.top_high_risk_customers %}
+                        <tr>
+                            <td><strong>#{{ loop.index }}</strong></td>
+                            <td>
+                                <a href="{{ url_for('customer_detail', customer_id=c.customer_id) }}" class="id-link">
+                                    {{ c.customer_id }}
+                                </a>
+                            </td>
+                            <td><span class="contract-badge">{{ c.contract }}</span></td>
+                            <td>₹{{ "%.2f"|format(c.monthly_charges) }}/mo</td>
+                            <td>{{ c.tenure }} months</td>
+                            <td>
+                                <span class="badge-risk {{ c.risk_level | lower }}">{{ c.score }}%</span>
+                            </td>
+                            <td>
+                                {% if c.churn_label == 'Yes' %}
+                                    <span class="status-badge status-churn">Churned</span>
+                                {% else %}
+                                    <span class="status-badge status-retained">Retained</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SECTION 5: EXECUTIVE SUMMARY BRIEF -->
+    <!-- ========================================== -->
+    <div class="card report-brief-card">
+        <div class="brief-icon"><i class="ri-shield-star-line"></i></div>
+        <div class="brief-body">
+            <h3>Executive Summary Conclusion</h3>
+            <p>
+                The customer dataset reflects a total population of <strong>{{ "{:,}".format(report.total_customers) }}</strong> subscribers, with an overall churn rate of <strong>{{ report.churn_rate }}%</strong> (<strong>{{ "{:,}".format(report.churned_customers) }}</strong> churned vs <strong>{{ "{:,}".format(report.retained_customers) }}</strong> retained). 
+                The average subscriber generates <strong>₹{{ "%.2f"|format(report.avg_monthly_charges) }}</strong> in monthly revenue across an average lifespan of <strong>{{ report.avg_tenure }} months</strong>.
+                Our Machine Learning model performs with a validated accuracy of <strong>{{ report.model_accuracy }}%</strong>. The primary drivers of customer attrition are month-to-month contracts and electronic check billing. Targeted retention incentives for these specific cohorts will yield the largest reduction in churn.
+            </p>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics & Business Intelligence | Customer Intelligence Hub{% endblock %}
+{% block page_title %}Analytics & Segmentation{% endblock %}
+{% block breadcrumb %}Visual Distribution & Churn Correlation Analysis{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/analytics.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="analytics-container fade-in">
+
+    <!-- ========================================== -->
+    <!-- SUMMARY KPI ROW -->
+    <!-- ========================================== -->
+    <section class="analytics-kpi-grid">
+        <div class="card summary-kpi-card" style="--accent-border: #EF4444;">
+            <div class="kpi-icon red"><i class="ri-user-unfollow-line"></i></div>
+            <div class="kpi-info">
+                <span class="kpi-label">Churned Subscribers</span>
+                <h2 class="kpi-val text-danger">{{ "{:,}".format(analytics.churned) }}</h2>
+                <span class="kpi-sub">{{ analytics.churn_rate }}% total attrition</span>
+            </div>
+        </div>
+
+        <div class="card summary-kpi-card" style="--accent-border: #10B981;">
+            <div class="kpi-icon green"><i class="ri-user-heart-line"></i></div>
+            <div class="kpi-info">
+                <span class="kpi-label">Retained Subscribers</span>
+                <h2 class="kpi-val text-success">{{ "{:,}".format(analytics.retained) }}</h2>
+                <span class="kpi-sub">{{ analytics.retention_rate }}% active retention</span>
+            </div>
+        </div>
+
+        <div class="card summary-kpi-card" style="--accent-border: #8B5CF6;">
+            <div class="kpi-icon purple"><i class="ri-money-dollar-circle-line"></i></div>
+            <div class="kpi-info">
+                <span class="kpi-label">Avg. Monthly Charge</span>
+                <h2 class="kpi-val text-accent">₹{{ "%.2f"|format(analytics.avg_monthly_charges) }}</h2>
+                <span class="kpi-sub">Per subscriber monthly ARPU</span>
+            </div>
+        </div>
+
+        <div class="card summary-kpi-card" style="--accent-border: #06B6D4;">
+            <div class="kpi-icon cyan"><i class="ri-time-line"></i></div>
+            <div class="kpi-info">
+                <span class="kpi-label">Avg. Customer Tenure</span>
+                <h2 class="kpi-val text-cyan">{{ analytics.avg_tenure }} mo</h2>
+                <span class="kpi-sub">Mean customer lifespan</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 6-CHART VISUALIZATION MATRIX -->
+    <!-- ========================================== -->
+    <section class="charts-matrix-grid">
+
+        <!-- Chart 1: Churn Status Doughnut -->
+        <div class="card chart-card">
+            <div class="card-header">
+                <div>
+                    <h3>1. Churn Ratio</h3>
+                    <p class="card-subtitle">Active vs churned distribution</p>
+                </div>
+                <span class="badge-tag info">Status</span>
+            </div>
+            <div class="chart-canvas-wrap">
+                <canvas id="churnDistChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Chart 2: Contract Distribution -->
+        <div class="card chart-card">
+            <div class="card-header">
+                <div>
+                    <h3>2. Contract Commitment</h3>
+                    <p class="card-subtitle">Subscriber distribution by contract type</p>
+                </div>
+                <span class="badge-tag purple">Contracts</span>
+            </div>
+            <div class="chart-canvas-wrap">
+                <canvas id="contractDistChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Chart 3: Churn Rate by Contract -->
+        <div class="card chart-card">
+            <div class="card-header">
+                <div>
+                    <h3>3. Churn by Contract Type</h3>
+                    <p class="card-subtitle">Attrition rate across contract duration tiers</p>
+                </div>
+                <span class="badge-tag warning">Risk Driver</span>
+            </div>
+            <div class="chart-canvas-wrap">
+                <canvas id="churnByContractChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Chart 4: Payment Method Preferences -->
+        <div class="card chart-card">
+            <div class="card-header">
+                <div>
+                    <h3>4. Payment Method Breakdown</h3>
+                    <p class="card-subtitle">Customer billing preferences</p>
+                </div>
+                <span class="badge-tag green">Billing</span>
+            </div>
+            <div class="chart-canvas-wrap">
+                <canvas id="paymentDistChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Chart 5: Internet Service Distribution -->
+        <div class="card chart-card">
+            <div class="card-header">
+                <div>
+                    <h3>5. Internet Service Type</h3>
+                    <p class="card-subtitle">Fiber optic vs DSL vs No internet</p>
+                </div>
+                <span class="badge-tag info">Service</span>
+            </div>
+            <div class="chart-canvas-wrap">
+                <canvas id="internetDistChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Chart 6: Churn by Tenure Cohort -->
+        <div class="card chart-card">
+            <div class="card-header">
+                <div>
+                    <h3>6. Churn by Tenure Lifecycle</h3>
+                    <p class="card-subtitle">Retention attrition per subscriber lifecycle group</p>
+                </div>
+                <span class="badge-tag danger">Lifecycle</span>
+            </div>
+            <div class="chart-canvas-wrap">
+                <canvas id="tenureCohortChart"></canvas>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ANALYTICAL TAKEAWAYS -->
+    <!-- ========================================== -->
+    <section class="card analytics-takeaways-card">
+        <div class="card-header">
+            <div>
+                <h2>Key Strategic Takeaways</h2>
+                <p class="card-subtitle">Synthesized findings from statistical data distributions</p>
+            </div>
+            <span class="badge-tag live"><i class="ri-sparkling-fill"></i> AI Executive Brief</span>
+        </div>
+
+        <div class="takeaways-grid">
+            <div class="takeaway-box">
+                <div class="takeaway-num">01</div>
+                <div>
+                    <h4>Contract Length is the #1 Retention Factor</h4>
+                    <p>Month-to-month subscribers account for over 88% of all churn events. Transitioning month-to-month users into 1-year plans reduces attrition risk by more than 60%.</p>
+                </div>
+            </div>
+
+            <div class="takeaway-box">
+                <div class="takeaway-num">02</div>
+                <div>
+                    <h4>First Year (0-12 Months) Critical Drop-off</h4>
+                    <p>Subscribers with tenure under 12 months experience the steepest attrition. Onboarding support and proactive satisfaction touchpoints during months 1-3 yield maximum ROI.</p>
+                </div>
+            </div>
+
+            <div class="takeaway-box">
+                <div class="takeaway-num">03</div>
+                <div>
+                    <h4>Electronic Check Vulnerability</h4>
+                    <p>Customers paying with electronic checks churn at twice the rate of automated credit card or bank transfer users. Incentivizing auto-pay adoption stabilizes recurring revenue.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<!-- Real Analytics Dataset for Chart.js -->
+<script>
+    window.analyticsData = {{ analytics | tojson }};
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,309 @@
+/* ==========================================================
+   PREDICTION MODULE STYLES (prediction.css)
+========================================================== */
+
+.prediction-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Intro Banner & Preset Buttons */
+.prediction-intro-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    padding: 24px 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+}
+
+.intro-text h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.intro-text p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.sample-preset-buttons {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.preset-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all var(--transition-fast);
+}
+
+.preset-btn.danger {
+    background: var(--danger-bg);
+    color: #FCA5A5;
+    border-color: var(--danger-border);
+}
+
+.preset-btn.danger:hover {
+    background: rgba(239, 68, 68, 0.22);
+    transform: translateY(-2px);
+}
+
+.preset-btn.success {
+    background: var(--success-bg);
+    color: #86EFAC;
+    border-color: var(--success-border);
+}
+
+.preset-btn.success:hover {
+    background: rgba(16, 185, 129, 0.22);
+    transform: translateY(-2px);
+}
+
+/* Result Card */
+.result-card {
+    padding: 28px;
+    border-width: 2px;
+}
+
+.result-card.danger-theme {
+    border-color: rgba(239, 68, 68, 0.4);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), var(--bg-card));
+}
+
+.result-card.success-theme {
+    border-color: rgba(16, 185, 129, 0.4);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), var(--bg-card));
+}
+
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.result-badge-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.result-body-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 24px;
+}
+
+.risk-meter-box {
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 20px;
+}
+
+.meter-score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+}
+
+.meter-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.meter-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.result-recommendation-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+}
+
+.rec-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent-light);
+    font-size: 0.92rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.rec-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Form Card */
+.form-card {
+    padding: 32px;
+}
+
+.form-sections-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.form-section-block {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.section-heading i {
+    font-size: 1.2rem;
+    color: var(--accent-light);
+}
+
+.section-heading h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.form-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.form-group .req {
+    color: #EF4444;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 0.88rem;
+    font-family: inherit;
+    outline: none;
+    transition: all var(--transition-fast);
+}
+
+.form-group input:focus, .form-group select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.form-group select option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* Actions Bar */
+.form-actions-bar {
+    display: flex;
+    gap: 14px;
+    margin-top: 36px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Error Card */
+.error-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--danger-bg);
+    border-color: var(--danger-border);
+    padding: 18px 24px;
+}
+
+.error-icon {
+    font-size: 32px;
+    color: #EF4444;
+    flex-shrink: 0;
+}
+
+.error-details strong {
+    color: #FCA5A5;
+    font-size: 0.95rem;
+}
+
+.error-details p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-top: 2px;
+}
+
+@media (max-width: 1100px) {
+    .form-fields-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .result-body-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 650px) {
+    .prediction-intro-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-fields-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions-bar {
+        flex-direction: column;
+    }
+
+    .form-actions-bar button {
+        width: 100%;
+    }
+}

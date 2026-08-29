@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>OTP Verification | Customer Intelligence</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top right,
+                    #312e81,
+                    #0f172a 45%,
+                    #020617
+                );
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+        .container {
+
+            width: 100%;
+
+            max-width: 430px;
+
+            padding: 20px;
+
+        }
+
+        .card {
+
+            background:
+                rgba(15, 23, 42, 0.92);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.1);
+
+            border-radius: 24px;
+
+            padding: 40px;
+
+            text-align: center;
+
+            box-shadow:
+                0 25px 70px
+                rgba(0,0,0,0.5);
+
+            backdrop-filter:
+                blur(15px);
+
+        }
+
+        .icon {
+
+            width: 70px;
+
+            height: 70px;
+
+            margin: 0 auto 20px;
+
+            border-radius: 20px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 32px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #8b5cf6,
+                    #6366f1
+                );
+
+        }
+
+        h1 {
+
+            margin: 0 0 10px;
+
+            font-size: 27px;
+
+        }
+
+        .subtitle {
+
+            color: #94a3b8;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+            margin-bottom: 28px;
+
+        }
+
+        .otp-input {
+
+            width: 100%;
+
+            padding: 16px;
+
+            border-radius: 12px;
+
+            border:
+                1px solid #334155;
+
+            background: #1e293b;
+
+            color: white;
+
+            outline: none;
+
+            text-align: center;
+
+            font-size: 28px;
+
+            font-weight: 700;
+
+            letter-spacing: 10px;
+
+        }
+
+        .otp-input:focus {
+
+            border-color: #8b5cf6;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(139,92,246,0.15);
+
+        }
+
+        .error {
+
+            margin-bottom: 18px;
+
+            padding: 12px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(239,68,68,0.12);
+
+            border:
+                1px solid
+                rgba(239,68,68,0.3);
+
+            color: #fca5a5;
+
+            font-size: 14px;
+
+        }
+
+        .verify-button {
+
+            width: 100%;
+
+            margin-top: 20px;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #8b5cf6,
+                    #6366f1
+                );
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+        }
+
+        .verify-button:hover {
+
+            transform:
+                translateY(-2px);
+
+        }
+
+        .timer {
+
+            margin-top: 20px;
+
+            color: #94a3b8;
+
+            font-size: 13px;
+
+        }
+
+        .timer span {
+
+            color: #a78bfa;
+
+            font-weight: 700;
+
+        }
+
+        .resend {
+
+            margin-top: 15px;
+
+        }
+
+        .resend a {
+
+            color: #a78bfa;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+        }
+
+        .resend a:hover {
+
+            text-decoration: underline;
+
+        }
+
+        .back {
+
+            display: block;
+
+            margin-top: 22px;
+
+            color: #64748b;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+        }
+
+        .back:hover {
+
+            color: #94a3b8;
+
+        }
+
+        .footer {
+
+            margin-top: 22px;
+
+            color: #64748b;
+
+            font-size: 11px;
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+    <div class="card">
+
+
+        <div class="icon">
+
+            🔐
+
+        </div>
+
+
+        <h1>
+
+            Verify Your Identity
+
+        </h1>
+
+
+        <p class="subtitle">
+
+            Enter the 6-digit verification code
+            generated for your login.
+
+            <br><br>
+
+            <strong>
+                Check your terminal for the demo OTP.
+            </strong>
+
+        </p>
+
+
+        {% if error %}
+
+        <div class="error">
+
+            {{ error }}
+
+        </div>
+
+        {% endif %}
+
+
+        <form method="POST"
+              action="{{ url_for('verify_otp') }}">
+
+
+            <input
+
+                type="text"
+
+                name="otp"
+
+                class="otp-input"
+
+                maxlength="6"
+
+                minlength="6"
+
+                inputmode="numeric"
+
+                pattern="[0-9]{6}"
+
+                placeholder="••••••"
+
+                autocomplete="one-time-code"
+
+                required
+
+            >
+
+
+            <button
+                type="submit"
+                class="verify-button">
+
+                Verify OTP
+
+            </button>
+
+        </form>
+
+
+        <div class="timer">
+
+            OTP expires in:
+
+            <span id="timer">
+
+                02:00
+
+            </span>
+
+        </div>
+
+
+        <div class="resend">
+
+            <a href="{{ url_for('resend_otp') }}">
+
+                ↻ Resend OTP
+
+            </a>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('login') }}"
+            class="back">
+
+            ← Back to Login
+
+        </a>
+
+
+    </div>
+
+
+    <div class="footer">
+
+        Customer Intelligence Dashboard • Version 1.0.0
+
+    </div>
+
+</div>
+
+
+<script>
+
+let timeLeft = 120;
+
+const timerElement =
+    document.getElementById("timer");
+
+
+const countdown = setInterval(function () {
+
+    let minutes =
+        Math.floor(timeLeft / 60);
+
+    let seconds =
+        timeLeft % 60;
+
+
+    seconds =
+        seconds < 10
+        ? "0" + seconds
+        : seconds;
+
+
+    timerElement.textContent =
+        "0" + minutes + ":" + seconds;
+
+
+    if (timeLeft <= 0) {
+
+        clearInterval(countdown);
+
+        timerElement.textContent =
+            "Expired";
+
+    }
+
+
+    timeLeft--;
+
+}, 1000);
+
+</script>
+
+
+</body>
+
+</html>

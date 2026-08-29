@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}500 - Server Error | Customer Intelligence Hub{% endblock %}
+{% block page_title %}Internal Server Error{% endblock %}
+{% block breadcrumb %}HTTP 500 Error{% endblock %}
+
+{% block content %}
+<div class="card error-page-card text-center py-5 fade-in" style="max-width: 650px; margin: 40px auto; padding: 45px 30px; text-align: center;">
+    <div style="font-size: 72px; color: #EF4444; margin-bottom: 15px;">
+        <i class="ri-alarm-warning-line"></i>
+    </div>
+    <h1 style="font-size: 32px; margin-bottom: 12px; font-weight: 700;">500 - Server Error</h1>
+    <p style="color: #94A3B8; font-size: 15px; line-height: 1.6; margin-bottom: 25px;">
+        An unexpected error occurred while processing your request. Our server logs have recorded this event.
+    </p>
+    <div style="display: flex; justify-content: center; gap: 12px;">
+        <a href="{{ url_for('dashboard') }}" class="btn-primary">
+            <i class="ri-dashboard-line"></i>
+            <span>Return to Dashboard</span>
+        </a>
+        <a href="{{ url_for('customers') }}" class="btn-secondary">
+            <i class="ri-team-line"></i>
+            <span>View Customers</span>
+        </a>
+    </div>
+</div>
+{% endblock %}

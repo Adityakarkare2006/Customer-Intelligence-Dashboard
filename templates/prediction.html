@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block title %}ML Churn Prediction | Customer Intelligence Hub{% endblock %}
+{% block page_title %}Predictive AI Engine{% endblock %}
+{% block breadcrumb %}Real-time Machine Learning Churn Risk Assessment{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/prediction.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="prediction-container fade-in">
+
+    <!-- Top Demo Action Row -->
+    <div class="prediction-intro-banner">
+        <div class="intro-text">
+            <h2>Machine Learning Churn Scoring</h2>
+            <p>Enter 20 customer behavioral and contractual attributes to evaluate churn likelihood with our trained Logistic Regression model (Accuracy: {{ model_accuracy }}%).</p>
+        </div>
+        <div class="sample-preset-buttons">
+            <button type="button" id="loadHighRiskSampleBtn" class="preset-btn danger">
+                <i class="ri-fire-line"></i> Load High-Risk Sample
+            </button>
+            <button type="button" id="loadLowRiskSampleBtn" class="preset-btn success">
+                <i class="ri-shield-check-line"></i> Load Low-Risk Sample
+            </button>
+        </div>
+    </div>
+
+    <!-- Error State Alert -->
+    {% if prediction_error %}
+        <div class="card error-card mb-4">
+            <div class="error-icon"><i class="ri-error-warning-line"></i></div>
+            <div class="error-details">
+                <strong>Prediction Failed</strong>
+                <p>{{ prediction_error }}</p>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Prediction Result Modal / Card (If Result Present) -->
+    {% if prediction_result %}
+        <div class="card result-card mb-4 {% if prediction_result.will_churn or prediction_result.probability >= 50 %}danger-theme{% else %}success-theme{% endif %}" id="predictionResultSection">
+            <div class="result-header">
+                <div class="result-badge-wrap">
+                    {% if prediction_result.will_churn or prediction_result.probability >= 50 %}
+                        <span class="status-badge status-churn large"><i class="ri-alert-line"></i> {{ prediction_result.prediction }}</span>
+                    {% else %}
+                        <span class="status-badge status-retained large"><i class="ri-check-line"></i> {{ prediction_result.prediction }}</span>
+                    {% endif %}
+                    <span class="badge-risk {{ prediction_result.risk_level | lower }}">
+                        {{ prediction_result.risk_level }} RISK ({{ prediction_result.risk_score }}%)
+                    </span>
+                </div>
+                <button type="button" class="btn-secondary btn-sm" onclick="document.getElementById('predictionForm').scrollIntoView({behavior: 'smooth'});">
+                    <i class="ri-repeat-line"></i> Run Another
+                </button>
+            </div>
+
+            <div class="result-body-grid">
+                <!-- Visual Risk Meter -->
+                <div class="risk-meter-box">
+                    <div class="meter-score-row">
+                        <span class="meter-title">Churn Probability</span>
+                        <span class="meter-value">{{ prediction_result.probability }}%</span>
+                    </div>
+                    <div class="risk-meter-track">
+                        <div class="risk-meter-fill {% if prediction_result.risk_score >= 80 %}high{% elif prediction_result.risk_score >= 60 %}medium{% else %}low{% endif %}"
+                             style="width: {{ prediction_result.risk_score }}%;"></div>
+                    </div>
+                    <div class="meter-labels">
+                        <span class="text-success">Low (0-59%)</span>
+                        <span class="text-warning">Medium (60-79%)</span>
+                        <span class="text-danger">High (80-100%)</span>
+                    </div>
+                </div>
+
+                <!-- Recommendation Output -->
+                <div class="result-recommendation-box">
+                    <div class="rec-title">
+                        <i class="ri-sparkling-fill"></i>
+                        <span>Prescriptive Business Action</span>
+                    </div>
+                    <p class="rec-text">{{ prediction_result.recommendation }}</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Prediction Feature Form -->
+    <div class="card form-card">
+        <form id="predictionForm" method="POST" action="{{ url_for('prediction') }}">
+            <div class="form-sections-grid">
+
+                <!-- 1. DEMOGRAPHICS -->
+                <div class="form-section-block">
+                    <div class="section-heading">
+                        <i class="ri-user-3-line"></i>
+                        <h3>1. Demographic Profile</h3>
+                    </div>
+                    <div class="form-fields-grid">
+                        <div class="form-group">
+                            <label for="genderSelect">Gender <span class="req">*</span></label>
+                            <select id="genderSelect" name="Gender" required>
+                                <option value="Male" {% if form_data.get('Gender') == 'Male' %}selected{% endif %}>Male</option>
+                                <option value="Female" {% if form_data.get('Gender') == 'Female' %}selected{% endif %}>Female</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="seniorSelect">Senior Citizen <span class="req">*</span></label>
+                            <select id="seniorSelect" name="Senior Citizen" required>
+                                <option value="No" {% if form_data.get('Senior Citizen') == 'No' %}selected{% endif %}>No</option>
+                                <option value="Yes" {% if form_data.get('Senior Citizen') == 'Yes' %}selected{% endif %}>Yes</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="partnerSelect">Partner <span class="req">*</span></label>
+                            <select id="partnerSelect" name="Partner" required>
+                                <option value="No" {% if form_data.get('Partner') == 'No' %}selected{% endif %}>No</option>
+                                <option value="Yes" {% if form_data.get('Partner') == 'Yes' %}selected{% endif %}>Yes</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dependentsSelect">Dependents <span class="req">*</span></label>
+                            <select id="dependentsSelect" name="Dependents" required>
+                                <option value="No" {% if form_data.get('Dependents') == 'No' %}selected{% endif %}>No</option>
+                                <option value="Yes" {% if form_data.get('Dependents') == 'Yes' %}selected{% endif %}>Yes</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. SUBSCRIPTION SERVICES -->
+                <div class="form-section-block">
+                    <div class="section-heading">
+                        <i class="ri-router-line"></i>
+                        <h3>2. Subscribed Services</h3>
+                    </div>
+                    <div class="form-fields-grid">
+                        <div class="form-group">
+                            <label for="phoneServiceSelect">Phone Service <span class="req">*</span></label>
+                            <select id="phoneServiceSelect" name="Phone Service" required>
+                                <option value="Yes" {% if form_data.get('Phone Service') == 'Yes' %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if form_data.get('Phone Service') == 'No' %}selected{% endif %}>No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="multipleLinesSelect">Multiple Lines <span class="req">*</span></label>
+                            <select id="multipleLinesSelect" name="Multiple Lines" required>
+                                <option value="No" {% if form_data.get('Multiple Lines') == 'No' %}selected{% endif %}>No</option>
+                                <option value="Yes" {% if form_data.get('Multiple Lines') == 'Yes' %}selected{% endif %}>Yes</option>
+                                <option value="No phone service" {% if form_data.get('Multiple Lines') == 'No phone service' %}selected{% endif %}>No phone service</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="internetServiceSelect">Internet Service <span class="req">*</span></label>
+                            <select id="internetServiceSelect" name="Internet Service" required>
+                                <option value="Fiber optic" {% if form_data.get('Internet Service') == 'Fiber optic' %}selected{% endif %}>Fiber optic</option>
+                                <option value="DSL" {% if form_data.get('Internet Service') == 'DSL' %}selected{% endif %}>DSL</option>
+                                <option value="No" {% if form_data.get('Internet Service') == 'No' %}selected{% endif %}>No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="onlineSecuritySelect">Online Security</label>
+                            <select id="onlineSecuritySelect" name="Online Security" required>
+                                <option value="No" {% if form_data.get('Online Security') == 'No' %}selected{% endif %}>No</option>
+                                <option value="Yes" {% if form_data.get('Online Security') == 'Yes' %}selected{% endif %}>Yes</option>
+                                <option value="No internet service" {% if form_data.get('Online Security') == 'No internet service' %}selected{% endif %}>No internet service</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="onlineBackupSelect">Online Backup</label>
+                            <select id="onlineBackupSelect" name="Online Backup" required>
+                                <option value="No" {% if form_data.get('Online Backup') == 'No' %}selected{% endif %}>No</option>
+                                <option value="Yes" {% if form_data.get('Online Backup') == 'Yes' %}selected{% endif %}>Yes</option>
+                                <option value="No internet service" {% if form_data.get('Online Backup') == 'No internet service' %}selected{% endif %}>No internet service</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="deviceProtectionSelect">Device Protection</label>
+                            <select id="deviceProtectionSelect" name="Device Protection" required>
+                                <option value="No" {% if form_data.get('Device Protection') == 'No' %}selected{% endif %}>No</option>
+                                <option value="Yes" {% if form_data.get('Device Protection') == 'Yes' %}selected{% endif %}>Yes</option>
+                                <option value="No internet service" {% if form_data.get('Device Protection') == 'No internet service' %}selected{% endif %}>No internet service</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="techSupportSelect">Tech Support</label>
+                            <select id="techSupportSelect" name="Tech Support" required>
+                                <option value="No" {% if form_data.get('Tech Support') == 'No' %}selected{% endif %}>No</option>
+                                <option value="Yes" {% if form_data.get('Tech Support') == 'Yes' %}selected{% endif %}>Yes</option>
+                                <option value="No internet service" {% if form_data.get('Tech Support') == 'No internet service' %}selected{% endif %}>No internet service</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="streamingTvSelect">Streaming TV</label>
+                            <select id="streamingTvSelect" name="Streaming TV" required>
+                                <option value="No" {% if form_data.get('Streaming TV') == 'No' %}selected{% endif %}>No</option>
+                                <option value="Yes" {% if form_data.get('Streaming TV') == 'Yes' %}selected{% endif %}>Yes</option>
+                                <option value="No internet service" {% if form_data.get('Streaming TV') == 'No internet service' %}selected{% endif %}>No internet service</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="streamingMoviesSelect">Streaming Movies</label>
+                            <select id="streamingMoviesSelect" name="Streaming Movies" required>
+                                <option value="No" {% if form_data.get('Streaming Movies') == 'No' %}selected{% endif %}>No</option>
+                                <option value="Yes" {% if form_data.get('Streaming Movies') == 'Yes' %}selected{% endif %}>Yes</option>
+                                <option value="No internet service" {% if form_data.get('Streaming Movies') == 'No internet service' %}selected{% endif %}>No internet service</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. CONTRACT & ACCOUNT VALUE -->
+                <div class="form-section-block">
+                    <div class="section-heading">
+                        <i class="ri-file-list-3-line"></i>
+                        <h3>3. Contract & Financial Attributes</h3>
+                    </div>
+                    <div class="form-fields-grid">
+                        <div class="form-group">
+                            <label for="tenureInput">Tenure (Months) <span class="req">*</span></label>
+                            <input type="number" id="tenureInput" name="Tenure Months" min="0" max="72" value="{{ form_data.get('Tenure Months', 12) }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contractSelect">Contract Type <span class="req">*</span></label>
+                            <select id="contractSelect" name="Contract" required>
+                                <option value="Month-to-month" {% if form_data.get('Contract') == 'Month-to-month' %}selected{% endif %}>Month-to-month</option>
+                                <option value="One year" {% if form_data.get('Contract') == 'One year' %}selected{% endif %}>One year</option>
+                                <option value="Two year" {% if form_data.get('Contract') == 'Two year' %}selected{% endif %}>Two year</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="paperlessSelect">Paperless Billing <span class="req">*</span></label>
+                            <select id="paperlessSelect" name="Paperless Billing" required>
+                                <option value="Yes" {% if form_data.get('Paperless Billing') == 'Yes' %}selected{% endif %}>Yes</option>
+                                <option value="No" {% if form_data.get('Paperless Billing') == 'No' %}selected{% endif %}>No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="paymentMethodSelect">Payment Method <span class="req">*</span></label>
+                            <select id="paymentMethodSelect" name="Payment Method" required>
+                                <option value="Electronic check" {% if form_data.get('Payment Method') == 'Electronic check' %}selected{% endif %}>Electronic check</option>
+                                <option value="Mailed check" {% if form_data.get('Payment Method') == 'Mailed check' %}selected{% endif %}>Mailed check</option>
+                                <option value="Bank transfer (automatic)" {% if form_data.get('Payment Method') == 'Bank transfer (automatic)' %}selected{% endif %}>Bank transfer (automatic)</option>
+                                <option value="Credit card (automatic)" {% if form_data.get('Payment Method') == 'Credit card (automatic)' %}selected{% endif %}>Credit card (automatic)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="monthlyChargesInput">Monthly Charges (₹) <span class="req">*</span></label>
+                            <input type="number" id="monthlyChargesInput" name="Monthly Charges" step="0.01" min="0" value="{{ form_data.get('Monthly Charges', 65.50) }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="totalChargesInput">Total Charges (₹) <span class="req">*</span></label>
+                            <input type="number" id="totalChargesInput" name="Total Charges" step="0.01" min="0" value="{{ form_data.get('Total Charges', 786.00) }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cltvInput">Customer Lifetime Value (CLTV) <span class="req">*</span></label>
+                            <input type="number" id="cltvInput" name="CLTV" step="1" min="0" value="{{ form_data.get('CLTV', 3500) }}" required>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Form Action Buttons -->
+            <div class="form-actions-bar">
+                <button type="submit" id="submitPredictionBtn" class="btn-primary btn-lg">
+                    <i class="ri-brain-fill"></i>
+                    <span>Generate AI Prediction</span>
+                </button>
+                <button type="reset" id="resetFormBtn" class="btn-secondary">
+                    <i class="ri-refresh-line"></i>
+                    <span>Clear Form</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/prediction.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Developer Profile | Customer Intelligence Hub{% endblock %}
+{% block page_title %}Developer & Project Profile{% endblock %}
+{% block breadcrumb %}About the Developer, Architecture, and Machine Learning System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-container fade-in">
+
+    <!-- Developer Profile Hero Card -->
+    <div class="card profile-hero-card">
+        <div class="profile-hero-left">
+            <div class="profile-large-avatar">
+                AK
+            </div>
+            <div class="profile-hero-text">
+                <h1>Aditya Karkare</h1>
+                <p class="profile-role-tag"><i class="ri-code-s-slash-line"></i> Data Science & Machine Learning Developer</p>
+                <div class="profile-links-row">
+                    <span class="profile-meta-item"><i class="ri-map-pin-line"></i> Pune, India</span>
+                    <span class="profile-meta-item"><i class="ri-shield-check-line"></i> Project Lead</span>
+                    <span class="profile-meta-item"><i class="ri-git-branch-line"></i> Customer AI v1.0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-hero-right">
+            <div class="hero-metric-pill">
+                <span class="pill-label">Dataset Records</span>
+                <strong class="pill-num">7,043</strong>
+            </div>
+            <div class="hero-metric-pill">
+                <span class="pill-label">Model Accuracy</span>
+                <strong class="pill-num text-accent">80.94%</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2-Column Info Section -->
+    <div class="profile-details-grid">
+
+        <!-- Project Overview -->
+        <div class="card profile-info-card">
+            <div class="card-header">
+                <h2><i class="ri-folder-info-line"></i> Project Overview</h2>
+            </div>
+            <div class="card-body-text">
+                <p>
+                    <strong>Customer Intelligence Dashboard</strong> is an enterprise-grade AI analytics and churn prediction web application. Built on Python Flask and Scikit-Learn, it bridges machine learning model inference with interactive business intelligence dashboards.
+                </p>
+                <p>
+                    The platform enables marketing and customer success teams to identify at-risk subscribers before they leave, analyze behavioral patterns across demographics and contracts, and execute targeted retention strategies.
+                </p>
+            </div>
+        </div>
+
+        <!-- Tech Stack -->
+        <div class="card profile-info-card">
+            <div class="card-header">
+                <h2><i class="ri-stack-line"></i> Technology Stack</h2>
+            </div>
+            <div class="tech-stack-badges">
+                <div class="tech-badge"><i class="ri-terminal-box-line"></i> Python 3.14</div>
+                <div class="tech-badge"><i class="ri-server-line"></i> Flask</div>
+                <div class="tech-badge"><i class="ri-brain-line"></i> Scikit-learn</div>
+                <div class="tech-badge"><i class="ri-table-line"></i> Pandas & NumPy</div>
+                <div class="tech-badge"><i class="ri-pie-chart-line"></i> Chart.js</div>
+                <div class="tech-badge"><i class="ri-html5-line"></i> HTML5 & CSS3</div>
+                <div class="tech-badge"><i class="ri-javascript-line"></i> Vanilla JS</div>
+                <div class="tech-badge"><i class="ri-remixicon-line"></i> Remix Icons</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- System Modules Matrix -->
+    <div class="card modules-matrix-card mt-4">
+        <div class="card-header">
+            <h2><i class="ri-dashboard-line"></i> Platform Architecture & Modules</h2>
+        </div>
+        <div class="modules-grid">
+            <div class="module-box">
+                <div class="module-icon"><i class="ri-dashboard-3-line"></i></div>
+                <h4>Executive Dashboard</h4>
+                <p>Live KPI tracking, churn vs retention doughnut charts, dynamic AI insights, and top high-risk customer alerts.</p>
+            </div>
+
+            <div class="module-box">
+                <div class="module-icon"><i class="ri-team-line"></i></div>
+                <h4>Customer Explorer</h4>
+                <p>Interactive directory with client-side multi-parameter filtering, search across 7,043 rows, and 360° profile views.</p>
+            </div>
+
+            <div class="module-box">
+                <div class="module-icon"><i class="ri-brain-line"></i></div>
+                <h4>Predictive AI Engine</h4>
+                <p>Real-time ML scoring with 20 input attributes, dynamic risk gauge, probability calculation, and retention advice.</p>
+            </div>
+
+            <div class="module-box">
+                <div class="module-icon"><i class="ri-line-chart-line"></i></div>
+                <h4>Analytics Matrix</h4>
+                <p>6 Chart.js distributions analyzing contract churn, payment preferences, internet tiers, and tenure cohorts.</p>
+            </div>
+
+            <div class="module-box">
+                <div class="module-icon"><i class="ri-file-chart-line"></i></div>
+                <h4>Executive Reports</h4>
+                <p>Comprehensive findings, risk tier segmentation summaries, downloadable CSV exports, and printable briefs.</p>
+            </div>
+
+            <div class="module-box">
+                <div class="module-icon"><i class="ri-settings-3-line"></i></div>
+                <h4>User Settings</h4>
+                <p>Theme toggles, UI animation preferences, compact view modes, and local state persistence.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

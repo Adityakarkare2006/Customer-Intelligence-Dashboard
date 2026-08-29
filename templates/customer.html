@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}Customers Directory | Customer Intelligence Hub{% endblock %}
+{% block page_title %}Customer Explorer{% endblock %}
+{% block breadcrumb %}Browse, filter, and inspect verified dataset records{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/customers.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="customers-container fade-in">
+
+    <!-- ========================================== -->
+    <!-- DIRECTORY STATS SUMMARY -->
+    <!-- ========================================== -->
+    <div class="customer-stats-grid">
+        <div class="stat-pill">
+            <span class="stat-pill-label">Total Verified Records</span>
+            <strong class="stat-pill-val text-primary" id="totalRecordCount">{{ customers|length }}</strong>
+        </div>
+        <div class="stat-pill">
+            <span class="stat-pill-label">Churned Subscribers</span>
+            <strong class="stat-pill-val text-danger">{{ churned_customers }}</strong>
+        </div>
+        <div class="stat-pill">
+            <span class="stat-pill-label">Retained Subscribers</span>
+            <strong class="stat-pill-val text-success">{{ retained_customers }}</strong>
+        </div>
+        <div class="stat-pill">
+            <span class="stat-pill-label">Overall Churn Rate</span>
+            <strong class="stat-pill-val text-warning">{{ churn_rate }}%</strong>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SEARCH & FILTER TOOLBAR -->
+    <!-- ========================================== -->
+    <div class="card filter-toolbar-card">
+        <div class="filter-toolbar-grid">
+            <!-- Search ID / Text -->
+            <div class="filter-field search-field">
+                <label for="tableSearchInput"><i class="ri-search-line"></i> Search Customer</label>
+                <input type="text" id="tableSearchInput" placeholder="Search by ID, city, or payment method...">
+            </div>
+
+            <!-- Contract Filter -->
+            <div class="filter-field">
+                <label for="contractFilter"><i class="ri-file-text-line"></i> Contract Type</label>
+                <select id="contractFilter">
+                    <option value="">All Contracts</option>
+                    <option value="Month-to-month">Month-to-month</option>
+                    <option value="One year">One year</option>
+                    <option value="Two year">Two year</option>
+                </select>
+            </div>
+
+            <!-- Churn Status Filter -->
+            <div class="filter-field">
+                <label for="churnFilter"><i class="ri-user-line"></i> Churn Status</label>
+                <select id="churnFilter">
+                    <option value="">All Statuses</option>
+                    <option value="Yes">Churned</option>
+                    <option value="No">Retained</option>
+                </select>
+            </div>
+
+            <!-- Risk Tier Filter -->
+            <div class="filter-field">
+                <label for="riskFilter"><i class="ri-shield-line"></i> Risk Level</label>
+                <select id="riskFilter">
+                    <option value="">All Risk Tiers</option>
+                    <option value="HIGH">High (≥80)</option>
+                    <option value="MEDIUM">Medium (60-79)</option>
+                    <option value="LOW">Low (<60)</option>
+                </select>
+            </div>
+
+            <!-- Reset Filters -->
+            <div class="filter-field reset-field">
+                <label>&nbsp;</label>
+                <button id="resetFiltersBtn" class="btn-secondary btn-icon" title="Reset Filters">
+                    <i class="ri-refresh-line"></i>
+                    <span>Reset</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- CUSTOMER DATA TABLE CARD -->
+    <!-- ========================================== -->
+    <div class="card table-card">
+        <div class="table-header-bar">
+            <div class="table-title-group">
+                <h2>Customer Records</h2>
+                <span class="record-counter">
+                    Showing <strong id="visibleCount">{{ customers|length }}</strong> of {{ customers|length }} entries
+                </span>
+            </div>
+            <div class="table-actions">
+                <a href="{{ url_for('export_csv') }}" class="btn-secondary btn-sm" title="Export current dataset as CSV">
+                    <i class="ri-download-2-line"></i>
+                    <span>Export CSV</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="customer-data-table" id="customerTable">
+                <thead>
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Gender</th>
+                        <th>Tenure</th>
+                        <th>Contract</th>
+                        <th>Internet</th>
+                        <th>Payment Method</th>
+                        <th>Monthly</th>
+                        <th>Total Charges</th>
+                        <th>Status</th>
+                        <th>Risk Score</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="customerTableBody">
+                    {% for c in customers %}
+                        <tr class="customer-row"
+                            data-customer="{{ c.CustomerID }}"
+                            data-contract="{{ c.Contract }}"
+                            data-churn="{{ c['Churn Label'] }}"
+                            data-risk="{{ c['Risk Level'] }}"
+                            data-payment="{{ c['Payment Method'] }}"
+                            data-city="{{ c.City }}"
+                            data-search="{{ c.CustomerID }} {{ c.City }} {{ c.State }} {{ c['Payment Method'] }} {{ c.Contract }} {{ c['Internet Service'] }}">
+                            
+                            <!-- Customer ID -->
+                            <td class="customer-id-cell">
+                                <a href="{{ url_for('customer_detail', customer_id=c.CustomerID) }}" class="id-link">
+                                    <strong>{{ c.CustomerID }}</strong>
+                                </a>
+                            </td>
+
+                            <!-- Gender & Senior -->
+                            <td>
+                                <span>{{ c.Gender }}</span>
+                                {% if c['Senior Citizen'] == 'Yes' %}
+                                    <span class="badge-sub text-muted" title="Senior Citizen">Sr.</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Tenure -->
+                            <td>{{ c['Tenure Months'] }} mo</td>
+
+                            <!-- Contract -->
+                            <td>
+                                <span class="contract-badge">{{ c.Contract }}</span>
+                            </td>
+
+                            <!-- Internet -->
+                            <td>{{ c['Internet Service'] }}</td>
+
+                            <!-- Payment -->
+                            <td>
+                                <span class="payment-method-text">{{ c['Payment Method'] }}</span>
+                            </td>
+
+                            <!-- Monthly Charges -->
+                            <td>
+                                <strong>₹{{ "%.2f"|format(c['Monthly Charges']) }}</strong>
+                            </td>
+
+                            <!-- Total Charges -->
+                            <td>
+                                ₹{{ "%.2f"|format(c['Total Charges']) }}
+                            </td>
+
+                            <!-- Churn Status -->
+                            <td>
+                                {% if c['Churn Label'] == 'Yes' %}
+                                    <span class="status-badge status-churn">CHURNED</span>
+                                {% else %}
+                                    <span class="status-badge status-retained">RETAINED</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Risk Score -->
+                            <td>
+                                <div class="risk-pill-wrap">
+                                    <span class="badge-risk {{ c['Risk Level'] | lower }}">{{ c['Risk Level'] }}</span>
+                                    <span class="risk-score-num">{{ c['Churn Score'] }}%</span>
+                                </div>
+                            </td>
+
+                            <!-- Action Button -->
+                            <td>
+                                <a href="{{ url_for('customer_detail', customer_id=c.CustomerID) }}" class="btn-icon-link" title="View Customer 360 Profile">
+                                    <i class="ri-eye-line"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Empty Search State -->
+            <div id="noResultsState" class="empty-state" style="display: none;">
+                <div class="empty-icon"><i class="ri-search-eye-line"></i></div>
+                <h3>No Matching Customers Found</h3>
+                <p>Try adjusting your search keywords or clearing active filters.</p>
+                <button class="btn-secondary btn-sm mt-3" onclick="document.getElementById('resetFiltersBtn').click();">Reset Filters</button>
+            </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="table-pagination" id="paginationControls">
+            <div class="pagination-info">
+                <span>Page <strong id="currentPageNum">1</strong> of <strong id="totalPagesNum">1</strong></span>
+            </div>
+            <div class="pagination-buttons">
+                <button id="prevPageBtn" class="pagination-btn" disabled><i class="ri-arrow-left-s-line"></i> Prev</button>
+                <div id="paginationPageNumbers" class="pagination-page-list"></div>
+                <button id="nextPageBtn" class="pagination-btn">Next <i class="ri-arrow-right-s-line"></i></button>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/customers.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Settings & Preferences | Customer Intelligence Hub{% endblock %}
+{% block page_title %}System Settings{% endblock %}
+{% block breadcrumb %}Customize interface appearance, animation, and notification preferences{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="settings-container fade-in">
+
+    <!-- Settings Intro Card -->
+    <div class="card settings-header-card">
+        <div class="settings-header-text">
+            <h2>Interface Preferences</h2>
+            <p>Customize how Customer Intelligence Dashboard looks and feels on your device. Preferences are automatically saved in your browser storage.</p>
+        </div>
+        <button type="button" id="saveSettingsBtn" class="btn-primary btn-sm">
+            <i class="ri-save-line"></i>
+            <span>Save Preferences</span>
+        </button>
+    </div>
+
+    <!-- Settings Groups Grid -->
+    <div class="settings-grid">
+
+        <!-- Group 1: Appearance -->
+        <div class="card settings-section-card">
+            <div class="section-title-wrap">
+                <div class="section-icon purple"><i class="ri-palette-line"></i></div>
+                <div>
+                    <h3>Appearance & Theme</h3>
+                    <p>Select your preferred visual style</p>
+                </div>
+            </div>
+
+            <div class="setting-item-row">
+                <div class="setting-info">
+                    <strong>Dark Theme (Default)</strong>
+                    <p>Sleek navy-slate high-contrast palette for low-light environments.</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="darkThemeToggle" checked>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+
+            <div class="setting-item-row">
+                <div class="setting-info">
+                    <strong>High Contrast Accents</strong>
+                    <p>Enhance border visibility and badge saturation for accessibility.</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="highContrastToggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Group 2: Motion & Dashboard Layout -->
+        <div class="card settings-section-card">
+            <div class="section-title-wrap">
+                <div class="section-icon blue"><i class="ri-speed-line"></i></div>
+                <div>
+                    <h3>Dashboard & Motion</h3>
+                    <p>Control animations and interface layout density</p>
+                </div>
+            </div>
+
+            <div class="setting-item-row">
+                <div class="setting-info">
+                    <strong>UI Animations</strong>
+                    <p>Enable smooth transitions, card fade-ins, and number counter counting.</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="animationsToggle" checked>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+
+            <div class="setting-item-row">
+                <div class="setting-info">
+                    <strong>Compact Table Density</strong>
+                    <p>Reduce padding in customer records table to display more rows per page.</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="compactModeToggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Group 3: Notifications -->
+        <div class="card settings-section-card">
+            <div class="section-title-wrap">
+                <div class="section-icon green"><i class="ri-notification-3-line"></i></div>
+                <div>
+                    <h3>Notifications</h3>
+                    <p>Manage in-app alert badges and toasts</p>
+                </div>
+            </div>
+
+            <div class="setting-item-row">
+                <div class="setting-info">
+                    <strong>In-App Activity Notifications</strong>
+                    <p>Show toast notifications when predictions complete or reports are exported.</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="notificationsToggle" checked>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Group 4: System Information -->
+        <div class="card settings-section-card">
+            <div class="section-title-wrap">
+                <div class="section-icon cyan"><i class="ri-information-line"></i></div>
+                <div>
+                    <h3>System Environment</h3>
+                    <p>Runtime specifications and build information</p>
+                </div>
+            </div>
+
+            <div class="env-info-list">
+                <div class="env-row">
+                    <span>Application Version</span>
+                    <strong>v1.0.0 (Release)</strong>
+                </div>
+                <div class="env-row">
+                    <span>Python Framework</span>
+                    <strong>Flask + Scikit-Learn</strong>
+                </div>
+                <div class="env-row">
+                    <span>Dataset Status</span>
+                    <strong class="text-success">7,043 Records Loaded</strong>
+                </div>
+                <div class="env-row">
+                    <span>Machine Learning Model</span>
+                    <strong class="text-accent">Logistic Regression (80.94% Acc.)</strong>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}

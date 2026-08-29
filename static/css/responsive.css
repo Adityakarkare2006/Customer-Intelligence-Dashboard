@@ -1,0 +1,122 @@
+/* ==========================================================
+   GLOBAL RESPONSIVE BREAKPOINTS (responsive.css)
+========================================================== */
+
+/* Large screens and desktops */
+@media (max-width: 1400px) {
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Medium tablets and small desktops */
+@media (max-width: 992px) {
+    .page-content {
+        padding: 20px;
+    }
+
+    .top-navbar {
+        padding: 0 20px;
+    }
+
+    .main-footer {
+        padding: 16px 20px;
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+
+    .dashboard-grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .customer-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filter-toolbar-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .filter-field.reset-field {
+        grid-column: span 2;
+    }
+
+    .customer-attributes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .risk-gauge-banner {
+        grid-template-columns: 1fr;
+    }
+
+    .ai-recommendation-box {
+        border-left: none;
+        border-top: 1px solid var(--border-color);
+        padding-left: 0;
+        padding-top: 20px;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 650px) {
+    .page-content {
+        padding: 16px 12px;
+    }
+
+    .top-navbar {
+        padding: 0 12px;
+    }
+
+    .search-box {
+        display: none;
+    }
+
+    .hero-section {
+        padding: 24px 20px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .hero-title {
+        font-size: 1.5rem;
+    }
+
+    .hero-stat-card {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .insights-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .customer-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-toolbar-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-field.reset-field {
+        grid-column: span 1;
+    }
+
+    .action-buttons-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .report-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .report-actions a, .report-actions button {
+        width: 100%;
+    }
+}
