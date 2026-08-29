@@ -21,13 +21,18 @@ class CustomerIntelligenceDashboardTests(unittest.TestCase):
         print("Test 1 Passed: Dashboard statistics match real dataset values.")
 
     def test_02_dashboard_route(self):
-        response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Customer AI", response.data)
-        self.assertIn(b"Predict Customer Churn Before It Happens", response.data)
-        self.assertIn(b"80.94", response.data)
-        print("Test 2 Passed: Dashboard route renders successfully.")
+     with self.client.session_transaction() as sess:
+        sess["logged_in"] = True
+        sess["otp_verified"] = True
 
+     response = self.client.get('/')
+
+     self.assertEqual(response.status_code, 200)
+     self.assertIn(b"Customer AI", response.data)
+     self.assertIn(b"Predict Customer Churn Before It Happens", response.data)
+     self.assertIn(b"80.94", response.data)
+
+    print("Test 2 Passed: Dashboard route renders successfully.")
     def test_03_customers_route(self):
         response = self.client.get('/customers')
         self.assertEqual(response.status_code, 200)
