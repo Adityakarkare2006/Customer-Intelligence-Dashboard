@@ -1,182 +1,633 @@
-/**
- * Customer Directory Search, Filtering & Pagination (customers.js)
- */
-document.addEventListener("DOMContentLoaded", () => {
+/* =========================================================
+   CUSTOMER INTELLIGENCE DASHBOARD
+   CUSTOMER EXPLORER JAVASCRIPT
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    // =====================================================
+    // ELEMENTS
+    // =====================================================
+
     const searchInput = document.getElementById("tableSearchInput");
     const contractFilter = document.getElementById("contractFilter");
     const churnFilter = document.getElementById("churnFilter");
     const riskFilter = document.getElementById("riskFilter");
-    const resetBtn = document.getElementById("resetFiltersBtn");
-    
-    const rows = Array.from(document.querySelectorAll("#customerTableBody .customer-row"));
-    const visibleCountEl = document.getElementById("visibleCount");
+    const resetButton = document.getElementById("resetFiltersBtn");
+
+    const tableBody = document.getElementById("customerTableBody");
+    const rows = Array.from(
+        tableBody.querySelectorAll(".customer-row")
+    );
+
+    const visibleCount = document.getElementById("visibleCount");
+    const totalRecordCount = document.getElementById("totalRecordCount");
+
     const noResultsState = document.getElementById("noResultsState");
-    const paginationControls = document.getElementById("paginationControls");
-    
+
+    const currentPageNum = document.getElementById("currentPageNum");
+    const totalPagesNum = document.getElementById("totalPagesNum");
+
     const prevPageBtn = document.getElementById("prevPageBtn");
     const nextPageBtn = document.getElementById("nextPageBtn");
-    const currentPageNumEl = document.getElementById("currentPageNum");
-    const totalPagesNumEl = document.getElementById("totalPagesNum");
-    const pageListEl = document.getElementById("paginationPageNumbers");
 
-    const PAGE_SIZE = 25;
+    const paginationPageNumbers =
+        document.getElementById("paginationPageNumbers");
+
+
+    // =====================================================
+    // PAGINATION SETTINGS
+    // =====================================================
+
+    const rowsPerPage = 20;
+
     let currentPage = 1;
+
     let filteredRows = [...rows];
 
-    // Read URL search param if present (e.g. from navbar global search)
-    const urlParams = new URLSearchParams(window.location.search);
-    const initialSearch = urlParams.get("search");
-    if (initialSearch && searchInput) {
-        searchInput.value = initialSearch;
+
+    // =====================================================
+    // INITIAL COUNTS
+    // =====================================================
+
+    if (totalRecordCount) {
+        totalRecordCount.textContent = rows.length;
     }
 
-    const applyFilters = () => {
-        const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
-        const contractVal = contractFilter ? contractFilter.value : "";
-        const churnVal = churnFilter ? churnFilter.value : "";
-        const riskVal = riskFilter ? riskFilter.value : "";
 
-        filteredRows = rows.filter(row => {
-            const rowSearch = (row.getAttribute("data-search") || "").toLowerCase();
-            const rowContract = row.getAttribute("data-contract") || "";
-            const rowChurn = row.getAttribute("data-churn") || "";
-            const rowRisk = row.getAttribute("data-risk") || "";
+    // =====================================================
+    // NORMALIZE TEXT
+    // =====================================================
 
-            const matchesSearch = !query || rowSearch.includes(query);
-            const matchesContract = !contractVal || rowContract === contractVal;
-            const matchesChurn = !churnVal || rowChurn === churnVal;
-            const matchesRisk = !riskVal || rowRisk === riskVal;
+    function normalize(value) {
 
-            return matchesSearch && matchesContract && matchesChurn && matchesRisk;
+        return String(value || "")
+            .trim()
+            .toLowerCase();
+
+    }
+
+
+    // =====================================================
+    // FILTER FUNCTION
+    // =====================================================
+
+    function applyFilters() {
+
+        const searchValue =
+            normalize(searchInput ? searchInput.value : "");
+
+        const contractValue =
+            normalize(contractFilter ? contractFilter.value : "");
+
+        const churnValue =
+            normalize(churnFilter ? churnFilter.value : "");
+
+        const riskValue =
+            normalize(riskFilter ? riskFilter.value : "");
+
+
+        filteredRows = rows.filter(function (row) {
+
+            // ---------------------------------------------
+            // SEARCH
+            // ---------------------------------------------
+
+            const searchText =
+                normalize(row.dataset.search);
+
+            const searchMatch =
+                searchValue === "" ||
+                searchText.includes(searchValue);
+
+
+            // ---------------------------------------------
+            // CONTRACT
+            // ---------------------------------------------
+
+            const contract =
+                normalize(row.dataset.contract);
+
+            const contractMatch =
+                contractValue === "" ||
+                contract === contractValue;
+
+
+            // ---------------------------------------------
+            // CHURN
+            // ---------------------------------------------
+
+            const churn =
+                normalize(row.dataset.churn);
+
+            const churnMatch =
+                churnValue === "" ||
+                churn === churnValue;
+
+
+            // ---------------------------------------------
+            // RISK
+            // ---------------------------------------------
+
+            const risk =
+                normalize(row.dataset.risk);
+
+            const riskMatch =
+                riskValue === "" ||
+                risk === riskValue;
+
+
+            return (
+                searchMatch &&
+                contractMatch &&
+                churnMatch &&
+                riskMatch
+            );
+
         });
 
+
+        // Reset to first page after filtering
         currentPage = 1;
-        renderPage();
-    };
 
-    const renderPage = () => {
-        const totalMatching = filteredRows.length;
-        const totalPages = Math.max(1, Math.ceil(totalMatching / PAGE_SIZE));
+        renderTable();
 
-        if (currentPage > totalPages) currentPage = totalPages;
-        if (currentPage < 1) currentPage = 1;
+    }
+
+
+    // =====================================================
+    // RENDER TABLE
+    // =====================================================
+
+    function renderTable() {
 
         // Hide all rows first
-        rows.forEach(r => r.style.display = "none");
+        rows.forEach(function (row) {
+            row.style.display = "none";
+        });
 
-        if (totalMatching === 0) {
-            if (noResultsState) noResultsState.style.display = "block";
-            if (paginationControls) paginationControls.style.display = "none";
-        } else {
-            if (noResultsState) noResultsState.style.display = "none";
-            if (paginationControls) paginationControls.style.display = "flex";
 
-            // Show slice for current page
-            const startIndex = (currentPage - 1) * PAGE_SIZE;
-            const endIndex = Math.min(startIndex + PAGE_SIZE, totalMatching);
+        // If nothing found
+        if (filteredRows.length === 0) {
 
-            for (let i = startIndex; i < endIndex; i++) {
-                filteredRows[i].style.display = "";
+            if (noResultsState) {
+                noResultsState.style.display = "block";
             }
+
+            if (tableBody) {
+                tableBody.style.display = "none";
+            }
+
+            updatePagination();
+
+            updateVisibleCount();
+
+            return;
+
         }
 
-        // Update counters
-        if (visibleCountEl) visibleCountEl.textContent = totalMatching.toLocaleString();
-        if (currentPageNumEl) currentPageNumEl.textContent = currentPage;
-        if (totalPagesNumEl) totalPagesNumEl.textContent = totalPages;
 
-        // Update Prev / Next Buttons
-        if (prevPageBtn) prevPageBtn.disabled = (currentPage === 1);
-        if (nextPageBtn) nextPageBtn.disabled = (currentPage === totalPages || totalMatching === 0);
-
-        renderPaginationNumbers(totalPages);
-    };
-
-    const renderPaginationNumbers = (totalPages) => {
-        if (!pageListEl) return;
-        pageListEl.innerHTML = "";
-
-        if (totalPages <= 1) return;
-
-        // Determine window of pages around current page
-        let startPage = Math.max(1, currentPage - 2);
-        let endPage = Math.min(totalPages, currentPage + 2);
-
-        if (startPage > 1) {
-            addPageButton(1);
-            if (startPage > 2) addEllipsis();
+        // Results available
+        if (noResultsState) {
+            noResultsState.style.display = "none";
         }
 
-        for (let p = startPage; p <= endPage; p++) {
-            addPageButton(p);
+        if (tableBody) {
+            tableBody.style.display = "";
         }
 
-        if (endPage < totalPages) {
-            if (endPage < totalPages - 1) addEllipsis();
-            addPageButton(totalPages);
-        }
-    };
 
-    const addPageButton = (pageNum) => {
-        const btn = document.createElement("button");
-        btn.className = `page-num-btn ${pageNum === currentPage ? "active" : ""}`;
-        btn.textContent = pageNum;
-        btn.addEventListener("click", () => {
-            currentPage = pageNum;
-            renderPage();
-            window.scrollTo({ top: 0, behavior: "smooth" });
+        // Calculate pagination
+        const startIndex =
+            (currentPage - 1) * rowsPerPage;
+
+        const endIndex =
+            startIndex + rowsPerPage;
+
+
+        const pageRows =
+            filteredRows.slice(startIndex, endIndex);
+
+
+        // Show current page rows
+        pageRows.forEach(function (row) {
+
+            row.style.display = "";
+
         });
-        pageListEl.appendChild(btn);
-    };
 
-    const addEllipsis = () => {
-        const span = document.createElement("span");
-        span.className = "page-ellipsis";
-        span.textContent = "...";
-        span.style.color = "var(--text-muted)";
-        span.style.padding = "0 4px";
-        span.style.display = "inline-flex";
-        span.style.alignItems = "center";
-        pageListEl.appendChild(span);
-    };
 
-    // Event Listeners
-    if (searchInput) searchInput.addEventListener("input", applyFilters);
-    if (contractFilter) contractFilter.addEventListener("change", applyFilters);
-    if (churnFilter) churnFilter.addEventListener("change", applyFilters);
-    if (riskFilter) riskFilter.addEventListener("change", applyFilters);
+        updatePagination();
 
-    if (resetBtn) {
-        resetBtn.addEventListener("click", () => {
-            if (searchInput) searchInput.value = "";
-            if (contractFilter) contractFilter.value = "";
-            if (churnFilter) churnFilter.value = "";
-            if (riskFilter) riskFilter.value = "";
-            applyFilters();
-        });
+        updateVisibleCount();
+
     }
 
-    if (prevPageBtn) {
-        prevPageBtn.addEventListener("click", () => {
-            if (currentPage > 1) {
-                currentPage--;
-                renderPage();
-                window.scrollTo({ top: 0, behavior: "smooth" });
-            }
-        });
+
+    // =====================================================
+    // UPDATE VISIBLE COUNT
+    // =====================================================
+
+    function updateVisibleCount() {
+
+        if (visibleCount) {
+
+            visibleCount.textContent =
+                filteredRows.length;
+
+        }
+
     }
+
+
+    // =====================================================
+    // PAGINATION
+    // =====================================================
+
+    function updatePagination() {
+
+        const totalPages =
+            Math.max(
+                1,
+                Math.ceil(
+                    filteredRows.length / rowsPerPage
+                )
+            );
+
+
+        // Current page
+        if (currentPageNum) {
+            currentPageNum.textContent = currentPage;
+        }
+
+
+        // Total pages
+        if (totalPagesNum) {
+            totalPagesNum.textContent = totalPages;
+        }
+
+
+        // Previous button
+        if (prevPageBtn) {
+
+            prevPageBtn.disabled =
+                currentPage <= 1;
+
+        }
+
+
+        // Next button
+        if (nextPageBtn) {
+
+            nextPageBtn.disabled =
+                currentPage >= totalPages;
+
+        }
+
+
+        // Page numbers
+        renderPageNumbers(totalPages);
+
+    }
+
+
+    // =====================================================
+    // PAGE NUMBER BUTTONS
+    // =====================================================
+
+    function renderPageNumbers(totalPages) {
+
+        if (!paginationPageNumbers) {
+            return;
+        }
+
+
+        paginationPageNumbers.innerHTML = "";
+
+
+        // Maximum visible page buttons
+        const maxButtons = 5;
+
+
+        let startPage =
+            Math.max(
+                1,
+                currentPage - 2
+            );
+
+
+        let endPage =
+            Math.min(
+                totalPages,
+                startPage + maxButtons - 1
+            );
+
+
+        // Adjust start page
+        if (
+            endPage - startPage + 1 <
+            maxButtons
+        ) {
+
+            startPage =
+                Math.max(
+                    1,
+                    endPage - maxButtons + 1
+                );
+
+        }
+
+
+        for (
+            let page = startPage;
+            page <= endPage;
+            page++
+        ) {
+
+            const button =
+                document.createElement("button");
+
+
+            button.type = "button";
+
+            button.className =
+                "pagination-btn pagination-number";
+
+
+            button.textContent = page;
+
+
+            if (page === currentPage) {
+
+                button.classList.add("active");
+
+            }
+
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    currentPage = page;
+
+                    renderTable();
+
+                    scrollToTable();
+
+                }
+            );
+
+
+            paginationPageNumbers.appendChild(button);
+
+        }
+
+    }
+
+
+    // =====================================================
+    // NEXT PAGE
+    // =====================================================
 
     if (nextPageBtn) {
-        nextPageBtn.addEventListener("click", () => {
-            const totalPages = Math.ceil(filteredRows.length / PAGE_SIZE);
-            if (currentPage < totalPages) {
-                currentPage++;
-                renderPage();
-                window.scrollTo({ top: 0, behavior: "smooth" });
+
+        nextPageBtn.addEventListener(
+            "click",
+            function () {
+
+                const totalPages =
+                    Math.ceil(
+                        filteredRows.length /
+                        rowsPerPage
+                    );
+
+
+                if (
+                    currentPage <
+                    totalPages
+                ) {
+
+                    currentPage++;
+
+                    renderTable();
+
+                    scrollToTable();
+
+                }
+
             }
-        });
+        );
+
     }
 
-    // Run initial filter/pagination on load
-    applyFilters();
+
+    // =====================================================
+    // PREVIOUS PAGE
+    // =====================================================
+
+    if (prevPageBtn) {
+
+        prevPageBtn.addEventListener(
+            "click",
+            function () {
+
+                if (currentPage > 1) {
+
+                    currentPage--;
+
+                    renderTable();
+
+                    scrollToTable();
+
+                }
+
+            }
+        );
+
+    }
+
+
+    // =====================================================
+    // SEARCH EVENT
+    // =====================================================
+
+    if (searchInput) {
+
+        searchInput.addEventListener(
+            "input",
+            function () {
+
+                applyFilters();
+
+            }
+        );
+
+    }
+
+
+    // =====================================================
+    // CONTRACT FILTER
+    // =====================================================
+
+    if (contractFilter) {
+
+        contractFilter.addEventListener(
+            "change",
+            function () {
+
+                applyFilters();
+
+            }
+        );
+
+    }
+
+
+    // =====================================================
+    // CHURN FILTER
+    // =====================================================
+
+    if (churnFilter) {
+
+        churnFilter.addEventListener(
+            "change",
+            function () {
+
+                applyFilters();
+
+            }
+        );
+
+    }
+
+
+    // =====================================================
+    // RISK FILTER
+    // =====================================================
+
+    if (riskFilter) {
+
+        riskFilter.addEventListener(
+            "change",
+            function () {
+
+                applyFilters();
+
+            }
+        );
+
+    }
+
+
+    // =====================================================
+    // RESET FILTERS
+    // =====================================================
+
+    if (resetButton) {
+
+        resetButton.addEventListener(
+            "click",
+            function () {
+
+                if (searchInput) {
+                    searchInput.value = "";
+                }
+
+                if (contractFilter) {
+                    contractFilter.value = "";
+                }
+
+                if (churnFilter) {
+                    churnFilter.value = "";
+                }
+
+                if (riskFilter) {
+                    riskFilter.value = "";
+                }
+
+                currentPage = 1;
+
+                applyFilters();
+
+            }
+        );
+
+    }
+
+
+    // =====================================================
+    // SCROLL TO TABLE
+    // =====================================================
+
+    function scrollToTable() {
+
+        const table =
+            document.getElementById(
+                "customerTable"
+            );
+
+
+        if (!table) {
+            return;
+        }
+
+
+        const rect =
+            table.getBoundingClientRect();
+
+
+        // Only scroll if table is outside viewport
+        if (
+            rect.top < 0 ||
+            rect.bottom >
+            window.innerHeight
+        ) {
+
+            table.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }
+
+    }
+
+
+    // =====================================================
+    // CUSTOMER ROW CLICK
+    // =====================================================
+
+    rows.forEach(function (row) {
+
+        row.addEventListener(
+            "dblclick",
+            function () {
+
+                const customerId =
+                    row.dataset.customer;
+
+
+                if (!customerId) {
+                    return;
+                }
+
+
+                window.location.href =
+                    "/customer/" +
+                    encodeURIComponent(
+                        customerId
+                    );
+
+            }
+        );
+
+    });
+
+
+    // =====================================================
+    // INITIAL RENDER
+    // =====================================================
+
+    renderTable();
+
 });

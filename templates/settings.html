@@ -1,154 +1,859 @@
 {% extends "base.html" %}
 
-{% block title %}Settings & Preferences | Customer Intelligence Hub{% endblock %}
-{% block page_title %}System Settings{% endblock %}
-{% block breadcrumb %}Customize interface appearance, animation, and notification preferences{% endblock %}
+{% block title %}Settings & Preferences{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css') }}">
 {% endblock %}
 
-{% block content %}
-<div class="settings-container fade-in">
 
-    <!-- Settings Intro Card -->
-    <div class="card settings-header-card">
-        <div class="settings-header-text">
-            <h2>Interface Preferences</h2>
-            <p>Customize how Customer Intelligence Dashboard looks and feels on your device. Preferences are automatically saved in your browser storage.</p>
+{% block content %}
+
+<div class="settings-page">
+
+    <!-- ==================== PAGE HEADER ==================== -->
+
+    <div class="settings-header">
+
+        <div class="settings-heading">
+
+            <div class="settings-icon">
+                <i class="ri-settings-3-line"></i>
+            </div>
+
+            <div>
+                <span class="eyebrow">SYSTEM SETTINGS</span>
+
+                <h1>Settings & Preferences</h1>
+
+                <p>
+                    Customize your dashboard, AI preferences,
+                    notifications and business data integration.
+                </p>
+            </div>
+
         </div>
-        <button type="button" id="saveSettingsBtn" class="btn-primary btn-sm">
-            <i class="ri-save-line"></i>
-            <span>Save Preferences</span>
+
+        <button type="button" class="save-settings-btn" id="saveSettingsBtn">
+
+            <i class="ri-save-3-line"></i>
+
+            Save Changes
+
         </button>
+
     </div>
 
-    <!-- Settings Groups Grid -->
-    <div class="settings-grid">
 
-        <!-- Group 1: Appearance -->
-        <div class="card settings-section-card">
-            <div class="section-title-wrap">
-                <div class="section-icon purple"><i class="ri-palette-line"></i></div>
-                <div>
-                    <h3>Appearance & Theme</h3>
-                    <p>Select your preferred visual style</p>
-                </div>
+    <!-- ==================== APPEARANCE ==================== -->
+
+    <section class="settings-section">
+
+        <div class="section-title">
+
+            <div class="section-title-icon">
+                <i class="ri-palette-line"></i>
             </div>
 
-            <div class="setting-item-row">
-                <div class="setting-info">
-                    <strong>Dark Theme (Default)</strong>
-                    <p>Sleek navy-slate high-contrast palette for low-light environments.</p>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="darkThemeToggle" checked>
-                    <span class="slider round"></span>
-                </label>
+            <div>
+                <h2>Appearance & Theme</h2>
+
+                <p>
+                    Control the visual appearance of the dashboard.
+                </p>
             </div>
 
-            <div class="setting-item-row">
-                <div class="setting-info">
-                    <strong>High Contrast Accents</strong>
-                    <p>Enhance border visibility and badge saturation for accessibility.</p>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="highContrastToggle">
-                    <span class="slider round"></span>
-                </label>
-            </div>
         </div>
 
-        <!-- Group 2: Motion & Dashboard Layout -->
-        <div class="card settings-section-card">
-            <div class="section-title-wrap">
-                <div class="section-icon blue"><i class="ri-speed-line"></i></div>
-                <div>
-                    <h3>Dashboard & Motion</h3>
-                    <p>Control animations and interface layout density</p>
+
+        <div class="settings-grid">
+
+            <!-- Dark Theme -->
+
+            <div class="setting-card">
+
+                <div class="setting-card-icon">
+                    <i class="ri-moon-line"></i>
                 </div>
+
+                <div class="setting-card-content">
+
+                    <h3>Dark Theme</h3>
+
+                    <p>
+                        Use the premium dark dashboard interface.
+                    </p>
+
+                </div>
+
+                <label class="switch">
+
+                    <input
+                        type="checkbox"
+                        id="darkThemeToggle"
+                        checked
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
             </div>
 
-            <div class="setting-item-row">
-                <div class="setting-info">
-                    <strong>UI Animations</strong>
-                    <p>Enable smooth transitions, card fade-ins, and number counter counting.</p>
+
+            <!-- High Contrast -->
+
+            <div class="setting-card">
+
+                <div class="setting-card-icon">
+                    <i class="ri-contrast-2-line"></i>
                 </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="animationsToggle" checked>
-                    <span class="slider round"></span>
+
+                <div class="setting-card-content">
+
+                    <h3>High Contrast</h3>
+
+                    <p>
+                        Improve visual contrast for better readability.
+                    </p>
+
+                </div>
+
+                <label class="switch">
+
+                    <input
+                        type="checkbox"
+                        id="highContrastToggle"
+                    >
+
+                    <span class="slider"></span>
+
                 </label>
+
             </div>
 
-            <div class="setting-item-row">
-                <div class="setting-info">
-                    <strong>Compact Table Density</strong>
-                    <p>Reduce padding in customer records table to display more rows per page.</p>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="compactModeToggle">
-                    <span class="slider round"></span>
-                </label>
-            </div>
         </div>
 
-        <!-- Group 3: Notifications -->
-        <div class="card settings-section-card">
-            <div class="section-title-wrap">
-                <div class="section-icon green"><i class="ri-notification-3-line"></i></div>
-                <div>
-                    <h3>Notifications</h3>
-                    <p>Manage in-app alert badges and toasts</p>
-                </div>
+    </section>
+
+
+    <!-- ==================== MOTION & LAYOUT ==================== -->
+
+    <section class="settings-section">
+
+        <div class="section-title">
+
+            <div class="section-title-icon">
+                <i class="ri-layout-4-line"></i>
             </div>
 
-            <div class="setting-item-row">
-                <div class="setting-info">
-                    <strong>In-App Activity Notifications</strong>
-                    <p>Show toast notifications when predictions complete or reports are exported.</p>
+            <div>
+
+                <h2>Dashboard & Motion</h2>
+
+                <p>
+                    Customize animations and dashboard layout.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="settings-grid">
+
+            <!-- Animations -->
+
+            <div class="setting-card">
+
+                <div class="setting-card-icon">
+                    <i class="ri-sparkling-2-line"></i>
                 </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="notificationsToggle" checked>
-                    <span class="slider round"></span>
+
+                <div class="setting-card-content">
+
+                    <h3>Dashboard Animations</h3>
+
+                    <p>
+                        Enable smooth dashboard transitions and effects.
+                    </p>
+
+                </div>
+
+                <label class="switch">
+
+                    <input
+                        type="checkbox"
+                        id="animationsToggle"
+                        checked
+                    >
+
+                    <span class="slider"></span>
+
                 </label>
+
             </div>
+
+
+            <!-- Compact Mode -->
+
+            <div class="setting-card">
+
+                <div class="setting-card-icon">
+                    <i class="ri-collapse-diagonal-line"></i>
+                </div>
+
+                <div class="setting-card-content">
+
+                    <h3>Compact Mode</h3>
+
+                    <p>
+                        Reduce spacing to display more information.
+                    </p>
+
+                </div>
+
+                <label class="switch">
+
+                    <input
+                        type="checkbox"
+                        id="compactModeToggle"
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+
+            <!-- Reduced Motion -->
+
+            <div class="setting-card">
+
+                <div class="setting-card-icon">
+                    <i class="ri-speed-mini-line"></i>
+                </div>
+
+                <div class="setting-card-content">
+
+                    <h3>Reduced Motion</h3>
+
+                    <p>
+                        Minimize animations and visual movement.
+                    </p>
+
+                </div>
+
+                <label class="switch">
+
+                    <input
+                        type="checkbox"
+                        id="reducedMotionToggle"
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
         </div>
 
-        <!-- Group 4: System Information -->
-        <div class="card settings-section-card">
-            <div class="section-title-wrap">
-                <div class="section-icon cyan"><i class="ri-information-line"></i></div>
+    </section>
+
+
+    <!-- ==================== NOTIFICATIONS ==================== -->
+
+    <section class="settings-section">
+
+        <div class="section-title">
+
+            <div class="section-title-icon">
+                <i class="ri-notification-3-line"></i>
+            </div>
+
+            <div>
+
+                <h2>Notifications</h2>
+
+                <p>
+                    Manage dashboard and AI notification preferences.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="settings-grid">
+
+            <!-- Notifications -->
+
+            <div class="setting-card">
+
+                <div class="setting-card-icon">
+                    <i class="ri-notification-badge-line"></i>
+                </div>
+
+                <div class="setting-card-content">
+
+                    <h3>System Notifications</h3>
+
+                    <p>
+                        Receive important system notifications.
+                    </p>
+
+                </div>
+
+                <label class="switch">
+
+                    <input
+                        type="checkbox"
+                        id="notificationsToggle"
+                        checked
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+
+            <!-- Prediction Alerts -->
+
+            <div class="setting-card">
+
+                <div class="setting-card-icon">
+                    <i class="ri-alarm-warning-line"></i>
+                </div>
+
+                <div class="setting-card-content">
+
+                    <h3>Prediction Alerts</h3>
+
+                    <p>
+                        Show alerts when customers have high churn risk.
+                    </p>
+
+                </div>
+
+                <label class="switch">
+
+                    <input
+                        type="checkbox"
+                        id="predictionAlertsToggle"
+                        checked
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================== AI PREFERENCES ==================== -->
+
+    <section class="settings-section">
+
+        <div class="section-title">
+
+            <div class="section-title-icon">
+                <i class="ri-brain-line"></i>
+            </div>
+
+            <div>
+
+                <h2>AI Prediction Preferences</h2>
+
+                <p>
+                    Control how prediction information is displayed.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="settings-grid">
+
+            <!-- Risk Score -->
+
+            <div class="setting-card">
+
+                <div class="setting-card-icon">
+                    <i class="ri-bar-chart-box-line"></i>
+                </div>
+
+                <div class="setting-card-content">
+
+                    <h3>Show Risk Score</h3>
+
+                    <p>
+                        Display customer churn probability and risk scores.
+                    </p>
+
+                </div>
+
+                <label class="switch">
+
+                    <input
+                        type="checkbox"
+                        id="riskScoreToggle"
+                        checked
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+
+            <!-- AI Recommendations -->
+
+            <div class="setting-card">
+
+                <div class="setting-card-icon">
+                    <i class="ri-lightbulb-flash-line"></i>
+                </div>
+
+                <div class="setting-card-content">
+
+                    <h3>AI Recommendations</h3>
+
+                    <p>
+                        Display AI-generated customer insights.
+                    </p>
+
+                </div>
+
+                <label class="switch">
+
+                    <input
+                        type="checkbox"
+                        id="aiRecommendationsToggle"
+                        checked
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================== DATA INTEGRATION ==================== -->
+
+    <section class="settings-section integration-section">
+
+        <div class="section-title">
+
+            <div class="section-title-icon integration-icon">
+                <i class="ri-database-2-line"></i>
+            </div>
+
+            <div>
+
+                <h2>Data Integration</h2>
+
+                <p>
+                    Import customer data from Excel or CSV files used by your business.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="integration-card">
+
+            <div class="integration-main">
+
+                <div class="integration-file-icon">
+                    <i class="ri-file-excel-2-line"></i>
+                </div>
+
+                <div class="integration-content">
+
+                    <span class="integration-label">
+                        BUSINESS DATA IMPORT
+                    </span>
+
+                    <h3>
+                        Import Excel / CSV Customer Data
+                    </h3>
+
+                    <p>
+                        Upload your existing customer records,
+                        preview the data and map your business
+                        columns to the dashboard fields.
+                    </p>
+
+                    <div class="supported-formats">
+
+                        <span>
+                            <i class="ri-file-excel-2-line"></i>
+                            XLSX
+                        </span>
+
+                        <span>
+                            <i class="ri-file-list-3-line"></i>
+                            CSV
+                        </span>
+
+                        <span>
+                            <i class="ri-shield-check-line"></i>
+                            Validation
+                        </span>
+
+                        <span>
+                            <i class="ri-links-line"></i>
+                            Column Mapping
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="integration-action">
+
+                <a
+                    href="{{ url_for('data_import') }}"
+                    class="integration-btn"
+                >
+
+                    <i class="ri-upload-cloud-2-line"></i>
+
+                    Import Data
+
+                    <i class="ri-arrow-right-line"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================== SOFTWARE CONNECTIONS ==================== -->
+
+    <section class="settings-section">
+
+        <div class="section-title">
+
+            <div class="section-title-icon">
+                <i class="ri-plug-line"></i>
+            </div>
+
+            <div>
+
+                <h2>Software Connections</h2>
+
+                <p>
+                    Future-ready connections for business systems and databases.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="connection-grid">
+
+            <!-- POS -->
+
+            <div class="connection-card">
+
+                <div class="connection-icon">
+                    <i class="ri-store-2-line"></i>
+                </div>
+
                 <div>
-                    <h3>System Environment</h3>
-                    <p>Runtime specifications and build information</p>
+
+                    <h3>POS / Billing</h3>
+
+                    <p>
+                        Connect point-of-sale and billing data.
+                    </p>
+
                 </div>
+
+                <span class="connection-status">
+                    Coming Soon
+                </span>
+
             </div>
 
-            <div class="env-info-list">
-                <div class="env-row">
-                    <span>Application Version</span>
-                    <strong>v1.0.0 (Release)</strong>
+
+            <!-- CRM -->
+
+            <div class="connection-card">
+
+                <div class="connection-icon">
+                    <i class="ri-team-line"></i>
                 </div>
-                <div class="env-row">
-                    <span>Python Framework</span>
-                    <strong>Flask + Scikit-Learn</strong>
+
+                <div>
+
+                    <h3>CRM</h3>
+
+                    <p>
+                        Connect customer relationship data.
+                    </p>
+
                 </div>
-                <div class="env-row">
-                    <span>Dataset Status</span>
-                    <strong class="text-success">7,043 Records Loaded</strong>
-                </div>
-                <div class="env-row">
-                    <span>Machine Learning Model</span>
-                    <strong class="text-accent">Logistic Regression (80.94% Acc.)</strong>
-                </div>
+
+                <span class="connection-status">
+                    Coming Soon
+                </span>
+
             </div>
+
+
+            <!-- ERP -->
+
+            <div class="connection-card">
+
+                <div class="connection-icon">
+                    <i class="ri-building-4-line"></i>
+                </div>
+
+                <div>
+
+                    <h3>ERP / Business Database</h3>
+
+                    <p>
+                        Connect structured business databases.
+                    </p>
+
+                </div>
+
+                <span class="connection-status">
+                    Coming Soon
+                </span>
+
+            </div>
+
+
+            <!-- Google Sheets -->
+
+            <div class="connection-card">
+
+                <div class="connection-icon">
+                    <i class="ri-table-line"></i>
+                </div>
+
+                <div>
+
+                    <h3>Online Spreadsheet</h3>
+
+                    <p>
+                        Import customer records from online spreadsheets.
+                    </p>
+
+                </div>
+
+                <span class="connection-status">
+                    Coming Soon
+                </span>
+
+            </div>
+
         </div>
+
+    </section>
+
+
+    <!-- ==================== SYSTEM INFORMATION ==================== -->
+
+    <section class="settings-section">
+
+        <div class="section-title">
+
+            <div class="section-title-icon">
+                <i class="ri-server-line"></i>
+            </div>
+
+            <div>
+
+                <h2>System Information</h2>
+
+                <p>
+                    Current application and machine learning environment.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="system-info-grid">
+
+            <div class="system-info-card">
+
+                <span>Application</span>
+
+                <strong>Customer Intelligence Hub</strong>
+
+            </div>
+
+
+            <div class="system-info-card">
+
+                <span>Application Version</span>
+
+                <strong>v1.0.0</strong>
+
+            </div>
+
+
+            <div class="system-info-card">
+
+                <span>Framework</span>
+
+                <strong>Flask</strong>
+
+            </div>
+
+
+            <div class="system-info-card">
+
+                <span>Machine Learning</span>
+
+                <strong>Scikit-learn</strong>
+
+            </div>
+
+
+            <div class="system-info-card">
+
+                <span>Dataset Records</span>
+
+                <strong>7,043</strong>
+
+            </div>
+
+
+            <div class="system-info-card">
+
+                <span>Model Accuracy</span>
+
+                <strong>{{ model_accuracy|default("80.94") }}%</strong>
+
+            </div>
+
+
+            <div class="system-info-card">
+
+                <span>Model Status</span>
+
+                <strong class="status-online">
+                    <i class="ri-checkbox-circle-fill"></i>
+                    Available
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================== DATA & PREFERENCES ==================== -->
+
+    <section class="settings-section">
+
+        <div class="section-title">
+
+            <div class="section-title-icon">
+                <i class="ri-database-settings-line"></i>
+            </div>
+
+            <div>
+
+                <h2>Data & Preferences</h2>
+
+                <p>
+                    Manage locally stored dashboard preferences.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="preference-actions">
+
+            <button
+                type="button"
+                class="secondary-action"
+                id="resetSettingsBtn"
+            >
+
+                <i class="ri-refresh-line"></i>
+
+                Reset Preferences
+
+            </button>
+
+            <div class="preference-note">
+
+                <i class="ri-information-line"></i>
+
+                <span>
+                    Preferences are stored locally in your browser.
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================== FOOTER ==================== -->
+
+    <div class="settings-footer">
+
+        <div>
+
+            <i class="ri-shield-check-line"></i>
+
+            <span>
+                Your dashboard preferences are stored locally.
+            </span>
+
+        </div>
+
+        <span>
+            Customer Intelligence Hub
+        </span>
 
     </div>
 
 </div>
+
 {% endblock %}
 
+
 {% block extra_js %}
+
 <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+
 {% endblock %}

@@ -5,121 +5,547 @@
 {% block breadcrumb %}About the Developer, Architecture, and Machine Learning System{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-<div class="profile-container fade-in">
 
-    <!-- Developer Profile Hero Card -->
-    <div class="card profile-hero-card">
-        <div class="profile-hero-left">
-            <div class="profile-large-avatar">
-                AK
-            </div>
-            <div class="profile-hero-text">
-                <h1>Aditya Karkare</h1>
-                <p class="profile-role-tag"><i class="ri-code-s-slash-line"></i> Data Science & Machine Learning Developer</p>
-                <div class="profile-links-row">
-                    <span class="profile-meta-item"><i class="ri-map-pin-line"></i> Pune, India</span>
-                    <span class="profile-meta-item"><i class="ri-shield-check-line"></i> Project Lead</span>
-                    <span class="profile-meta-item"><i class="ri-git-branch-line"></i> Customer AI v1.0</span>
+<div class="profile-page">
+
+    <!-- Ambient Background -->
+    <div class="profile-ambient ambient-one"></div>
+    <div class="profile-ambient ambient-two"></div>
+    <div class="profile-grid-overlay"></div>
+
+    <!-- =========================
+         PROFILE HERO
+    ========================== -->
+    <section class="profile-hero premium-reveal">
+
+        <div class="hero-glow"></div>
+
+        <div class="profile-hero-content">
+
+            <div class="profile-identity">
+
+                <div class="profile-avatar-wrap">
+                    <div class="avatar-orbit orbit-one"></div>
+                    <div class="avatar-orbit orbit-two"></div>
+
+                    <div class="profile-large-avatar">
+                        AK
+                    </div>
+
+                    <div class="avatar-status">
+                        <span></span>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="profile-hero-right">
-            <div class="hero-metric-pill">
-                <span class="pill-label">Dataset Records</span>
-                <strong class="pill-num">7,043</strong>
-            </div>
-            <div class="hero-metric-pill">
-                <span class="pill-label">Model Accuracy</span>
-                <strong class="pill-num text-accent">80.94%</strong>
-            </div>
-        </div>
-    </div>
+                <div class="profile-hero-text">
 
-    <!-- 2-Column Info Section -->
-    <div class="profile-details-grid">
+                    <div class="eyebrow">
+                        <span class="eyebrow-dot"></span>
+                        DEVELOPER PROFILE
+                    </div>
+
+                    <h1>Aditya Karkare</h1>
+
+                    <p class="profile-role-tag">
+                        <i class="ri-code-s-slash-line"></i>
+                        Data Science & Machine Learning Developer
+                    </p>
+
+                    <div class="profile-meta-row">
+
+                        <span class="profile-meta-item">
+                            <i class="ri-map-pin-line"></i>
+                            Pune, India
+                        </span>
+
+                        <span class="profile-meta-item">
+                            <i class="ri-shield-check-line"></i>
+                            Project Lead
+                        </span>
+
+                        <span class="profile-meta-item">
+                            <i class="ri-git-branch-line"></i>
+                            Customer AI v1.0
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Metrics -->
+            <div class="profile-metrics">
+
+                <div class="hero-metric-card">
+                    <div class="metric-icon">
+                        <i class="ri-database-2-line"></i>
+                    </div>
+
+                    <div>
+                        <span>Dataset Records</span>
+                        <strong>7,043</strong>
+                    </div>
+                </div>
+
+                <div class="hero-metric-card">
+                    <div class="metric-icon">
+                        <i class="ri-cpu-line"></i>
+                    </div>
+
+                    <div>
+                        <span>Model Accuracy</span>
+                        <strong>80.94%</strong>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- =========================
+         PROJECT + TECHNOLOGY
+    ========================== -->
+    <section class="profile-details-grid premium-reveal delay-one">
 
         <!-- Project Overview -->
-        <div class="card profile-info-card">
-            <div class="card-header">
-                <h2><i class="ri-folder-info-line"></i> Project Overview</h2>
+        <article class="premium-card">
+
+            <div class="card-top-line"></div>
+
+            <div class="premium-card-header">
+
+                <div class="section-icon">
+                    <i class="ri-folder-info-line"></i>
+                </div>
+
+                <div>
+                    <span class="section-label">PROJECT</span>
+                    <h2>Project Overview</h2>
+                </div>
+
             </div>
+
             <div class="card-body-text">
+
                 <p>
-                    <strong>Customer Intelligence Dashboard</strong> is an enterprise-grade AI analytics and churn prediction web application. Built on Python Flask and Scikit-Learn, it bridges machine learning model inference with interactive business intelligence dashboards.
+                    <strong>Customer Intelligence Dashboard</strong>
+                    is an enterprise-grade AI analytics and churn prediction
+                    web application. Built on Python Flask and Scikit-Learn,
+                    it bridges machine learning model inference with
+                    interactive business intelligence dashboards.
                 </p>
+
                 <p>
-                    The platform enables marketing and customer success teams to identify at-risk subscribers before they leave, analyze behavioral patterns across demographics and contracts, and execute targeted retention strategies.
+                    The platform enables marketing and customer success teams
+                    to identify at-risk subscribers before they leave,
+                    analyze behavioral patterns across demographics and
+                    contracts, and execute targeted retention strategies.
+                </p>
+
+            </div>
+
+            <div class="card-footer-line">
+                <i class="ri-sparkling-2-line"></i>
+                AI-powered customer intelligence platform
+            </div>
+
+        </article>
+
+
+        <!-- Technology Stack -->
+        <article class="premium-card">
+
+            <div class="card-top-line"></div>
+
+            <div class="premium-card-header">
+
+                <div class="section-icon">
+                    <i class="ri-stack-line"></i>
+                </div>
+
+                <div>
+                    <span class="section-label">ENGINEERING</span>
+                    <h2>Technology Stack</h2>
+                </div>
+
+            </div>
+
+            <div class="tech-stack-grid">
+
+                <div class="tech-badge">
+                    <i class="ri-terminal-box-line"></i>
+                    <span>Python 3.14</span>
+                </div>
+
+                <div class="tech-badge">
+                    <i class="ri-server-line"></i>
+                    <span>Flask</span>
+                </div>
+
+                <div class="tech-badge">
+                    <i class="ri-brain-line"></i>
+                    <span>Scikit-learn</span>
+                </div>
+
+                <div class="tech-badge">
+                    <i class="ri-table-line"></i>
+                    <span>Pandas & NumPy</span>
+                </div>
+
+                <div class="tech-badge">
+                    <i class="ri-pie-chart-line"></i>
+                    <span>Chart.js</span>
+                </div>
+
+                <div class="tech-badge">
+                    <i class="ri-html5-line"></i>
+                    <span>HTML5 & CSS3</span>
+                </div>
+
+                <div class="tech-badge">
+                    <i class="ri-javascript-line"></i>
+                    <span>Vanilla JS</span>
+                </div>
+
+                <div class="tech-badge">
+                    <i class="ri-remixicon-line"></i>
+                    <span>Remix Icons</span>
+                </div>
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- =========================
+         ARCHITECTURE
+    ========================== -->
+    <section class="architecture-section premium-reveal delay-two">
+
+        <div class="section-heading-row">
+
+            <div>
+                <span class="section-label">SYSTEM DESIGN</span>
+
+                <h2>
+                    Platform Architecture
+                    <span>& Modules</span>
+                </h2>
+
+                <p>
+                    Core components powering the Customer Intelligence platform.
                 </p>
             </div>
-        </div>
 
-        <!-- Tech Stack -->
-        <div class="card profile-info-card">
-            <div class="card-header">
-                <h2><i class="ri-stack-line"></i> Technology Stack</h2>
+            <div class="architecture-badge">
+                <i class="ri-node-tree"></i>
+                Modular Architecture
             </div>
-            <div class="tech-stack-badges">
-                <div class="tech-badge"><i class="ri-terminal-box-line"></i> Python 3.14</div>
-                <div class="tech-badge"><i class="ri-server-line"></i> Flask</div>
-                <div class="tech-badge"><i class="ri-brain-line"></i> Scikit-learn</div>
-                <div class="tech-badge"><i class="ri-table-line"></i> Pandas & NumPy</div>
-                <div class="tech-badge"><i class="ri-pie-chart-line"></i> Chart.js</div>
-                <div class="tech-badge"><i class="ri-html5-line"></i> HTML5 & CSS3</div>
-                <div class="tech-badge"><i class="ri-javascript-line"></i> Vanilla JS</div>
-                <div class="tech-badge"><i class="ri-remixicon-line"></i> Remix Icons</div>
-            </div>
+
         </div>
 
-    </div>
 
-    <!-- System Modules Matrix -->
-    <div class="card modules-matrix-card mt-4">
-        <div class="card-header">
-            <h2><i class="ri-dashboard-line"></i> Platform Architecture & Modules</h2>
-        </div>
         <div class="modules-grid">
-            <div class="module-box">
-                <div class="module-icon"><i class="ri-dashboard-3-line"></i></div>
-                <h4>Executive Dashboard</h4>
-                <p>Live KPI tracking, churn vs retention doughnut charts, dynamic AI insights, and top high-risk customer alerts.</p>
-            </div>
 
-            <div class="module-box">
-                <div class="module-icon"><i class="ri-team-line"></i></div>
-                <h4>Customer Explorer</h4>
-                <p>Interactive directory with client-side multi-parameter filtering, search across 7,043 rows, and 360° profile views.</p>
-            </div>
+            <!-- Module 1 -->
+            <article class="module-box">
 
-            <div class="module-box">
-                <div class="module-icon"><i class="ri-brain-line"></i></div>
-                <h4>Predictive AI Engine</h4>
-                <p>Real-time ML scoring with 20 input attributes, dynamic risk gauge, probability calculation, and retention advice.</p>
-            </div>
+                <div class="module-number">01</div>
 
-            <div class="module-box">
-                <div class="module-icon"><i class="ri-line-chart-line"></i></div>
-                <h4>Analytics Matrix</h4>
-                <p>6 Chart.js distributions analyzing contract churn, payment preferences, internet tiers, and tenure cohorts.</p>
-            </div>
+                <div class="module-icon">
+                    <i class="ri-dashboard-3-line"></i>
+                </div>
 
-            <div class="module-box">
-                <div class="module-icon"><i class="ri-file-chart-line"></i></div>
-                <h4>Executive Reports</h4>
-                <p>Comprehensive findings, risk tier segmentation summaries, downloadable CSV exports, and printable briefs.</p>
-            </div>
+                <div class="module-content">
+                    <h4>Executive Dashboard</h4>
 
-            <div class="module-box">
-                <div class="module-icon"><i class="ri-settings-3-line"></i></div>
-                <h4>User Settings</h4>
-                <p>Theme toggles, UI animation preferences, compact view modes, and local state persistence.</p>
+                    <p>
+                        Live KPI tracking, churn vs retention doughnut
+                        charts, dynamic AI insights, and top high-risk
+                        customer alerts.
+                    </p>
+                </div>
+
+                <div class="module-arrow">
+                    <i class="ri-arrow-right-up-line"></i>
+                </div>
+
+            </article>
+
+
+            <!-- Module 2 -->
+            <article class="module-box">
+
+                <div class="module-number">02</div>
+
+                <div class="module-icon">
+                    <i class="ri-team-line"></i>
+                </div>
+
+                <div class="module-content">
+                    <h4>Customer Explorer</h4>
+
+                    <p>
+                        Interactive directory with client-side
+                        multi-parameter filtering, search across
+                        7,043 rows, and 360° profile views.
+                    </p>
+                </div>
+
+                <div class="module-arrow">
+                    <i class="ri-arrow-right-up-line"></i>
+                </div>
+
+            </article>
+
+
+            <!-- Module 3 -->
+            <article class="module-box featured-module">
+
+                <div class="module-number">03</div>
+
+                <div class="module-icon">
+                    <i class="ri-brain-line"></i>
+                </div>
+
+                <div class="module-content">
+
+                    <div class="module-tag">
+                        <i class="ri-sparkling-line"></i>
+                        AI CORE
+                    </div>
+
+                    <h4>Predictive AI Engine</h4>
+
+                    <p>
+                        Real-time ML scoring with 20 input attributes,
+                        dynamic risk probability calculation,
+                        and retention advice.
+                    </p>
+
+                </div>
+
+                <div class="module-arrow">
+                    <i class="ri-arrow-right-up-line"></i>
+                </div>
+
+            </article>
+
+
+            <!-- Module 4 -->
+            <article class="module-box">
+
+                <div class="module-number">04</div>
+
+                <div class="module-icon">
+                    <i class="ri-line-chart-line"></i>
+                </div>
+
+                <div class="module-content">
+                    <h4>Analytics Matrix</h4>
+
+                    <p>
+                        Chart.js distributions analyzing contract churn,
+                        payment preferences, internet tiers, and
+                        tenure cohorts.
+                    </p>
+                </div>
+
+                <div class="module-arrow">
+                    <i class="ri-arrow-right-up-line"></i>
+                </div>
+
+            </article>
+
+
+            <!-- Module 5 -->
+            <article class="module-box">
+
+                <div class="module-number">05</div>
+
+                <div class="module-icon">
+                    <i class="ri-file-chart-line"></i>
+                </div>
+
+                <div class="module-content">
+                    <h4>Executive Reports</h4>
+
+                    <p>
+                        Comprehensive findings, risk tier segmentation
+                        summaries, downloadable CSV exports,
+                        and printable briefs.
+                    </p>
+                </div>
+
+                <div class="module-arrow">
+                    <i class="ri-arrow-right-up-line"></i>
+                </div>
+
+            </article>
+
+
+            <!-- Module 6 -->
+            <article class="module-box">
+
+                <div class="module-number">06</div>
+
+                <div class="module-icon">
+                    <i class="ri-settings-3-line"></i>
+                </div>
+
+                <div class="module-content">
+                    <h4>User Settings</h4>
+
+                    <p>
+                        Theme toggles, UI animation preferences,
+                        compact view modes, and local state persistence.
+                    </p>
+                </div>
+
+                <div class="module-arrow">
+                    <i class="ri-arrow-right-up-line"></i>
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         SYSTEM FLOW
+    ========================== -->
+    <section class="system-flow premium-reveal delay-three">
+
+        <div class="flow-header">
+            <div>
+                <span class="section-label">DATA PIPELINE</span>
+                <h2>How the System Works</h2>
             </div>
         </div>
-    </div>
+
+        <div class="flow-track">
+
+            <div class="flow-item">
+                <div class="flow-icon">
+                    <i class="ri-database-2-line"></i>
+                </div>
+
+                <span>Customer Data</span>
+            </div>
+
+            <div class="flow-line"></div>
+
+            <div class="flow-item">
+                <div class="flow-icon">
+                    <i class="ri-filter-3-line"></i>
+                </div>
+
+                <span>Preprocessing</span>
+            </div>
+
+            <div class="flow-line"></div>
+
+            <div class="flow-item active-flow">
+                <div class="flow-icon">
+                    <i class="ri-brain-line"></i>
+                </div>
+
+                <span>ML Model</span>
+            </div>
+
+            <div class="flow-line"></div>
+
+            <div class="flow-item">
+                <div class="flow-icon">
+                    <i class="ri-bar-chart-box-line"></i>
+                </div>
+
+                <span>Prediction</span>
+            </div>
+
+            <div class="flow-line"></div>
+
+            <div class="flow-item">
+                <div class="flow-icon">
+                    <i class="ri-dashboard-line"></i>
+                </div>
+
+                <span>Insights</span>
+            </div>
+
+        </div>
+
+    </section>
 
 </div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const revealItems = document.querySelectorAll(".premium-reveal");
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+
+            entries.forEach((entry) => {
+
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("is-visible");
+                    observer.unobserve(entry.target);
+                }
+
+            });
+
+        },
+        {
+            threshold: 0.08
+        }
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
+
+
+    /* Module mouse glow */
+    document.querySelectorAll(".module-box").forEach((card) => {
+
+        card.addEventListener("mousemove", (e) => {
+
+            const rect = card.getBoundingClientRect();
+
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            card.style.setProperty("--mouse-x", `${x}px`);
+            card.style.setProperty("--mouse-y", `${y}px`);
+
+        });
+
+    });
+
+
+    /* Subtle metric animation */
+    document.querySelectorAll(".hero-metric-card").forEach((card, index) => {
+
+        card.style.animationDelay = `${index * 120}ms`;
+
+    });
+
+});
+</script>
+
 {% endblock %}

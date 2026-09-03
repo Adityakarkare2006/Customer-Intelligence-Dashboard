@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account | Customer Intelligence</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(78, 108, 255, 0.16), transparent 30%),
+                radial-gradient(circle at 85% 80%, rgba(0, 212, 255, 0.10), transparent 30%),
+                #080b14;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 1050px;
+            min-height: 650px;
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            background: rgba(17, 21, 34, 0.94);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+        }
+
+        /* ==============================
+           LEFT PANEL
+        ============================== */
+
+        .brand-panel {
+            position: relative;
+            padding: 55px 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(48, 65, 145, 0.34),
+                    rgba(10, 15, 30, 0.96)
+                );
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            overflow: hidden;
+        }
+
+        .brand-panel::before {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: rgba(80, 105, 255, 0.16);
+            filter: blur(10px);
+            top: -100px;
+            left: -100px;
+        }
+
+        .brand-panel::after {
+            content: "";
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(0, 204, 255, 0.08);
+            filter: blur(20px);
+            bottom: -80px;
+            right: -70px;
+        }
+
+        .brand-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #536dfe, #35b9ff);
+            font-size: 25px;
+            font-weight: 800;
+            margin-bottom: 28px;
+            box-shadow: 0 12px 30px rgba(63, 103, 255, 0.28);
+        }
+
+        .brand-title {
+            font-size: 34px;
+            line-height: 1.15;
+            font-weight: 800;
+            margin-bottom: 18px;
+        }
+
+        .brand-title span {
+            color: #6e8cff;
+        }
+
+        .brand-description {
+            color: #a8afc2;
+            line-height: 1.7;
+            font-size: 15px;
+            max-width: 390px;
+            margin-bottom: 35px;
+        }
+
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 17px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            color: #dce1ef;
+            font-size: 14px;
+        }
+
+        .feature-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(82, 108, 255, 0.13);
+            border: 1px solid rgba(100, 125, 255, 0.18);
+            color: #7c96ff;
+            font-size: 14px;
+        }
+
+        /* ==============================
+           RIGHT PANEL
+        ============================== */
+
+        .form-panel {
+            padding: 45px 55px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-header {
+            margin-bottom: 28px;
+        }
+
+        .form-header h1 {
+            font-size: 30px;
+            margin-bottom: 9px;
+            font-weight: 750;
+        }
+
+        .form-header p {
+            color: #8f97ac;
+            font-size: 14px;
+        }
+
+        .error-message {
+            background: rgba(255, 76, 76, 0.10);
+            border: 1px solid rgba(255, 76, 76, 0.25);
+            color: #ff8d8d;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .signup-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 17px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            color: #c9cedc;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #70798e;
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .form-group input {
+            width: 100%;
+            height: 48px;
+            border-radius: 11px;
+            border: 1px solid #272d40;
+            background: #0d111d;
+            color: #ffffff;
+            outline: none;
+            padding: 0 14px 0 40px;
+            font-size: 14px;
+            transition: 0.2s ease;
+        }
+
+        .form-group input::placeholder {
+            color: #5f6678;
+        }
+
+        .form-group input:focus {
+            border-color: #617cff;
+            box-shadow: 0 0 0 3px rgba(97, 124, 255, 0.10);
+            background: #0f1422;
+        }
+
+        .password-hint {
+            color: #697287;
+            font-size: 11px;
+            margin-top: 7px;
+        }
+
+        .terms {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            margin-top: 1px;
+            color: #777f94;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .terms input {
+            margin-top: 2px;
+            accent-color: #637fff;
+        }
+
+        .terms a {
+            color: #718bff;
+            text-decoration: none;
+        }
+
+        .create-btn {
+            grid-column: 1 / -1;
+            height: 50px;
+            border: none;
+            border-radius: 11px;
+            background: linear-gradient(135deg, #536dfe, #407cff);
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+            box-shadow: 0 10px 25px rgba(67, 99, 255, 0.20);
+            margin-top: 3px;
+        }
+
+        .create-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 30px rgba(67, 99, 255, 0.30);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 24px;
+            color: #7f879a;
+            font-size: 13px;
+        }
+
+        .login-link a {
+            color: #7690ff;
+            text-decoration: none;
+            font-weight: 700;
+            margin-left: 5px;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .security-note {
+            text-align: center;
+            margin-top: 18px;
+            color: #555d70;
+            font-size: 11px;
+        }
+
+        /* ==============================
+           RESPONSIVE
+        ============================== */
+
+        @media (max-width: 850px) {
+
+            .auth-wrapper {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+            }
+
+            .brand-panel {
+                display: none;
+            }
+
+            .form-panel {
+                padding: 40px 35px;
+            }
+        }
+
+        @media (max-width: 550px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .auth-wrapper {
+                border-radius: 18px;
+            }
+
+            .form-panel {
+                padding: 32px 22px;
+            }
+
+            .form-header h1 {
+                font-size: 26px;
+            }
+
+            .signup-form {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width,
+            .terms,
+            .create-btn {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="auth-wrapper">
+
+    <!-- LEFT BRAND SECTION -->
+    <div class="brand-panel">
+
+        <div class="brand-content">
+
+            <div class="logo">
+                CI
+            </div>
+
+            <h2 class="brand-title">
+                Customer<br>
+                <span>Intelligence</span>
+            </h2>
+
+            <p class="brand-description">
+                Transform customer data into meaningful insights,
+                identify churn risks, and make smarter business decisions
+                with AI-powered analytics.
+            </p>
+
+            <div class="features">
+
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <span>AI-powered customer analytics</span>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <span>Real-time churn risk insights</span>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <span>Customer 360° intelligence</span>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <span>Secure account management</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SIGNUP FORM -->
+    <div class="form-panel">
+
+        <div class="form-header">
+            <h1>Create your account</h1>
+            <p>Join Customer Intelligence and start exploring your data.</p>
+        </div>
+
+        {% if error %}
+            <div class="error-message">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form
+            class="signup-form"
+            method="POST"
+            action="{{ url_for('signup') }}"
+        >
+
+            <div class="form-group">
+
+                <label for="full_name">
+                    Full Name
+                </label>
+
+                <div class="input-wrapper">
+                    <span class="input-icon">👤</span>
+
+                    <input
+                        type="text"
+                        id="full_name"
+                        name="full_name"
+                        placeholder="Enter your full name"
+                        autocomplete="name"
+                        required
+                    >
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <div class="input-wrapper">
+                    <span class="input-icon">@</span>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Choose a username"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+            </div>
+
+
+            <div class="form-group full-width">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <div class="input-wrapper">
+                    <span class="input-icon">✉</span>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email address"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <div class="input-wrapper">
+                    <span class="input-icon">🔒</span>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Create a password"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+
+                <span class="password-hint">
+                    Use at least 8 characters.
+                </span>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="confirm_password">
+                    Confirm Password
+                </label>
+
+                <div class="input-wrapper">
+                    <span class="input-icon">🔐</span>
+
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        placeholder="Confirm your password"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+
+            </div>
+
+
+            <label class="terms">
+                <input
+                    type="checkbox"
+                    id="terms"
+                    name="terms"
+                    value="accepted"
+                    required
+                >
+
+                <span>
+                    I agree to the terms of use and understand that my
+                    account information will be securely stored.
+                </span>
+                </label>
+
+
+            <button type="submit" class="create-btn">
+                Create Account
+            </button>
+
+        </form>
+
+
+        <div class="login-link">
+            Already have an account?
+
+            <a href="{{ url_for('login') }}">
+                Sign in
+            </a>
+        </div>
+
+        <div class="security-note">
+            🔒 Your account information is protected.
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

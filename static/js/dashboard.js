@@ -1,75 +1,244 @@
-/**
- * Executive Dashboard Analytics & Charts Controller (dashboard.js)
- */
-document.addEventListener("DOMContentLoaded", () => {
-    const chartCanvas = document.getElementById("churnChart");
-    if (!chartCanvas || !window.Chart) return;
+/* =========================================================
+   CUSTOMER INTELLIGENCE DASHBOARD
+   DASHBOARD CHARTS
+========================================================= */
 
-    const data = window.dashboardData || {
-        churnedCustomers: 1869,
-        retainedCustomers: 5174,
-        totalCustomers: 7043
-    };
+document.addEventListener("DOMContentLoaded", function () {
 
-    const ctx = chartCanvas.getContext("2d");
+    const data = window.dashboardData || {};
 
-    // Doughnut Chart Configuration
-    const churnChart = new Chart(ctx, {
-        type: "doughnut",
-        data: {
-            labels: ["Retained Customers", "Churned Customers"],
-            datasets: [{
-                data: [data.retainedCustomers, data.churnedCustomers],
-                backgroundColor: [
-                    "#10B981", // Green
-                    "#EF4444"  // Red
-                ],
-                borderColor: [
-                    "rgba(16, 185, 129, 0.4)",
-                    "rgba(239, 68, 68, 0.4)"
-                ],
-                borderWidth: 2,
-                hoverOffset: 6,
-                spacing: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: "74%",
-            plugins: {
-                legend: {
-                    display: false // Using custom styled HTML legend
-                },
-                tooltip: {
-                    backgroundColor: "#1E293B",
-                    titleColor: "#F8FAFC",
-                    bodyColor: "#94A3B8",
-                    borderColor: "rgba(255, 255, 255, 0.1)",
-                    borderWidth: 1,
-                    padding: 12,
-                    boxPadding: 6,
-                    usePointStyle: true,
-                    callbacks: {
-                        label: function(context) {
-                            const val = context.parsed || 0;
-                            const total = data.retainedCustomers + data.churnedCustomers;
-                            const pct = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
-                            return ` ${context.label}: ${val.toLocaleString()} (${pct}%)`;
+    const churned =
+        Number(data.churnedCustomers || 0);
+
+    const retained =
+        Number(data.retainedCustomers || 0);
+
+    const total =
+        Number(data.totalCustomers || 0);
+
+    /* =====================================================
+       CHURN DOUGHNUT
+    ===================================================== */
+
+    const churnCanvas =
+        document.getElementById("churnChart");
+
+    if (churnCanvas) {
+
+        new Chart(
+            churnCanvas,
+            {
+
+                type: "doughnut",
+
+                data: {
+
+                    labels: [
+                        "Churned Customers",
+                        "Retained Customers"
+                    ],
+
+                    datasets: [
+
+                        {
+
+                            data: [
+                                churned,
+                                retained
+                            ],
+
+                            backgroundColor: [
+                                "#ef4444",
+                                "#10b981"
+                            ],
+
+                            borderColor: "#0b1220",
+
+                            borderWidth: 4,
+
+                            hoverOffset: 8
+
                         }
-                    }
-                }
-            },
-            animation: {
-                animateScale: true,
-                animateRotate: true,
-                duration: 1000
-            }
-        }
-    });
 
-    // Update on theme change
-    window.addEventListener("themeChanged", () => {
-        churnChart.update();
-    });
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    cutout: "68%",
+
+                    plugins: {
+
+                        legend: {
+
+                            position: "bottom",
+
+                            labels: {
+
+                                color: "#aeb8c8",
+
+                                padding: 16,
+
+                                font: {
+                                    size: 11
+                                }
+
+                            }
+
+                        },
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label: function (context) {
+
+                                    const value =
+                                        context.raw;
+
+                                    const percentage =
+                                        total > 0
+                                            ? (
+                                                value /
+                                                total *
+                                                100
+                                            ).toFixed(1)
+                                            : 0;
+
+                                    return (
+                                        context.label +
+                                        ": " +
+                                        value.toLocaleString() +
+                                        " (" +
+                                        percentage +
+                                        "%)"
+                                    );
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       OVERVIEW BAR CHART
+    ===================================================== */
+
+    const overviewCanvas =
+        document.getElementById(
+            "overviewChart"
+        );
+
+    if (overviewCanvas) {
+
+        new Chart(
+            overviewCanvas,
+            {
+
+                type: "bar",
+
+                data: {
+
+                    labels: [
+                        "Total",
+                        "Churned",
+                        "Retained"
+                    ],
+
+                    datasets: [
+
+                        {
+
+                            label:
+                                "Customers",
+
+                            data: [
+                                total,
+                                churned,
+                                retained
+                            ],
+
+                            backgroundColor: [
+                                "#7c3aed",
+                                "#ef4444",
+                                "#10b981"
+                            ],
+
+                            borderRadius: 7,
+
+                            maxBarThickness: 55
+
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+                            display: false
+                        }
+
+                    },
+
+                    scales: {
+
+                        x: {
+
+                            ticks: {
+                                color: "#7f8ba0"
+                            },
+
+                            grid: {
+                                display: false
+                            }
+
+                        },
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            ticks: {
+                                color: "#7f8ba0"
+                            },
+
+                            grid: {
+                                color:
+                                    "rgba(255,255,255,0.05)"
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
 });

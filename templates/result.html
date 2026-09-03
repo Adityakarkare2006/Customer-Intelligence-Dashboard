@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Prediction Result | Customer Intelligence</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            font-family:
+                Inter,
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            color: #f8fafc;
+
+            background:
+                radial-gradient(
+                    circle at 15% 15%,
+                    rgba(124, 58, 237, 0.18),
+                    transparent 30%
+                ),
+
+                radial-gradient(
+                    circle at 85% 80%,
+                    rgba(37, 99, 235, 0.16),
+                    transparent 30%
+                ),
+
+                #050914;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 30px;
+        }
+
+
+        .container {
+
+            width: 100%;
+
+            max-width: 900px;
+
+            overflow: hidden;
+
+            border-radius: 24px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(18,27,45,0.98),
+                    rgba(7,13,25,0.98)
+                );
+
+            border:
+                1px solid
+                rgba(148,163,184,0.13);
+
+            box-shadow:
+                0 35px 100px
+                rgba(0,0,0,0.48);
+
+            animation:
+                pageIn 0.65s ease both;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+
+            padding: 25px 30px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,0.06);
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .logo {
+
+            width: 44px;
+
+            height: 44px;
+
+            border-radius: 13px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-weight: 900;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c3aed,
+                    #2563eb
+                );
+
+            box-shadow:
+                0 10px 25px
+                rgba(124,58,237,0.3);
+        }
+
+
+        .brand strong {
+
+            display: block;
+
+            font-size: 14px;
+        }
+
+
+        .brand span {
+
+            display: block;
+
+            margin-top: 3px;
+
+            color: #718096;
+
+            font-size: 10px;
+        }
+
+
+        .status {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 8px 12px;
+
+            border-radius: 999px;
+
+            color: #86efac;
+
+            background:
+                rgba(34,197,94,0.08);
+
+            border:
+                1px solid
+                rgba(34,197,94,0.17);
+
+            font-size: 10px;
+
+            font-weight: 800;
+        }
+
+
+        .dot {
+
+            width: 7px;
+
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 12px
+                rgba(34,197,94,0.8);
+
+            animation:
+                pulse 1.7s infinite;
+        }
+
+
+        /* =========================
+           CONTENT
+        ========================= */
+
+        main {
+
+            padding: 40px;
+        }
+
+
+        .label {
+
+            color: #a78bfa;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 1.8px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 9px;
+        }
+
+
+        h1 {
+
+            font-size: 31px;
+
+            font-weight: 850;
+
+            margin-bottom: 9px;
+        }
+
+
+        .subtitle {
+
+            color: #7f8ba0;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+
+            margin-bottom: 27px;
+        }
+
+
+        /* =========================
+           RESULT
+        ========================= */
+
+        .prediction {
+
+            padding: 27px;
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(124,58,237,0.13),
+                    rgba(37,99,235,0.08)
+                );
+
+            border:
+                1px solid
+                rgba(124,58,237,0.22);
+
+            margin-bottom: 18px;
+
+            animation:
+                slideUp 0.7s 0.15s ease both;
+        }
+
+
+        .prediction-top {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 20px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .small-title {
+
+            color: #8793a8;
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+        }
+
+
+        .prediction-value {
+
+            margin-top: 7px;
+
+            font-size: 27px;
+
+            font-weight: 850;
+        }
+
+
+        .model-badge {
+
+            padding: 9px 13px;
+
+            border-radius: 10px;
+
+            color: #ddd6fe;
+
+            background:
+                rgba(124,58,237,0.15);
+
+            border:
+                1px solid
+                rgba(124,58,237,0.24);
+
+            font-size: 10px;
+
+            font-weight: 800;
+        }
+
+
+        /* =========================
+           PROBABILITY
+        ========================= */
+
+        .probability-head {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            color: #8c99ad;
+
+            font-size: 10px;
+
+            margin-bottom: 9px;
+        }
+
+
+        .probability-head strong {
+
+            color: white;
+
+            font-size: 13px;
+        }
+
+
+        .bar {
+
+            width: 100%;
+
+            height: 9px;
+
+            border-radius: 999px;
+
+            overflow: hidden;
+
+            background:
+                rgba(255,255,255,0.07);
+        }
+
+
+        .fill {
+
+            height: 100%;
+
+            width: 0%;
+
+            border-radius: inherit;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #7c3aed,
+                    #3b82f6
+                );
+
+            box-shadow:
+                0 0 17px
+                rgba(124,58,237,0.4);
+
+            animation:
+                fillBar 1.3s 0.3s
+                ease-out forwards;
+        }
+
+
+        /* =========================
+           CUSTOMER INFO
+        ========================= */
+
+        .grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 12px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .card {
+
+            padding: 18px;
+
+            border-radius: 15px;
+
+            background:
+                rgba(15,23,42,0.75);
+
+            border:
+                1px solid
+                rgba(148,163,184,0.10);
+
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+
+        .card:hover {
+
+            transform:
+                translateY(-4px);
+
+            border-color:
+                rgba(139,92,246,0.3);
+        }
+
+
+        .card span {
+
+            display: block;
+
+            color: #68758a;
+
+            font-size: 9px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.8px;
+
+            margin-bottom: 7px;
+        }
+
+
+        .card strong {
+
+            color: #e7edf7;
+
+            font-size: 14px;
+
+            word-break: break-word;
+        }
+
+
+        /* =========================
+           INSIGHT
+        ========================= */
+
+        .insight {
+
+            display: flex;
+
+            gap: 12px;
+
+            padding: 18px;
+
+            border-radius: 14px;
+
+            background:
+                rgba(16,185,129,0.05);
+
+            border:
+                1px solid
+                rgba(16,185,129,0.13);
+
+            margin-bottom: 22px;
+        }
+
+
+        .insight-icon {
+
+            width: 35px;
+
+            height: 35px;
+
+            min-width: 35px;
+
+            border-radius: 10px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: #34d399;
+
+            background:
+                rgba(16,185,129,0.10);
+        }
+
+
+        .insight h3 {
+
+            font-size: 11px;
+
+            margin-bottom: 4px;
+        }
+
+
+        .insight p {
+
+            color: #78869a;
+
+            font-size: 10px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .actions {
+
+            display: flex;
+
+            gap: 10px;
+        }
+
+
+        .btn {
+
+            min-height: 44px;
+
+            padding: 0 16px;
+
+            border-radius: 10px;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-decoration: none;
+
+            border: none;
+
+            cursor: pointer;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .btn:hover {
+
+            transform:
+                translateY(-2px);
+        }
+
+
+        .primary {
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c3aed,
+                    #4f46e5
+                );
+
+            box-shadow:
+                0 10px 25px
+                rgba(124,58,237,0.23);
+        }
+
+
+        .secondary {
+
+            color: #b9c3d2;
+
+            background:
+                rgba(255,255,255,0.05);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.08);
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+
+            text-align: center;
+
+            padding: 18px;
+
+            color: #4f5c70;
+
+            font-size: 9px;
+
+            border-top:
+                1px solid
+                rgba(255,255,255,0.05);
+        }
+
+
+        /* =========================
+           ANIMATION
+        ========================= */
+
+        @keyframes pageIn {
+
+            from {
+                opacity: 0;
+                transform:
+                    translateY(20px)
+                    scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+        }
+
+
+        @keyframes slideUp {
+
+            from {
+                opacity: 0;
+                transform:
+                    translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                    translateY(0);
+            }
+        }
+
+
+        @keyframes fillBar {
+
+            from {
+                width: 0%;
+            }
+
+            to {
+                width: var(--progress);
+            }
+        }
+
+
+        @keyframes pulse {
+
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.4);
+            }
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            body {
+                padding: 15px;
+            }
+
+            main {
+                padding: 27px 20px;
+            }
+
+            header {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .prediction-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- HEADER -->
+
+    <header>
+
+        <div class="brand">
+
+            <div class="logo">
+                CI
+            </div>
+
+            <div>
+
+                <strong>
+                    Customer Intelligence
+                </strong>
+
+                <span>
+                    AI Churn Prediction System
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="status">
+
+            <span class="dot"></span>
+
+            Prediction Complete
+
+        </div>
+
+    </header>
+
+
+    <!-- MAIN -->
+
+    <main>
+
+
+        <div class="label">
+            Machine Learning Result
+        </div>
+
+
+        <h1>
+            Customer Prediction Result
+        </h1>
+
+
+        <p class="subtitle">
+            The trained machine-learning model has evaluated
+            the submitted customer profile.
+        </p>
+
+
+        <!-- PREDICTION -->
+
+        <section class="prediction">
+
+            <div class="prediction-top">
+
+                <div>
+
+                    <div class="small-title">
+                        Prediction
+                    </div>
+
+                    <div class="prediction-value">
+
+                        {{ prediction | default("Prediction unavailable") }}
+
+                    </div>
+
+                </div>
+
+
+                <div class="model-badge">
+                    AI MODEL
+                </div>
+
+            </div>
+
+
+            <div>
+
+                <div class="probability-head">
+
+                    <span>
+                        Churn Probability
+                    </span>
+
+                    <strong>
+                        {{ churn_probability | default(0) }}%
+                    </strong>
+
+                </div>
+
+
+                <div class="bar">
+
+                    <div
+                        class="fill"
+                        style="
+                            --progress:
+                            {{ churn_probability | default(0) }}%;
+                        "
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CUSTOMER INFORMATION -->
+
+        <section class="grid">
+
+
+            <div class="card">
+
+                <span>
+                    Customer ID
+                </span>
+
+                <strong>
+
+                    {% if customer is defined and customer %}
+
+                        {{ customer.get("CustomerID", "N/A") }}
+
+                    {% else %}
+
+                        N/A
+
+                    {% endif %}
+
+                </strong>
+
+            </div>
+
+
+            <div class="card">
+
+                <span>
+                    Contract
+                </span>
+
+                <strong>
+
+                    {% if customer is defined and customer %}
+
+                        {{ customer.get("Contract", "N/A") }}
+
+                    {% else %}
+
+                        N/A
+
+                    {% endif %}
+
+                </strong>
+
+            </div>
+
+
+            <div class="card">
+
+                <span>
+                    Tenure
+                </span>
+
+                <strong>
+
+                    {% if customer is defined and customer %}
+
+                        {{ customer.get("Tenure Months", 0) }} months
+
+                    {% else %}
+
+                        0 months
+
+                    {% endif %}
+
+                </strong>
+
+            </div>
+
+
+            <div class="card">
+
+                <span>
+                    Monthly Charges
+                </span>
+
+                <strong>
+
+                    {% if customer is defined and customer %}
+
+                        ₹{{ customer.get("Monthly Charges", 0) }}
+
+                    {% else %}
+
+                        ₹0
+
+                    {% endif %}
+
+                </strong>
+
+            </div>
+
+
+            <div class="card">
+
+                <span>
+                    Internet Service
+                </span>
+
+                <strong>
+
+                    {% if customer is defined and customer %}
+
+                        {{ customer.get("Internet Service", "N/A") }}
+
+                    {% else %}
+
+                        N/A
+
+                    {% endif %}
+
+                </strong>
+
+            </div>
+
+
+            <div class="card">
+
+                <span>
+                    Payment Method
+                </span>
+
+                <strong>
+
+                    {% if customer is defined and customer %}
+
+                        {{ customer.get("Payment Method", "N/A") }}
+
+                    {% else %}
+
+                        N/A
+
+                    {% endif %}
+
+                </strong>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- BUSINESS INSIGHT -->
+
+        <section class="insight">
+
+            <div class="insight-icon">
+                ✦
+            </div>
+
+
+            <div>
+
+                <h3>
+                    Business Insight
+                </h3>
+
+
+                <p>
+
+                    {% if churn_probability is defined
+                          and churn_probability|float >= 80 %}
+
+                        This customer is classified as
+                        high risk. A proactive retention
+                        strategy is recommended.
+
+                    {% elif churn_probability is defined
+                          and churn_probability|float >= 60 %}
+
+                        This customer shows moderate churn
+                        risk. Consider proactive engagement.
+
+                    {% else %}
+
+                        This customer currently shows
+                        relatively low churn risk.
+
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ACTIONS -->
+
+        <div class="actions">
+
+
+            <a
+                href="{{ url_for('prediction') }}"
+                class="btn primary"
+            >
+                ← New Prediction
+            </a>
+
+
+            <a
+                href="{{ url_for('customers') }}"
+                class="btn secondary"
+            >
+                View Customers
+            </a>
+
+
+            <button
+                type="button"
+                onclick="window.print()"
+                class="btn secondary"
+            >
+                🖨 Print Result
+            </button>
+
+
+        </div>
+
+
+    </main>
+
+
+    <footer>
+
+        Customer Intelligence Dashboard
+        · Machine Learning Analytics
+        · 2026
+
+    </footer>
+
+
+</div>
+
+</body>
+</html>

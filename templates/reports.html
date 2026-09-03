@@ -1,259 +1,2653 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block title %}Executive Reports | Customer Intelligence Hub{% endblock %}
-{% block page_title %}Executive Churn Report{% endblock %}
-{% block breadcrumb %}Comprehensive Dataset Findings & Risk Distribution Report{% endblock %}
+<head>
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}">
-{% endblock %}
+    <meta charset="UTF-8">
 
-{% block content %}
-<div class="reports-container fade-in" id="printableReport">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <!-- ========================================== -->
-    <!-- REPORT HEADER & EXPORT ACTIONS -->
-    <!-- ========================================== -->
-    <div class="report-header-card card">
-        <div class="report-header-info">
-            <div class="report-badge">
-                <i class="ri-file-shield-line"></i>
-                <span>Verified Dataset Report</span>
-            </div>
-            <h1>Customer Intelligence & Retention Executive Report</h1>
-            <p>Generated dynamically from 7,043 customer accounts and Logistic Regression Machine Learning evaluations.</p>
-        </div>
+    <title>Reports | Customer Intelligence</title>
 
-        <div class="report-actions no-print">
-            <a href="{{ url_for('export_csv') }}" class="btn-primary" title="Export full dataset to CSV">
-                <i class="ri-file-excel-2-line"></i>
-                <span>Export Dataset CSV</span>
-            </a>
-            <button type="button" class="btn-secondary" onclick="window.print();" title="Print or save as PDF">
-                <i class="ri-printer-line"></i>
-                <span>Print / Save PDF</span>
-            </button>
-        </div>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- ========================================== -->
-    <!-- SECTION 1: EXECUTIVE KPI SUMMARY -->
-    <!-- ========================================== -->
-    <div class="report-section-title">
-        <h2>1. Executive KPI Summary</h2>
-        <p>Core subscriber counts and retention metrics calculated across the entire dataset.</p>
-    </div>
+    <style>
 
-    <div class="report-kpi-grid">
-        <div class="card report-metric-card">
-            <span class="metric-label">Total Subscribers</span>
-            <h3 class="metric-val text-primary">{{ "{:,}".format(report.total_customers) }}</h3>
-            <span class="metric-sub">100% active sample</span>
-        </div>
+        /* =====================================================
+           RESET
+        ===================================================== */
 
-        <div class="card report-metric-card">
-            <span class="metric-label">Churned Subscribers</span>
-            <h3 class="metric-val text-danger">{{ "{:,}".format(report.churned_customers) }}</h3>
-            <span class="metric-sub">{{ report.churn_rate }}% attrition</span>
-        </div>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        <div class="card report-metric-card">
-            <span class="metric-label">Retained Subscribers</span>
-            <h3 class="metric-val text-success">{{ "{:,}".format(report.retained_customers) }}</h3>
-            <span class="metric-sub">{{ report.retention_rate }}% active retention</span>
-        </div>
 
-        <div class="card report-metric-card">
-            <span class="metric-label">Model Accuracy</span>
-            <h3 class="metric-val text-accent">{{ report.model_accuracy }}%</h3>
-            <span class="metric-sub">ML evaluation score</span>
-        </div>
-    </div>
+        /* =====================================================
+           ROOT
+        ===================================================== */
 
-    <!-- ========================================== -->
-    <!-- SECTION 2: CHURN RISK TIER BREAKDOWN -->
-    <!-- ========================================== -->
-    <div class="report-section-title mt-4">
-        <h2>2. Subscriber Churn Risk Segmentation</h2>
-        <p>Customer base categorized by predictive churn score tiers (High ≥80, Medium 60-79, Low <60).</p>
-    </div>
+        :root {
 
-    <div class="report-risk-grid">
-        <div class="card risk-tier-card high-tier">
-            <div class="tier-badge-row">
-                <span class="badge-risk high">HIGH RISK (≥80)</span>
-                <span class="tier-pct">{{ report.high_risk_pct }}% of base</span>
-            </div>
-            <h3 class="tier-count">{{ "{:,}".format(report.high_risk_count) }} Accounts</h3>
-            <p class="tier-desc">Immediate attrition vulnerability. Requires priority retention discounts and dedicated account specialist engagement.</p>
-            <div class="tier-bar-track"><div class="tier-bar-fill high" style="width: {{ report.high_risk_pct }}%;"></div></div>
-        </div>
+            --bg: #030611;
 
-        <div class="card risk-tier-card medium-tier">
-            <div class="tier-badge-row">
-                <span class="badge-risk medium">MEDIUM RISK (60-79)</span>
-                <span class="tier-pct">{{ report.med_risk_pct }}% of base</span>
-            </div>
-            <h3 class="tier-count">{{ "{:,}".format(report.med_risk_count) }} Accounts</h3>
-            <p class="tier-desc">Moderate retention fragility. Proactively send engagement touchpoints, satisfaction surveys, and annual plan upgrade offers.</p>
-            <div class="tier-bar-track"><div class="tier-bar-fill medium" style="width: {{ report.med_risk_pct }}%;"></div></div>
-        </div>
+            --panel:
+                rgba(12, 18, 34, 0.78);
 
-        <div class="card risk-tier-card low-tier">
-            <div class="tier-badge-row">
-                <span class="badge-risk low">LOW RISK (<60)</span>
-                <span class="tier-pct">{{ report.low_risk_pct }}% of base</span>
-            </div>
-            <h3 class="tier-count">{{ "{:,}".format(report.low_risk_count) }} Accounts</h3>
-            <p class="tier-desc">Stable loyal customer segment. Maintain standard service excellence and identify cross-selling opportunities.</p>
-            <div class="tier-bar-track"><div class="tier-bar-fill low" style="width: {{ report.low_risk_pct }}%;"></div></div>
-        </div>
-    </div>
+            --panel-strong:
+                rgba(14, 21, 40, 0.94);
 
-    <!-- ========================================== -->
-    <!-- SECTION 3: CONTRACT & BILLING DISTRIBUTIONS -->
-    <!-- ========================================== -->
-    <div class="report-section-title mt-4">
-        <h2>3. Contract & Payment Breakdown</h2>
-        <p>Statistical distribution across contractual agreements and billing methods.</p>
-    </div>
+            --border:
+                rgba(148, 163, 184, 0.12);
 
-    <div class="report-2col-grid">
-        <div class="card breakdown-table-card">
-            <div class="card-header">
-                <h3>Contract Distribution</h3>
-            </div>
-            <table class="report-table">
-                <thead>
-                    <tr>
-                        <th>Contract Tier</th>
-                        <th>Subscribers</th>
-                        <th>Share</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Month-to-month</strong></td>
-                        <td>{{ "{:,}".format(report.month_to_month) }}</td>
-                        <td>{{ "%.1f"|format((report.month_to_month / report.total_customers * 100) if report.total_customers else 0) }}%</td>
-                    </tr>
-                    <tr>
-                        <td><strong>One year</strong></td>
-                        <td>{{ "{:,}".format(report.one_year) }}</td>
-                        <td>{{ "%.1f"|format((report.one_year / report.total_customers * 100) if report.total_customers else 0) }}%</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Two year</strong></td>
-                        <td>{{ "{:,}".format(report.two_year) }}</td>
-                        <td>{{ "%.1f"|format((report.two_year / report.total_customers * 100) if report.total_customers else 0) }}%</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            --text:
+                #f8fafc;
 
-        <div class="card breakdown-table-card">
-            <div class="card-header">
-                <h3>Payment Methods</h3>
-            </div>
-            <table class="report-table">
-                <thead>
-                    <tr>
-                        <th>Method</th>
-                        <th>Subscribers</th>
-                        <th>Share</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Electronic check</strong></td>
-                        <td>{{ "{:,}".format(report.electronic_check) }}</td>
-                        <td>{{ "%.1f"|format((report.electronic_check / report.total_customers * 100) if report.total_customers else 0) }}%</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Mailed check</strong></td>
-                        <td>{{ "{:,}".format(report.mailed_check) }}</td>
-                        <td>{{ "%.1f"|format((report.mailed_check / report.total_customers * 100) if report.total_customers else 0) }}%</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Bank transfer (auto)</strong></td>
-                        <td>{{ "{:,}".format(report.bank_transfer) }}</td>
-                        <td>{{ "%.1f"|format((report.bank_transfer / report.total_customers * 100) if report.total_customers else 0) }}%</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Credit card (auto)</strong></td>
-                        <td>{{ "{:,}".format(report.credit_card) }}</td>
-                        <td>{{ "%.1f"|format((report.credit_card / report.total_customers * 100) if report.total_customers else 0) }}%</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+            --muted:
+                #8491a7;
 
-    <!-- ========================================== -->
-    <!-- SECTION 4: TOP HIGH RISK SUBSCRIBERS -->
-    <!-- ========================================== -->
-    <div class="report-section-title mt-4">
-        <h2>4. Priority Accounts Requiring Retention Action</h2>
-        <p>Top 10 customer accounts exhibiting critical churn risk scores.</p>
-    </div>
+            --dim:
+                #59667b;
 
-    <div class="card table-card mb-4">
-        <div class="table-wrapper">
-            <table class="report-table">
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Customer ID</th>
-                        <th>Contract</th>
-                        <th>Monthly Charge</th>
-                        <th>Tenure</th>
-                        <th>Risk Score</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for c in report.top_high_risk_customers %}
-                        <tr>
-                            <td><strong>#{{ loop.index }}</strong></td>
-                            <td>
-                                <a href="{{ url_for('customer_detail', customer_id=c.customer_id) }}" class="id-link">
-                                    {{ c.customer_id }}
-                                </a>
-                            </td>
-                            <td><span class="contract-badge">{{ c.contract }}</span></td>
-                            <td>₹{{ "%.2f"|format(c.monthly_charges) }}/mo</td>
-                            <td>{{ c.tenure }} months</td>
-                            <td>
-                                <span class="badge-risk {{ c.risk_level | lower }}">{{ c.score }}%</span>
-                            </td>
-                            <td>
-                                {% if c.churn_label == 'Yes' %}
-                                    <span class="status-badge status-churn">Churned</span>
-                                {% else %}
-                                    <span class="status-badge status-retained">Retained</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+            --purple:
+                #8b5cf6;
 
-    <!-- ========================================== -->
-    <!-- SECTION 5: EXECUTIVE SUMMARY BRIEF -->
-    <!-- ========================================== -->
-    <div class="card report-brief-card">
-        <div class="brief-icon"><i class="ri-shield-star-line"></i></div>
-        <div class="brief-body">
-            <h3>Executive Summary Conclusion</h3>
-            <p>
-                The customer dataset reflects a total population of <strong>{{ "{:,}".format(report.total_customers) }}</strong> subscribers, with an overall churn rate of <strong>{{ report.churn_rate }}%</strong> (<strong>{{ "{:,}".format(report.churned_customers) }}</strong> churned vs <strong>{{ "{:,}".format(report.retained_customers) }}</strong> retained). 
-                The average subscriber generates <strong>₹{{ "%.2f"|format(report.avg_monthly_charges) }}</strong> in monthly revenue across an average lifespan of <strong>{{ report.avg_tenure }} months</strong>.
-                Our Machine Learning model performs with a validated accuracy of <strong>{{ report.model_accuracy }}%</strong>. The primary drivers of customer attrition are month-to-month contracts and electronic check billing. Targeted retention incentives for these specific cohorts will yield the largest reduction in churn.
-            </p>
-        </div>
-    </div>
+            --violet:
+                #a855f7;
+
+            --blue:
+                #3b82f6;
+
+            --cyan:
+                #06b6d4;
+
+            --green:
+                #22c55e;
+
+            --red:
+                #ef4444;
+
+            --yellow:
+                #f59e0b;
+        }
+
+
+        /* =====================================================
+           BODY
+        ===================================================== */
+
+        body {
+
+            min-height: 100vh;
+
+            overflow-x: hidden;
+
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            color: var(--text);
+
+            background:
+
+                radial-gradient(
+                    circle at 8% 8%,
+                    rgba(124, 58, 237, 0.20),
+                    transparent 25%
+                ),
+
+                radial-gradient(
+                    circle at 92% 15%,
+                    rgba(59, 130, 246, 0.15),
+                    transparent 25%
+                ),
+
+                radial-gradient(
+                    circle at 50% 100%,
+                    rgba(6, 182, 212, 0.08),
+                    transparent 28%
+                ),
+
+                #030611;
+        }
+
+
+        /* =====================================================
+           ANIMATED BACKGROUND
+        ===================================================== */
+
+        .ambient {
+
+            position: fixed;
+
+            inset: 0;
+
+            pointer-events: none;
+
+            overflow: hidden;
+
+            z-index: -1;
+        }
+
+
+        .orb {
+
+            position: absolute;
+
+            border-radius: 50%;
+
+            filter: blur(70px);
+
+            opacity: 0.22;
+
+            animation:
+                floatOrb 14s ease-in-out infinite;
+        }
+
+
+        .orb-one {
+
+            width: 280px;
+
+            height: 280px;
+
+            background: #7c3aed;
+
+            top: 8%;
+
+            left: -80px;
+        }
+
+
+        .orb-two {
+
+            width: 230px;
+
+            height: 230px;
+
+            background: #2563eb;
+
+            top: 48%;
+
+            right: -70px;
+
+            animation-delay: -5s;
+        }
+
+
+        .orb-three {
+
+            width: 200px;
+
+            height: 200px;
+
+            background: #06b6d4;
+
+            bottom: -80px;
+
+            left: 42%;
+
+            animation-delay: -9s;
+        }
+
+
+        @keyframes floatOrb {
+
+            0%,
+            100% {
+                transform:
+                    translate3d(0, 0, 0)
+                    scale(1);
+            }
+
+            50% {
+                transform:
+                    translate3d(35px, -25px, 0)
+                    scale(1.12);
+            }
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        .page {
+
+            width: min(
+                1500px,
+                calc(100% - 50px)
+            );
+
+            margin:
+                25px auto
+                60px;
+        }
+
+
+        /* =====================================================
+           TOP HEADER
+        ===================================================== */
+
+        .hero {
+
+            position: relative;
+
+            overflow: hidden;
+
+            padding: 34px;
+
+            margin-bottom: 20px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 26px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(16, 23, 42, 0.90),
+                    rgba(7, 12, 25, 0.80)
+                );
+
+            backdrop-filter:
+                blur(22px);
+
+            box-shadow:
+                0 30px 100px
+                rgba(0, 0, 0, 0.38);
+
+            animation:
+                reveal 0.7s ease both;
+        }
+
+
+        .hero::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 420px;
+
+            height: 420px;
+
+            top: -270px;
+
+            right: -80px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(139, 92, 246, 0.16);
+
+            filter:
+                blur(50px);
+
+            animation:
+                heroGlow 6s ease-in-out infinite;
+        }
+
+
+        @keyframes heroGlow {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+
+
+        .hero-content {
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        .eyebrow {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            color:
+                #b9a5ff;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 11px;
+        }
+
+
+        .eyebrow-dot {
+
+            width: 6px;
+
+            height: 6px;
+
+            border-radius: 50%;
+
+            background:
+                #a78bfa;
+
+            box-shadow:
+                0 0 14px
+                rgba(167, 139, 250, 0.9);
+
+            animation:
+                pulse 1.8s infinite;
+        }
+
+
+        .hero h1 {
+
+            font-size:
+                clamp(28px, 4vw, 42px);
+
+            line-height: 1.08;
+
+            font-weight: 900;
+
+            letter-spacing: -1.5px;
+
+            background:
+                linear-gradient(
+                    100deg,
+                    #ffffff,
+                    #c4b5fd,
+                    #60a5fa
+                );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+            margin-bottom: 11px;
+        }
+
+
+        .hero p {
+
+            max-width: 700px;
+
+            color:
+                var(--muted);
+
+            font-size: 13px;
+
+            line-height: 1.7;
+        }
+
+
+        .hero-actions {
+
+            position: absolute;
+
+            right: 28px;
+
+            bottom: 28px;
+
+            display: flex;
+
+            gap: 9px;
+        }
+
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        .btn {
+
+            min-height: 42px;
+
+            padding:
+                0 15px;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 7px;
+
+            border-radius: 11px;
+
+            text-decoration: none;
+
+            color: white;
+
+            font-size: 11px;
+
+            font-weight: 750;
+
+            cursor: pointer;
+
+            border:
+                1px solid
+                rgba(255,255,255,0.08);
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease,
+                border-color 0.25s ease;
+        }
+
+
+        .btn:hover {
+
+            transform:
+                translateY(-3px);
+        }
+
+
+        .btn-primary {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c3aed,
+                    #4f46e5
+                );
+
+            box-shadow:
+                0 12px 30px
+                rgba(124,58,237,0.25);
+        }
+
+
+        .btn-primary:hover {
+
+            box-shadow:
+                0 15px 35px
+                rgba(124,58,237,0.42);
+        }
+
+
+        .btn-secondary {
+
+            background:
+                rgba(255,255,255,0.045);
+
+            color:
+                #b9c4d5;
+        }
+
+
+        .btn-secondary:hover {
+
+            border-color:
+                rgba(139,92,246,0.3);
+
+            background:
+                rgba(139,92,246,0.08);
+        }
+
+
+        /* =====================================================
+           SECTION HEADER
+        ===================================================== */
+
+        .section-head {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: end;
+
+            margin:
+                30px 2px 14px;
+        }
+
+
+        .section-title {
+
+            font-size: 18px;
+
+            font-weight: 850;
+
+            letter-spacing: -0.4px;
+        }
+
+
+        .section-description {
+
+            color:
+                var(--dim);
+
+            font-size: 10px;
+
+            margin-top: 5px;
+        }
+
+
+        /* =====================================================
+           KPI GRID
+        ===================================================== */
+
+        .kpi-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap: 14px;
+        }
+
+
+        .kpi {
+
+            position: relative;
+
+            overflow: hidden;
+
+            min-height: 145px;
+
+            padding: 21px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 18px;
+
+            background:
+                var(--panel);
+
+            backdrop-filter:
+                blur(18px);
+
+            box-shadow:
+                0 18px 50px
+                rgba(0,0,0,0.20);
+
+            animation:
+                reveal 0.7s ease both;
+
+            transition:
+                transform 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .kpi:nth-child(2) {
+            animation-delay: .08s;
+        }
+
+        .kpi:nth-child(3) {
+            animation-delay: .16s;
+        }
+
+        .kpi:nth-child(4) {
+            animation-delay: .24s;
+        }
+
+        .kpi:nth-child(5) {
+            animation-delay: .32s;
+        }
+
+
+        .kpi:hover {
+
+            transform:
+                translateY(-7px);
+
+            border-color:
+                rgba(139,92,246,0.28);
+
+            box-shadow:
+                0 25px 60px
+                rgba(0,0,0,0.30),
+                0 0 30px
+                rgba(124,58,237,0.08);
+        }
+
+
+        .kpi::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 120px;
+
+            height: 120px;
+
+            right: -55px;
+
+            bottom: -70px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(124,58,237,0.11);
+
+            filter:
+                blur(25px);
+
+            transition:
+                transform 0.4s ease;
+        }
+
+
+        .kpi:hover::after {
+
+            transform:
+                scale(1.7);
+        }
+
+
+        .kpi-label {
+
+            color:
+                #718096;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+        }
+
+
+        .kpi-value {
+
+            margin-top: 10px;
+
+            font-size: 29px;
+
+            font-weight: 900;
+
+            letter-spacing: -1px;
+        }
+
+
+        .kpi-sub {
+
+            margin-top: 7px;
+
+            color:
+                #566379;
+
+            font-size: 9px;
+        }
+
+
+        /* =====================================================
+           CHART GRID
+        ===================================================== */
+
+        .chart-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 17px;
+        }
+
+
+        .chart-card {
+
+            min-height: 385px;
+
+            padding: 23px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 20px;
+
+            background:
+                var(--panel);
+
+            backdrop-filter:
+                blur(18px);
+
+            box-shadow:
+                0 20px 60px
+                rgba(0,0,0,0.22);
+
+            animation:
+                reveal 0.8s ease both;
+
+            transition:
+                transform 0.3s ease,
+                border-color 0.3s ease;
+        }
+
+
+        .chart-card:hover {
+
+            transform:
+                translateY(-4px);
+
+            border-color:
+                rgba(139,92,246,0.22);
+        }
+
+
+        .chart-card.full {
+
+            grid-column:
+                1 / -1;
+
+            min-height: 390px;
+        }
+
+
+        .chart-head {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 17px;
+        }
+
+
+        .chart-head h3 {
+
+            font-size: 13px;
+
+            font-weight: 800;
+        }
+
+
+        .chart-head span {
+
+            color:
+                #5f6d82;
+
+            font-size: 9px;
+        }
+
+
+        .chart-box {
+
+            position: relative;
+
+            width: 100%;
+
+            height: 295px;
+        }
+
+
+        /* =====================================================
+           RISK SECTION
+        ===================================================== */
+
+        .risk-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+        }
+
+
+        .risk-card {
+
+            position: relative;
+
+            overflow: hidden;
+
+            padding: 23px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 19px;
+
+            background:
+                var(--panel);
+
+            backdrop-filter:
+                blur(18px);
+
+            transition:
+                transform 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .risk-card:hover {
+
+            transform:
+                translateY(-6px);
+
+            box-shadow:
+                0 22px 55px
+                rgba(0,0,0,0.25);
+        }
+
+
+        .risk-high:hover {
+            border-color:
+                rgba(239,68,68,0.30);
+        }
+
+
+        .risk-medium:hover {
+            border-color:
+                rgba(245,158,11,0.30);
+        }
+
+
+        .risk-low:hover {
+            border-color:
+                rgba(34,197,94,0.30);
+        }
+
+
+        .risk-top {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+        }
+
+
+        .risk-name {
+
+            color:
+                #8491a7;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+        }
+
+
+        .risk-icon {
+
+            width: 35px;
+
+            height: 35px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 10px;
+
+            font-size: 15px;
+        }
+
+
+        .risk-high .risk-icon {
+
+            color: #fca5a5;
+
+            background:
+                rgba(239,68,68,0.10);
+        }
+
+
+        .risk-medium .risk-icon {
+
+            color: #fcd34d;
+
+            background:
+                rgba(245,158,11,0.10);
+        }
+
+
+        .risk-low .risk-icon {
+
+            color: #86efac;
+
+            background:
+                rgba(34,197,94,0.10);
+        }
+
+
+        .risk-count {
+
+            margin-top: 14px;
+
+            font-size: 31px;
+
+            font-weight: 900;
+        }
+
+
+        .risk-percent {
+
+            margin-top: 5px;
+
+            color:
+                #59667b;
+
+            font-size: 10px;
+        }
+
+
+        /* =====================================================
+           TABLE
+        ===================================================== */
+
+        .table-card {
+
+            overflow: hidden;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 20px;
+
+            background:
+                var(--panel);
+
+            backdrop-filter:
+                blur(18px);
+
+            box-shadow:
+                0 20px 60px
+                rgba(0,0,0,0.20);
+        }
+
+
+        .table-wrap {
+
+            overflow-x: auto;
+        }
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse:
+                collapse;
+        }
+
+
+        th {
+
+            padding:
+                15px 18px;
+
+            text-align:
+                left;
+
+            color:
+                #65738a;
+
+            background:
+                rgba(255,255,255,0.025);
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.9px;
+
+            text-transform:
+                uppercase;
+        }
+
+
+        td {
+
+            padding:
+                16px 18px;
+
+            color:
+                #c5cfdd;
+
+            font-size: 11px;
+
+            border-top:
+                1px solid
+                rgba(255,255,255,0.045);
+
+            transition:
+                background 0.2s ease;
+        }
+
+
+        tbody tr:hover td {
+
+            background:
+                rgba(139,92,246,0.045);
+        }
+
+
+        .customer-id {
+
+            color:
+                #c4b5fd;
+
+            font-weight:
+                800;
+        }
+
+
+        .score {
+
+            font-weight:
+                850;
+        }
+
+
+        .high {
+
+            color:
+                #fca5a5;
+        }
+
+
+        .medium {
+
+            color:
+                #fcd34d;
+        }
+
+
+        .low {
+
+            color:
+                #86efac;
+        }
+
+
+        /* =====================================================
+           INSIGHTS
+        ===================================================== */
+
+        .insight-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+        }
+
+
+        .insight {
+
+            padding: 22px;
+
+            border:
+                1px solid
+                rgba(139,92,246,0.13);
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(124,58,237,0.08),
+                    rgba(37,99,235,0.035)
+                );
+
+            transition:
+                transform 0.3s ease,
+                border-color 0.3s ease;
+        }
+
+
+        .insight:hover {
+
+            transform:
+                translateY(-6px);
+
+            border-color:
+                rgba(139,92,246,0.30);
+        }
+
+
+        .insight-icon {
+
+            width: 39px;
+
+            height: 39px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 11px;
+
+            margin-bottom: 13px;
+
+            color:
+                #c4b5fd;
+
+            background:
+                rgba(124,58,237,0.12);
+
+            box-shadow:
+                0 0 20px
+                rgba(124,58,237,0.08);
+        }
+
+
+        .insight h3 {
+
+            font-size: 12px;
+
+            margin-bottom: 7px;
+        }
+
+
+        .insight p {
+
+            color:
+                #748198;
+
+            font-size: 10px;
+
+            line-height: 1.7;
+        }
+
+
+        .insight strong {
+
+            color:
+                #dbe4f0;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+
+            padding:
+                35px 10px
+                5px;
+
+            text-align:
+                center;
+
+            color:
+                #3f4c61;
+
+            font-size:
+                9px;
+        }
+
+
+        /* =====================================================
+           REVEAL ANIMATION
+        ===================================================== */
+
+        @keyframes reveal {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(22px)
+                    scale(0.985);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+        }
+
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+
+                transform:
+                    scale(1);
+
+                opacity:
+                    1;
+            }
+
+            50% {
+
+                transform:
+                    scale(1.35);
+
+                opacity:
+                    0.65;
+            }
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1200px) {
+
+            .kpi-grid {
+
+                grid-template-columns:
+                    repeat(3, 1fr);
+            }
+        }
+
+
+        @media (max-width: 900px) {
+
+            .page {
+
+                width:
+                    min(
+                        100% - 28px,
+                        750px
+                    );
+            }
+
+
+            .hero-actions {
+
+                position:
+                    static;
+
+                margin-top:
+                    20px;
+            }
+
+
+            .chart-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .chart-card.full {
+
+                grid-column:
+                    auto;
+            }
+
+
+            .risk-grid,
+            .insight-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+        }
+
+
+        @media (max-width: 650px) {
+
+            body {
+
+                padding:
+                    0;
+            }
+
+
+            .page {
+
+                width:
+                    calc(100% - 20px);
+
+                margin:
+                    10px auto 40px;
+            }
+
+
+            .hero {
+
+                padding:
+                    24px 20px;
+            }
+
+
+            .hero-actions {
+
+                flex-direction:
+                    column;
+            }
+
+
+            .hero-actions .btn {
+
+                width:
+                    100%;
+            }
+
+
+            .kpi-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .chart-card {
+
+                padding:
+                    18px;
+            }
+
+
+            .section-head {
+
+                align-items:
+                    flex-start;
+            }
+
+
+            .chart-box {
+
+                height:
+                    250px;
+            }
+        }
+
+
+        /* =====================================================
+           PRINT
+        ===================================================== */
+
+        @media print {
+
+            body {
+
+                background:
+                    white;
+
+                color:
+                    black;
+            }
+
+
+            .ambient,
+            .hero-actions {
+
+                display:
+                    none;
+            }
+
+
+            .hero,
+            .kpi,
+            .chart-card,
+            .risk-card,
+            .table-card,
+            .insight {
+
+                box-shadow:
+                    none;
+
+                background:
+                    white;
+
+                border:
+                    1px solid #ddd;
+            }
+
+
+            .hero h1 {
+
+                color:
+                    black;
+
+                -webkit-text-fill-color:
+                    black;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     AMBIENT BACKGROUND
+========================================================= -->
+
+<div class="ambient">
+
+    <div class="orb orb-one"></div>
+
+    <div class="orb orb-two"></div>
+
+    <div class="orb orb-three"></div>
 
 </div>
-{% endblock %}
+
+
+<div class="page">
+
+
+    <!-- =====================================================
+         HERO
+    ===================================================== -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="eyebrow">
+
+                <span class="eyebrow-dot"></span>
+
+                AI Business Intelligence
+
+            </div>
+
+
+            <h1>
+                Customer Intelligence Reports
+            </h1>
+
+
+            <p>
+                Executive-level customer analytics covering
+                churn, retention, risk segmentation and
+                machine-learning performance.
+            </p>
+
+
+            <div class="hero-actions">
+
+                <a
+                    href="{{ url_for('dashboard') }}"
+                    class="btn btn-secondary"
+                >
+                    ← Dashboard
+                </a>
+
+
+                <button
+                    onclick="window.print()"
+                    class="btn btn-primary"
+                >
+                    🖨 Export Report
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         KPI
+    ===================================================== -->
+
+    <div class="section-head">
+
+        <div>
+
+            <div class="section-title">
+                Executive Overview
+            </div>
+
+            <div class="section-description">
+                Current customer intelligence snapshot
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <section class="kpi-grid">
+
+
+        <div class="kpi">
+
+            <div class="kpi-label">
+                Total Customers
+            </div>
+
+            <div
+                class="kpi-value counter"
+                data-value="{{ report.total_customers | default(0) }}"
+            >
+                0
+            </div>
+
+            <div class="kpi-sub">
+                Customer records analyzed
+            </div>
+
+        </div>
+
+
+        <div class="kpi">
+
+            <div class="kpi-label">
+                Churned Customers
+            </div>
+
+            <div
+                class="kpi-value counter"
+                data-value="{{ report.churned_customers | default(0) }}"
+            >
+                0
+            </div>
+
+            <div class="kpi-sub">
+                Customers lost
+            </div>
+
+        </div>
+
+
+        <div class="kpi">
+
+            <div class="kpi-label">
+                Retained Customers
+            </div>
+
+            <div
+                class="kpi-value counter"
+                data-value="{{ report.retained_customers | default(0) }}"
+            >
+                0
+            </div>
+
+            <div class="kpi-sub">
+                Active customer base
+            </div>
+
+        </div>
+
+
+        <div class="kpi">
+
+            <div class="kpi-label">
+                Churn Rate
+            </div>
+
+            <div class="kpi-value">
+
+                <span
+                    class="counter"
+                    data-value="{{ report.churn_rate | default(0) }}"
+                >
+                    0
+                </span>%
+
+            </div>
+
+            <div class="kpi-sub">
+                Overall churn percentage
+            </div>
+
+        </div>
+
+
+        <div class="kpi">
+
+            <div class="kpi-label">
+                Model Accuracy
+            </div>
+
+            <div class="kpi-value">
+
+                <span
+                    class="counter"
+                    data-value="{{ report.model_accuracy | default(0) }}"
+                >
+                    0
+                </span>%
+
+            </div>
+
+            <div class="kpi-sub">
+                ML prediction accuracy
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         VISUAL ANALYTICS
+    ===================================================== -->
+
+    <div class="section-head">
+
+        <div>
+
+            <div class="section-title">
+                Visual Analytics
+            </div>
+
+            <div class="section-description">
+                Interactive graphical representation of customer data
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <section class="chart-grid">
+
+
+        <!-- CHURN -->
+
+        <div class="chart-card">
+
+            <div class="chart-head">
+
+                <h3>
+                    Customer Churn Overview
+                </h3>
+
+                <span>
+                    Retention vs Churn
+                </span>
+
+            </div>
+
+
+            <div class="chart-box">
+
+                <canvas id="churnChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <!-- CONTRACT -->
+
+        <div class="chart-card">
+
+            <div class="chart-head">
+
+                <h3>
+                    Contract Distribution
+                </h3>
+
+                <span>
+                    Customer contracts
+                </span>
+
+            </div>
+
+
+            <div class="chart-box">
+
+                <canvas id="contractChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <!-- PAYMENT -->
+
+        <div class="chart-card full">
+
+            <div class="chart-head">
+
+                <h3>
+                    Payment Method Distribution
+                </h3>
+
+                <span>
+                    Customer payment preferences
+                </span>
+
+            </div>
+
+
+            <div class="chart-box">
+
+                <canvas id="paymentChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         RISK
+    ===================================================== -->
+
+    <div class="section-head">
+
+        <div>
+
+            <div class="section-title">
+                Churn Risk Segmentation
+            </div>
+
+            <div class="section-description">
+                Customer distribution according to churn risk
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <section class="risk-grid">
+
+
+        <div class="risk-card risk-high">
+
+            <div class="risk-top">
+
+                <div class="risk-name">
+                    High Risk
+                </div>
+
+                <div class="risk-icon">
+                    ⚠
+                </div>
+
+            </div>
+
+
+            <div class="risk-count">
+
+                {{ report.high_risk_count | default(0) }}
+
+            </div>
+
+
+            <div class="risk-percent">
+
+                {{ report.high_risk_pct | default(0) }}%
+                of customer base
+
+            </div>
+
+        </div>
+
+
+        <div class="risk-card risk-medium">
+
+            <div class="risk-top">
+
+                <div class="risk-name">
+                    Medium Risk
+                </div>
+
+                <div class="risk-icon">
+                    ◐
+                </div>
+
+            </div>
+
+
+            <div class="risk-count">
+
+                {{ report.med_risk_count | default(0) }}
+
+            </div>
+
+
+            <div class="risk-percent">
+
+                {{ report.med_risk_pct | default(0) }}%
+                of customer base
+
+            </div>
+
+        </div>
+
+
+        <div class="risk-card risk-low">
+
+            <div class="risk-top">
+
+                <div class="risk-name">
+                    Low Risk
+                </div>
+
+                <div class="risk-icon">
+                    ✓
+                </div>
+
+            </div>
+
+
+            <div class="risk-count">
+
+                {{ report.low_risk_count | default(0) }}
+
+            </div>
+
+
+            <div class="risk-percent">
+
+                {{ report.low_risk_pct | default(0) }}%
+                of customer base
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         HIGH RISK TABLE
+    ===================================================== -->
+
+    <div class="section-head">
+
+        <div>
+
+            <div class="section-title">
+                Top High-Risk Customers
+            </div>
+
+            <div class="section-description">
+                Customers requiring priority retention attention
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <section class="table-card">
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Customer ID
+                        </th>
+
+                        <th>
+                            Risk Score
+                        </th>
+
+                        <th>
+                            Risk Level
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    {% for item in report.top_high_risk_customers | default([], true) %}
+
+
+                    <tr>
+
+                        <td class="customer-id">
+
+                            {{ item.customer_id
+                               | default(
+                                   item.CustomerID
+                                   | default("N/A")
+                               )
+                            }}
+
+                        </td>
+
+
+                        <td class="score">
+
+                            {{ item.risk_score
+                               | default(
+                                   item["Churn Score"]
+                                   | default(0)
+                               )
+                            }}
+
+                        </td>
+
+
+                        <td>
+
+                            {% set level =
+                                item.risk_level
+                                | default(
+                                    item["Risk Level"]
+                                    | default("LOW")
+                                )
+                            %}
+
+
+                            {% if level == "HIGH" %}
+
+                                <span class="high">
+                                    ● HIGH
+                                </span>
+
+                            {% elif level == "MEDIUM" %}
+
+                                <span class="medium">
+                                    ● MEDIUM
+                                </span>
+
+                            {% else %}
+
+                                <span class="low">
+                                    ● LOW
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+
+                    {% else %}
+
+
+                    <tr>
+
+                        <td
+                            colspan="3"
+                            style="text-align:center;color:#65738a;"
+                        >
+                            No high-risk customer records available.
+                        </td>
+
+                    </tr>
+
+
+                    {% endfor %}
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         BUSINESS INSIGHTS
+    ===================================================== -->
+
+    <div class="section-head">
+
+        <div>
+
+            <div class="section-title">
+                AI Business Insights
+            </div>
+
+            <div class="section-description">
+                Automated interpretation of current analytics
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <section class="insight-grid">
+
+
+        <div class="insight">
+
+            <div class="insight-icon">
+                ⚠
+            </div>
+
+
+            <h3>
+                Churn Exposure
+            </h3>
+
+
+            <p>
+
+                The current churn rate is
+
+                <strong>
+                    {{ report.churn_rate | default(0) }}%
+                </strong>.
+
+                High-risk customers should be prioritized
+                for proactive retention campaigns.
+
+            </p>
+
+        </div>
+
+
+        <div class="insight">
+
+            <div class="insight-icon">
+                ◈
+            </div>
+
+
+            <h3>
+                Retention Performance
+            </h3>
+
+
+            <p>
+
+                Current customer retention stands at
+
+                <strong>
+                    {{ report.retention_rate | default(0) }}%
+                </strong>.
+
+                Strong retention helps improve long-term
+                customer value.
+
+            </p>
+
+        </div>
+
+
+        <div class="insight">
+
+            <div class="insight-icon">
+                ✦
+            </div>
+
+
+            <h3>
+                AI Model Performance
+            </h3>
+
+
+            <p>
+
+                The churn prediction model currently achieves
+
+                <strong>
+                    {{ report.model_accuracy | default(0) }}%
+                </strong>
+
+                accuracy for the available prediction workflow.
+
+            </p>
+
+        </div>
+
+
+    </section>
+
+
+    <footer>
+
+        Customer Intelligence Dashboard
+        · AI Churn Analytics
+        · Executive Reporting
+        · 2026
+
+    </footer>
+
+
+</div>
+
+
+<script>
+
+    /* =====================================================
+       SAFE NUMBER FUNCTION
+    ===================================================== */
+
+    function safeNumber(value) {
+
+        const number = Number(value);
+
+        return Number.isFinite(number)
+            ? number
+            : 0;
+    }
+
+
+    /* =====================================================
+       KPI COUNTER
+    ===================================================== */
+
+    document
+        .querySelectorAll(".counter")
+        .forEach(counter => {
+
+            const target =
+                safeNumber(counter.dataset.value);
+
+            const duration = 1300;
+
+            const start =
+                performance.now();
+
+
+            function update(time) {
+
+                const progress =
+                    Math.min(
+                        (time - start) / duration,
+                        1
+                    );
+
+
+                const eased =
+                    1 -
+                    Math.pow(
+                        1 - progress,
+                        3
+                    );
+
+
+                const current =
+                    target * eased;
+
+
+                counter.textContent =
+                    target % 1 === 0
+                        ? Math.floor(current)
+                        : current.toFixed(1);
+
+
+                if (progress < 1) {
+
+                    requestAnimationFrame(update);
+
+                } else {
+
+                    counter.textContent =
+                        target % 1 === 0
+                            ? target
+                            : target.toFixed(1);
+                }
+
+            }
+
+
+            requestAnimationFrame(update);
+
+        });
+
+
+    /* =====================================================
+       REPORT DATA
+    ===================================================== */
+
+    const retained =
+        safeNumber(
+            "{{ report.retained_customers | default(0) }}"
+        );
+
+
+    const churned =
+        safeNumber(
+            "{{ report.churned_customers | default(0) }}"
+        );
+
+
+    const monthToMonth =
+        safeNumber(
+            "{{ report.month_to_month | default(0) }}"
+        );
+
+
+    const oneYear =
+        safeNumber(
+            "{{ report.one_year | default(0) }}"
+        );
+
+
+    const twoYear =
+        safeNumber(
+            "{{ report.two_year | default(0) }}"
+        );
+
+
+    const electronicCheck =
+        safeNumber(
+            "{{ report.electronic_check | default(0) }}"
+        );
+
+
+    const mailedCheck =
+        safeNumber(
+            "{{ report.mailed_check | default(0) }}"
+        );
+
+
+    const bankTransfer =
+        safeNumber(
+            "{{ report.bank_transfer | default(0) }}"
+        );
+
+
+    const creditCard =
+        safeNumber(
+            "{{ report.credit_card | default(0) }}"
+        );
+
+
+    /* =====================================================
+       CHART DEFAULT
+    ===================================================== */
+
+    Chart.defaults.font.family =
+        "Inter, Arial, sans-serif";
+
+
+    Chart.defaults.color =
+        "#8491a7";
+
+
+    /* =====================================================
+       CHURN CHART
+    ===================================================== */
+
+    new Chart(
+        document.getElementById("churnChart"),
+        {
+
+            type: "doughnut",
+
+            data: {
+
+                labels: [
+                    "Retained",
+                    "Churned"
+                ],
+
+                datasets: [
+
+                    {
+
+                        data: [
+                            retained,
+                            churned
+                        ],
+
+                        backgroundColor: [
+                            "#22c55e",
+                            "#ef4444"
+                        ],
+
+                        borderWidth: 0,
+
+                        hoverOffset: 13,
+
+                        spacing: 4
+                    }
+
+                ]
+            },
+
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                cutout: "68%",
+
+                animation: {
+
+                    animateRotate: true,
+
+                    animateScale: true,
+
+                    duration: 1600,
+
+                    easing: "easeOutQuart"
+                },
+
+
+                plugins: {
+
+                    legend: {
+
+                        position: "bottom",
+
+                        labels: {
+
+                            padding: 18,
+
+                            usePointStyle: true,
+
+                            pointStyle: "circle",
+
+                            color: "#8b98ad",
+
+                            font: {
+                                size: 10
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       CONTRACT CHART
+    ===================================================== */
+
+    new Chart(
+        document.getElementById("contractChart"),
+        {
+
+            type: "bar",
+
+            data: {
+
+                labels: [
+                    "Month-to-Month",
+                    "One Year",
+                    "Two Year"
+                ],
+
+                datasets: [
+
+                    {
+
+                        label:
+                            "Customers",
+
+                        data: [
+                            monthToMonth,
+                            oneYear,
+                            twoYear
+                        ],
+
+                        backgroundColor: [
+                            "#8b5cf6",
+                            "#3b82f6",
+                            "#22c55e"
+                        ],
+
+                        borderRadius: 9,
+
+                        borderSkipped: false
+                    }
+
+                ]
+            },
+
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                animation: {
+
+                    duration: 1500,
+
+                    easing: "easeOutQuart"
+                },
+
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    }
+                },
+
+
+                scales: {
+
+                    x: {
+
+                        ticks: {
+
+                            color: "#718096",
+
+                            font: {
+                                size: 10
+                            }
+                        },
+
+                        grid: {
+                            display: false
+                        }
+                    },
+
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+
+                            color: "#718096",
+
+                            font: {
+                                size: 9
+                            }
+                        },
+
+                        grid: {
+
+                            color:
+                                "rgba(148,163,184,0.07)"
+                        }
+                    }
+                }
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       PAYMENT CHART
+    ===================================================== */
+
+    new Chart(
+        document.getElementById("paymentChart"),
+        {
+
+            type: "bar",
+
+            data: {
+
+                labels: [
+
+                    "Electronic Check",
+
+                    "Mailed Check",
+
+                    "Bank Transfer",
+
+                    "Credit Card"
+
+                ],
+
+
+                datasets: [
+
+                    {
+
+                        label:
+                            "Customers",
+
+                        data: [
+
+                            electronicCheck,
+
+                            mailedCheck,
+
+                            bankTransfer,
+
+                            creditCard
+
+                        ],
+
+                        backgroundColor: [
+
+                            "#8b5cf6",
+
+                            "#6366f1",
+
+                            "#3b82f6",
+
+                            "#06b6d4"
+
+                        ],
+
+                        borderRadius: 9,
+
+                        borderSkipped: false
+                    }
+
+                ]
+            },
+
+
+            options: {
+
+                indexAxis: "y",
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                animation: {
+
+                    duration: 1600,
+
+                    easing: "easeOutQuart"
+                },
+
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    }
+                },
+
+
+                scales: {
+
+                    x: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+
+                            color: "#718096",
+
+                            font: {
+                                size: 9
+                            }
+                        },
+
+                        grid: {
+
+                            color:
+                                "rgba(148,163,184,0.07)"
+                        }
+                    },
+
+
+                    y: {
+
+                        ticks: {
+
+                            color: "#718096",
+
+                            font: {
+                                size: 10
+                            }
+                        },
+
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+
+            }
+
+        }
+    );
+
+
+</script>
+
+
+</body>
+
+</html>

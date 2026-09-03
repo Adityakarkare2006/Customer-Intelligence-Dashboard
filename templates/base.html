@@ -2,242 +2,1102 @@
 <html lang="en">
 
 <head>
+
+    <!-- =====================================================
+         BASIC META
+    ====================================================== -->
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Customer Intelligence Dashboard{% endblock %}</title>
 
-    <!-- Google Fonts -->
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Customer Intelligence Hub - AI powered customer churn analytics and prediction dashboard"
+    >
+
+    <meta
+        name="theme-color"
+        content="#0F172A"
+    >
+
+    <title>
+        {% block title %}
+        Customer Intelligence Hub
+        {% endblock %}
+    </title>
+
+
+    <!-- =====================================================
+         GOOGLE FONTS
+    ====================================================== -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Remix Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
 
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
 
-    <!-- Core CSS System -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+
+    <!-- =====================================================
+         REMIX ICONS
+    ====================================================== -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         MAIN APPLICATION CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+
+    <!-- =====================================================
+         EXTRA PAGE CSS
+    ====================================================== -->
 
     {% block extra_css %}{% endblock %}
+
+
+    <!-- =====================================================
+         SMALL BASE OVERRIDES
+    ====================================================== -->
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Plus Jakarta Sans", sans-serif;
+            background: var(--bg-primary, #0F172A);
+            color: var(--text-primary, #F8FAFC);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font-family: inherit;
+        }
+
+        .app-layout {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* =================================================
+           SIDEBAR
+        ================================================= */
+
+        .sidebar {
+            width: 260px;
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 1000;
+
+            display: flex;
+            flex-direction: column;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #111827 0%,
+                    #0F172A 100%
+                );
+
+            border-right: 1px solid
+                rgba(255, 255, 255, 0.08);
+
+            transition: transform 0.3s ease;
+        }
+
+        /* =================================================
+           BRAND
+        ================================================= */
+
+        .sidebar-brand {
+            height: 78px;
+            padding: 0 22px;
+
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            border-bottom: 1px solid
+                rgba(255, 255, 255, 0.06);
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #8B5CF6,
+                    #06B6D4
+                );
+
+            color: white;
+            font-size: 22px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(139, 92, 246, 0.25);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .brand-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #F8FAFC;
+        }
+
+        .brand-subtitle {
+            font-size: 0.68rem;
+            color: #94A3B8;
+            margin-top: 3px;
+        }
+
+
+        /* =================================================
+           NAVIGATION
+        ================================================= */
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 22px 14px;
+            overflow-y: auto;
+        }
+
+        .nav-section-title {
+            padding: 0 12px;
+            margin: 8px 0 10px;
+
+            font-size: 0.68rem;
+            font-weight: 700;
+
+            color: #64748B;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .nav-item {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 12px 13px;
+            margin-bottom: 5px;
+
+            border-radius: 10px;
+
+            color: #94A3B8;
+
+            font-size: 0.88rem;
+            font-weight: 600;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .nav-item i {
+            width: 22px;
+            text-align: center;
+            font-size: 19px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #F8FAFC;
+            transform: translateX(2px);
+        }
+
+        .nav-item.active {
+            color: #FFFFFF;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(139, 92, 246, 0.20),
+                    rgba(6, 182, 212, 0.08)
+                );
+
+            box-shadow:
+                inset 3px 0 0 #8B5CF6;
+        }
+
+        .nav-item.active i {
+            color: #A78BFA;
+        }
+
+
+        /* =================================================
+           SIDEBAR FOOTER
+        ================================================= */
+
+        .sidebar-footer {
+            padding: 15px;
+
+            border-top: 1px solid
+                rgba(255, 255, 255, 0.06);
+        }
+
+        .logout-link {
+            color: #F87171;
+        }
+
+        .logout-link:hover {
+            background: rgba(239, 68, 68, 0.10);
+            color: #FCA5A5;
+        }
+
+
+        /* =================================================
+           MAIN AREA
+        ================================================= */
+
+        .main-wrapper {
+            width: calc(100% - 260px);
+            margin-left: 260px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        /* =================================================
+           TOPBAR
+        ================================================= */
+
+        .topbar {
+            height: 78px;
+
+            position: sticky;
+            top: 0;
+            z-index: 900;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 30px;
+
+            background:
+                rgba(15, 23, 42, 0.88);
+
+            backdrop-filter: blur(14px);
+
+            border-bottom: 1px solid
+                rgba(255, 255, 255, 0.07);
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+
+            width: 40px;
+            height: 40px;
+
+            border: 1px solid
+                rgba(255, 255, 255, 0.10);
+
+            border-radius: 9px;
+
+            background:
+                rgba(255, 255, 255, 0.05);
+
+            color: #F8FAFC;
+
+            cursor: pointer;
+
+            font-size: 20px;
+        }
+
+        .page-heading {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-title {
+            margin: 0;
+
+            font-size: 1.2rem;
+            font-weight: 800;
+
+            color: #F8FAFC;
+        }
+
+        .breadcrumb {
+            margin-top: 3px;
+
+            font-size: 0.72rem;
+            color: #64748B;
+        }
+
+
+        /* =================================================
+           TOPBAR RIGHT
+        ================================================= */
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+
+            padding: 7px 11px;
+
+            border-radius: 20px;
+
+            background:
+                rgba(16, 185, 129, 0.08);
+
+            border: 1px solid
+                rgba(16, 185, 129, 0.15);
+
+            color: #34D399;
+
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #10B981;
+
+            box-shadow:
+                0 0 10px
+                rgba(16, 185, 129, 0.7);
+        }
+
+        .user-mini {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #8B5CF6,
+                    #06B6D4
+                );
+
+            color: white;
+
+            font-weight: 800;
+            font-size: 0.85rem;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #F8FAFC;
+        }
+
+        .user-role {
+            font-size: 0.65rem;
+            color: #64748B;
+        }
+
+
+        /* =================================================
+           PAGE CONTENT
+        ================================================= */
+
+        .page-content {
+            flex: 1;
+            padding: 30px;
+            width: 100%;
+        }
+
+
+        /* =================================================
+           FLASH MESSAGES
+        ================================================= */
+
+        .flash-container {
+            position: fixed;
+
+            top: 95px;
+            right: 25px;
+
+            z-index: 2000;
+
+            width: min(400px, calc(100vw - 40px));
+        }
+
+        .flash-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 14px 16px;
+            margin-bottom: 10px;
+
+            border-radius: 10px;
+
+            background: #1E293B;
+
+            border: 1px solid
+                rgba(255, 255, 255, 0.10);
+
+            color: #F8FAFC;
+
+            font-size: 0.82rem;
+
+            box-shadow:
+                0 15px 40px
+                rgba(0, 0, 0, 0.30);
+
+            animation:
+                slideIn 0.3s ease;
+        }
+
+        .flash-success {
+            border-left: 4px solid #10B981;
+        }
+
+        .flash-danger,
+        .flash-error {
+            border-left: 4px solid #EF4444;
+        }
+
+        .flash-warning {
+            border-left: 4px solid #F59E0B;
+        }
+
+        .flash-info {
+            border-left: 4px solid #06B6D4;
+        }
+
+
+        /* =================================================
+           MOBILE OVERLAY
+        ================================================= */
+
+        .sidebar-overlay {
+            display: none;
+
+            position: fixed;
+            inset: 0;
+
+            z-index: 999;
+
+            background:
+                rgba(0, 0, 0, 0.55);
+        }
+
+
+        /* =================================================
+           ANIMATIONS
+        ================================================= */
+
+        @keyframes slideIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        .fade-in {
+            animation:
+                fadeIn 0.45s ease;
+        }
+
+        @keyframes fadeIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        /* =================================================
+           RESPONSIVE
+        ================================================= */
+
+        @media (max-width: 1000px) {
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .main-wrapper {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .topbar {
+                padding: 0 20px;
+            }
+
+            .page-content {
+                padding: 22px;
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .system-status {
+                display: none;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .topbar {
+                height: 68px;
+            }
+
+            .page-content {
+                padding: 16px;
+            }
+
+            .page-title {
+                font-size: 1rem;
+            }
+
+            .breadcrumb {
+                display: none;
+            }
+
+        }
+
+    </style>
+
 </head>
 
+
 <body>
-    <div class="app-container">
 
-        <!-- ========================================== -->
-        <!-- SIDEBAR NAVIGATION -->
-        <!-- ========================================== -->
-        <aside class="app-sidebar sidebar" id="sidebar">
-            <!-- Sidebar Header / Brand -->
-            <div class="sidebar-header">
-                <a href="{{ url_for('dashboard') }}" class="sidebar-logo">
-                    <div class="logo-icon">
-                        <i class="ri-bar-chart-box-fill"></i>
-                    </div>
-                    <div class="logo-text">
-                        <h2>Customer AI</h2>
-                        <span>Intelligence Hub</span>
-                    </div>
-                </a>
+<div class="app-layout">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside
+        class="sidebar"
+        id="sidebar"
+    >
+
+        <!-- BRAND -->
+
+        <div class="sidebar-brand">
+
+            <div class="brand-icon">
+                <i class="ri-ai-generate"></i>
             </div>
 
-            <!-- Navigation Links -->
-            <nav class="sidebar-menu" aria-label="Main Navigation">
-                <a href="{{ url_for('dashboard') }}" class="menu-item {% if request.endpoint == 'dashboard' %}active{% endif %}">
-                    <i class="ri-dashboard-3-line"></i>
-                    <span>Dashboard</span>
-                </a>
+            <div class="brand-text">
 
-                <a href="{{ url_for('customers') }}" class="menu-item {% if request.endpoint in ['customers', 'customer_detail'] %}active{% endif %}">
-                    <i class="ri-team-line"></i>
-                    <span>Customers</span>
-                </a>
+                <span class="brand-title">
+                    Customer AI
+                </span>
 
-                <a href="{{ url_for('prediction') }}" class="menu-item {% if request.endpoint == 'prediction' %}active{% endif %}">
-                    <i class="ri-brain-line"></i>
-                    <span>Prediction</span>
-                </a>
+                <span class="brand-subtitle">
+                    Intelligence Hub
+                </span>
 
-                <a href="{{ url_for('analytics') }}" class="menu-item {% if request.endpoint == 'analytics' %}active{% endif %}">
-                    <i class="ri-line-chart-line"></i>
-                    <span>Analytics</span>
-                </a>
+            </div>
 
-                <a href="{{ url_for('reports') }}" class="menu-item {% if request.endpoint == 'reports' %}active{% endif %}">
-                    <i class="ri-file-chart-line"></i>
-                    <span>Reports</span>
-                </a>
-            </nav>
+        </div>
 
-            <!-- Sidebar Footer Status -->
-            <div class="sidebar-bottom">
+
+        <!-- NAVIGATION -->
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-section-title">
+                Intelligence
+            </div>
+
+
+            <a
+                href="{{ url_for('dashboard') }}"
+                class="nav-item {% if request.endpoint == 'dashboard' %}active{% endif %}"
+            >
+                <i class="ri-dashboard-3-line"></i>
+                <span>Dashboard</span>
+            </a>
+
+
+            <a
+                href="{{ url_for('customers') }}"
+                class="nav-item {% if request.endpoint == 'customers' %}active{% endif %}"
+            >
+                <i class="ri-group-line"></i>
+                <span>Customer Explorer</span>
+            </a>
+
+
+            <a
+                href="{{ url_for('prediction') }}"
+                class="nav-item {% if request.endpoint == 'prediction' %}active{% endif %}"
+            >
+                <i class="ri-brain-line"></i>
+                <span>AI Prediction</span>
+            </a>
+
+
+            <a
+                href="{{ url_for('analytics') }}"
+                class="nav-item {% if request.endpoint == 'analytics' %}active{% endif %}"
+            >
+                <i class="ri-bar-chart-box-line"></i>
+                <span>Analytics</span>
+            </a>
+
+
+            <a
+                href="{{ url_for('reports') }}"
+                class="nav-item {% if request.endpoint == 'reports' %}active{% endif %}"
+            >
+                <i class="ri-file-chart-line"></i>
+                <span>Reports</span>
+            </a>
+
+
+            <div class="nav-section-title">
+                Account
+            </div>
+
+
+            <a
+                href="{{ url_for('profile') }}"
+                class="nav-item {% if request.endpoint == 'profile' %}active{% endif %}"
+            >
+                <i class="ri-user-3-line"></i>
+                <span>Profile</span>
+            </a>
+
+
+            <a
+                href="{{ url_for('settings') }}"
+                class="nav-item {% if request.endpoint == 'settings' %}active{% endif %}"
+            >
+                <i class="ri-settings-3-line"></i>
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+
+        <!-- SIDEBAR FOOTER -->
+
+        <div class="sidebar-footer">
+
+            <a
+                href="{{ url_for('logout') }}"
+                class="nav-item logout-link"
+            >
+                <i class="ri-logout-box-r-line"></i>
+                <span>Logout</span>
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MOBILE OVERLAY -->
+
+    <div
+        class="sidebar-overlay"
+        id="sidebarOverlay"
+    ></div>
+
+
+    <!-- =====================================================
+         MAIN WRAPPER
+    ====================================================== -->
+
+    <div class="main-wrapper">
+
+
+        <!-- =================================================
+             TOPBAR
+        ================================================== -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button
+                    class="mobile-menu-btn"
+                    id="mobileMenuBtn"
+                    type="button"
+                    aria-label="Open navigation"
+                >
+                    <i class="ri-menu-line"></i>
+                </button>
+
+
+                <div class="page-heading">
+
+                    <h1 class="page-title">
+                        {% block page_title %}
+                        Customer Intelligence
+                        {% endblock %}
+                    </h1>
+
+                    <div class="breadcrumb">
+
+                        {% block breadcrumb %}
+                        AI-powered customer analytics platform
+                        {% endblock %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+
+                <!-- SYSTEM STATUS -->
+
                 <div class="system-status">
+
                     <span class="status-dot"></span>
-                    <span>ML Engine Online</span>
-                </div>
-            </div>
-        </aside>
 
-        <!-- Mobile Sidebar Overlay Backdrop -->
-        <div id="sidebarOverlay" class="sidebar-overlay"></div>
+                    <span>
+                        AI System Online
+                    </span>
 
-        <!-- ========================================== -->
-        <!-- MAIN VIEWPORT -->
-        <!-- ========================================== -->
-        <main class="main-content">
-
-            <!-- ========================================== -->
-            <!-- TOP NAVBAR -->
-            <!-- ========================================== -->
-            <header class="top-navbar">
-                <div class="navbar-left">
-                    <button id="menuToggle" class="menu-toggle" aria-label="Toggle Sidebar Navigation">
-                        <i class="ri-menu-line"></i>
-                    </button>
-
-                    <div class="page-heading">
-                        <h1 id="pageTitle">{% block page_title %}Dashboard{% endblock %}</h1>
-                        <p id="breadcrumbTitle">{% block breadcrumb %}Customer Intelligence Platform{% endblock %}</p>
-                    </div>
                 </div>
 
-                <div class="navbar-right">
-                    <!-- Global Search Box -->
-                    <div class="search-box">
-                        <i class="ri-search-line"></i>
-                        <input id="globalSearchInput" type="text" placeholder="Search customer ID or segment...">
-                    </div>
 
-                    <!-- Theme Switcher -->
-                    <button id="themeToggle" class="nav-icon" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
-                        <i class="ri-moon-line"></i>
-                    </button>
+                <!-- USER -->
 
-                    <!-- Notifications -->
-                    <div class="nav-dropdown-wrapper">
-                        <button id="notificationButton" class="nav-icon" title="Notifications" aria-label="Notifications">
-                            <i class="ri-notification-3-line"></i>
-                            <span class="notification-dot"></span>
-                        </button>
+                <a href="{{ url_for('profile') }}" class="user-mini-link">
 
-                        <div id="notificationPanel" class="notification-panel">
-                            <div class="notification-header">
-                                <h3>Notifications</h3>
-                                <span class="badge-count">2 New</span>
-                            </div>
-                            <div class="notification-list">
-                                <div class="notification-item unread">
-                                    <div class="notif-icon info"><i class="ri-check-double-line"></i></div>
-                                    <div class="notif-content">
-                                        <strong>ML Model Ready</strong>
-                                        <p>Model evaluated at 80.94% accuracy on 7,043 customer records.</p>
-                                        <span class="notif-time">Just now</span>
-                                    </div>
-                                </div>
-                                <div class="notification-item">
-                                    <div class="notif-icon warning"><i class="ri-alert-line"></i></div>
-                                    <div class="notif-content">
-                                        <strong>Risk Alert</strong>
-                                        <p>Month-to-month segment shows highest churn rate.</p>
-                                        <span class="notif-time">10m ago</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <div class="user-mini">
 
-                    <!-- User Profile Dropdown Button -->
-                    <div class="nav-dropdown-wrapper">
-                        <button id="profileButton" class="user-profile-btn" aria-label="User Profile Menu">
-                            <div class="avatar">AK</div>
-                            <div class="user-info">
-                                <strong>Aditya</strong>
-                                <span>Data Scientist</span>
-                            </div>
-                            <i class="ri-arrow-down-s-line dropdown-arrow"></i>
-                        </button>
+        <div class="user-avatar">
+            AK
+        </div>
 
-                        <!-- Profile Dropdown Menu -->
-                        <div id="profileMenu" class="profile-menu">
-                            <div class="profile-dropdown-header">
-                                <div class="avatar-sm">AK</div>
-                                <div>
-                                    <h4>Aditya Karkare</h4>
-                                    <p>Data Science Developer</p>
-                                </div>
-                            </div>
-                            <div class="dropdown-divider"></div>
-                            <a href="{{ url_for('profile') }}" class="dropdown-link">
-                                <i class="ri-user-3-line"></i>
-                                <span>My Profile</span>
-                            </a>
-                            <a href="{{ url_for('settings') }}" class="dropdown-link">
-                                <i class="ri-settings-3-line"></i>
-                                <span>Settings</span>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a href="{{ url_for('logout') }}" class="dropdown-link text-danger">
-                                <i class="ri-logout-box-r-line"></i>
-                                <span>Logout</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </header>
+        <div class="user-info">
 
-            <!-- ========================================== -->
-            <!-- FLASH MESSAGES -->
-            <!-- ========================================== -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <div class="flash-container">
-                        {% for category, message in messages %}
-                            <div class="flash-alert flash-{{ category }}">
-                                <i class="ri-information-line"></i>
-                                <span>{{ message }}</span>
-                                <button class="flash-close" onclick="this.parentElement.remove();">&times;</button>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            {% endwith %}
+            <span class="user-name">
+                Aditya Karkare
+            </span>
 
-            <!-- ========================================== -->
-            <!-- MAIN PAGE CONTENT -->
-            <!-- ========================================== -->
-            <section class="page-content">
-                {% block content %}{% endblock %}
-            </section>
+            <span class="user-role">
+                Administrator
+            </span>
 
-            <!-- ========================================== -->
-            <!-- FOOTER -->
-            <!-- ========================================== -->
-            <footer class="main-footer">
-                <div class="footer-left">
-                    <p>© 2026 Customer Intelligence Dashboard. Powered by Machine Learning.</p>
-                </div>
-                <div class="footer-right">
-                    <span>Version 1.0.0</span>
-                    <span>•</span>
-                    <span>Developed by Aditya Karkare</span>
-                </div>
-            </footer>
-        </main>
+        </div>
+
     </div>
 
-    <!-- Core Scripts -->
-    <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/animations.js') }}"></script>
+</a>
 
-    {% block extra_js %}{% endblock %}
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             FLASH MESSAGES
+        ================================================== -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                <div class="flash-container">
+
+                    {% for category, message in messages %}
+
+                        <div
+                            class="flash-message flash-{{ category }}"
+                        >
+
+                            {% if category == "success" %}
+
+                                <i class="ri-checkbox-circle-line"></i>
+
+                            {% elif category == "danger" or category == "error" %}
+
+                                <i class="ri-error-warning-line"></i>
+
+                            {% elif category == "warning" %}
+
+                                <i class="ri-alert-line"></i>
+
+                            {% else %}
+
+                                <i class="ri-information-line"></i>
+
+                            {% endif %}
+
+                            <span>
+                                {{ message }}
+                            </span>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- =================================================
+             PAGE CONTENT
+        ================================================== -->
+
+        <main class="page-content">
+
+            {% block content %}
+
+            {% endblock %}
+
+        </main>
+
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CHART.JS
+
+     IMPORTANT:
+     Chart.js MUST load BEFORE page-specific JS.
+========================================================== -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"
+></script>
+
+
+<!-- =========================================================
+     MOBILE SIDEBAR SCRIPT
+========================================================== -->
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const sidebar =
+            document.getElementById("sidebar");
+
+        const menuButton =
+            document.getElementById("mobileMenuBtn");
+
+        const overlay =
+            document.getElementById("sidebarOverlay");
+
+
+        function openSidebar() {
+
+            sidebar.classList.add("open");
+            overlay.classList.add("active");
+
+        }
+
+
+        function closeSidebar() {
+
+            sidebar.classList.remove("open");
+            overlay.classList.remove("active");
+
+        }
+
+
+        if (menuButton) {
+
+            menuButton.addEventListener(
+                "click",
+                openSidebar
+            );
+
+        }
+
+
+        if (overlay) {
+
+            overlay.addEventListener(
+                "click",
+                closeSidebar
+            );
+
+        }
+
+
+        document
+            .querySelectorAll(".sidebar .nav-item")
+            .forEach(function (item) {
+
+                item.addEventListener(
+                    "click",
+                    closeSidebar
+                );
+
+            });
+
+
+        // Auto-hide flash messages
+
+        setTimeout(function () {
+
+            document
+                .querySelectorAll(".flash-message")
+                .forEach(function (message) {
+
+                    message.style.opacity = "0";
+
+                    message.style.transform =
+                        "translateY(-8px)";
+
+                    message.style.transition =
+                        "all 0.3s ease";
+
+                    setTimeout(function () {
+
+                        message.remove();
+
+                    }, 300);
+
+                });
+
+        }, 4500);
+
+    });
+
+</script>
+
+
+<!-- =========================================================
+     PAGE-SPECIFIC JAVASCRIPT
+
+     IMPORTANT:
+     This comes AFTER Chart.js.
+========================================================== -->
+
+{% block extra_js %}
+{% endblock %}
+
+
 </body>
 
 </html>

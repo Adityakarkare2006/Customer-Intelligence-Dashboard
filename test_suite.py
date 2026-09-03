@@ -11,6 +11,12 @@ class CustomerIntelligenceDashboardTests(unittest.TestCase):
         app.config['WTF_CSRF_ENABLED'] = False
         self.client = app.test_client()
 
+    # Simulate authenticated user for protected routes
+        with self.client.session_transaction() as sess:
+           sess["logged_in"] = True
+           sess["otp_verified"] = True
+           sess["login_username"] = "admin"
+
     def test_01_dashboard_stats(self):
         stats = get_dashboard_statistics()
         self.assertEqual(stats['total_customers'], 7043)

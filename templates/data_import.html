@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Data Integration{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/data_import.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="data-import-page">
+
+    <div class="page-header">
+        <div>
+            <span class="eyebrow">DATA INTEGRATION</span>
+            <h1>Import Customer Data</h1>
+            <p>
+                Connect your business data by uploading an Excel or CSV file.
+            </p>
+        </div>
+
+        <a href="{{ url_for('settings') }}" class="back-btn">
+            <i class="ri-arrow-left-line"></i>
+            Back to Settings
+        </a>
+    </div>
+
+
+    {% if error %}
+    <div class="alert error">
+        <i class="ri-error-warning-line"></i>
+        <span>{{ error }}</span>
+    </div>
+    {% endif %}
+
+
+    {% if success %}
+    <div class="alert success">
+        <i class="ri-checkbox-circle-line"></i>
+        <span>{{ success }}</span>
+    </div>
+    {% endif %}
+
+
+    <div class="integration-card">
+
+        <div class="card-icon">
+            <i class="ri-file-upload-line"></i>
+        </div>
+
+        <h2>Upload Business Data</h2>
+
+        <p class="card-description">
+            Supported formats: CSV and Excel (.xlsx)
+        </p>
+
+        <form
+            action="{{ url_for('data_import') }}"
+            method="POST"
+            enctype="multipart/form-data"
+            id="importForm"
+        >
+
+            <label for="file" class="upload-area">
+
+                <i class="ri-upload-cloud-2-line"></i>
+
+                <strong id="fileName">
+                    Choose a file or drag & drop
+                </strong>
+
+                <span>
+                    CSV or XLSX files only
+                </span>
+
+                <input
+                    type="file"
+                    id="file"
+                    name="file"
+                    accept=".csv,.xlsx"
+                    hidden
+                    required
+                >
+
+            </label>
+
+            <button type="submit" class="upload-btn">
+                <i class="ri-upload-2-line"></i>
+                Upload & Preview
+            </button>
+
+        </form>
+
+    </div>
+
+
+    {% if preview %}
+
+    <div class="preview-card">
+
+        <div class="preview-header">
+
+            <div>
+                <span class="eyebrow">PREVIEW</span>
+                <h2>{{ filename }}</h2>
+            </div>
+
+            <span class="record-badge">
+                {{ preview|length }} rows shown
+            </span>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        {% for column in columns %}
+                        <th>{{ column }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for row in preview %}
+
+                    <tr>
+
+                        {% for column in columns %}
+                        <td>
+                            {{ row.get(column, "") }}
+                        </td>
+                        {% endfor %}
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <div class="info-grid">
+
+        <div class="info-card">
+            <i class="ri-file-excel-2-line"></i>
+            <div>
+                <h3>Excel Support</h3>
+                <p>Import customer records directly from XLSX files.</p>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <i class="ri-file-list-3-line"></i>
+            <div>
+                <h3>CSV Support</h3>
+                <p>Use CSV exports from your existing business software.</p>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <i class="ri-shield-check-line"></i>
+            <div>
+                <h3>Data Validation</h3>
+                <p>Your file is checked before it enters the dashboard.</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/data_import.js') }}"></script>
+{% endblock %}

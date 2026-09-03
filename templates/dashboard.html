@@ -1,356 +1,968 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard | Customer Intelligence Hub{% endblock %}
-{% block page_title %}Executive Dashboard{% endblock %}
-{% block breadcrumb %}Real-time Customer Retention & Churn Intelligence{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% block title %}
+Customer Intelligence Dashboard
 {% endblock %}
 
+{% block page_title %}
+Customer Intelligence
+{% endblock %}
+
+{% block breadcrumb %}
+AI-powered customer analytics platform
+{% endblock %}
+
+{% block extra_css %}
+
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+{% endblock %}
+
+
 {% block content %}
-<div class="dashboard-container fade-in">
 
-    <!-- ========================================== -->
-    <!-- HERO BANNER -->
-    <!-- ========================================== -->
-    <section class="hero-section">
-        <div class="hero-content">
-            <div class="hero-badge">
-                <i class="ri-sparkling-fill"></i>
-                <span>AI-Powered Retention Intelligence</span>
+<div class="dashboard-container">
+
+    <!-- =====================================================
+         WELCOME HERO
+    ====================================================== -->
+
+    <section>
+
+        <div class="dashboard-hero">
+
+            <div class="dashboard-hero-content">
+
+                <div class="hero-small">
+                    AI Powered Customer Intelligence
+                </div>
+
+                <h1>
+                    Welcome back, Aditya! 👋
+                </h1>
+
+                <p>
+                    Here's what's happening with your customers today.
+                </p>
+
             </div>
-            <h1 class="hero-title">Predict Customer Churn Before It Happens</h1>
-            <p class="hero-subtitle">
-                Continuously monitor customer health, detect early attrition signals, and execute data-driven retention strategies with our trained Machine Learning engine.
-            </p>
-            <div class="hero-actions">
-                <a href="{{ url_for('prediction') }}" class="btn-primary">
-                    <i class="ri-brain-line"></i>
-                    <span>Run AI Prediction</span>
-                </a>
-                <a href="{{ url_for('customers') }}" class="btn-secondary">
-                    <i class="ri-team-line"></i>
-                    <span>Explore Dataset ({{ "{:,}".format(total_customers) }})</span>
-                </a>
-            </div>
+
+            <div class="hero-decoration"></div>
+
         </div>
 
-        <div class="hero-stat-card">
-            <div class="accuracy-badge">
-                <i class="ri-shield-check-fill"></i>
-                <span>Trained Model</span>
-            </div>
-            <div class="accuracy-value-wrap">
-                <span class="accuracy-number" data-count="{{ model_accuracy }}">{{ model_accuracy }}</span>
-                <span class="accuracy-symbol">%</span>
-            </div>
-            <div class="accuracy-meta">
-                <strong>Model Accuracy</strong>
-                <p>Logistic Regression on 20 Telco features across {{ "{:,}".format(total_customers) }} validated records.</p>
-            </div>
-        </div>
     </section>
 
-    <!-- ========================================== -->
-    <!-- KPI CARDS GRID -->
-    <!-- ========================================== -->
-    <section class="kpi-grid">
-        <!-- Total Customers -->
-        <div class="kpi-card" style="--delay: 0ms;">
-            <div class="kpi-icon-box blue">
-                <i class="ri-group-line"></i>
+
+    <!-- =====================================================
+         KPI CARDS
+    ====================================================== -->
+
+    <section>
+
+        <div class="kpi-grid">
+
+
+            <!-- TOTAL CUSTOMERS -->
+
+            <div class="kpi-card">
+
+                <div class="kpi-top">
+
+                    <div class="kpi-icon icon-purple">
+                        <i class="ri-team-fill"></i>
+                    </div>
+
+                </div>
+
+                <div class="kpi-label">
+                    Total Customers
+                </div>
+
+                <div class="kpi-value">
+                    {{ "{:,}".format(total_customers) }}
+                </div>
+
+                <div class="kpi-description">
+                    100% of total customer base
+                </div>
+
+                <div class="kpi-line">
+                    <span class="line-purple"></span>
+                </div>
+
             </div>
-            <div class="kpi-data">
-                <span class="kpi-label">Total Customers</span>
-                <h2 class="kpi-value" data-count="{{ total_customers }}">0</h2>
-                <span class="kpi-subtext"><i class="ri-database-2-line"></i> 100% Real Dataset</span>
+
+
+            <!-- CHURN -->
+
+            <div class="kpi-card">
+
+                <div class="kpi-top">
+
+                    <div class="kpi-icon icon-green">
+                        <i class="ri-line-chart-line"></i>
+                    </div>
+
+                </div>
+
+                <div class="kpi-label">
+                    Churn Rate
+                </div>
+
+                <div class="kpi-value">
+                    {{ churn_rate }}%
+                </div>
+
+                <div class="kpi-description">
+                    {{ "{:,}".format(churned_customers) }} customers
+                </div>
+
+                <div class="kpi-line">
+                    <span class="line-red"></span>
+                </div>
+
             </div>
+
+
+            <!-- RETENTION -->
+
+            <div class="kpi-card">
+
+                <div class="kpi-top">
+
+                    <div class="kpi-icon icon-blue">
+                        <i class="ri-heart-3-fill"></i>
+                    </div>
+
+                </div>
+
+                <div class="kpi-label">
+                    Retention Rate
+                </div>
+
+                <div class="kpi-value">
+                    {{ retention_rate }}%
+                </div>
+
+                <div class="kpi-description">
+                    {{ "{:,}".format(retained_customers) }} customers
+                </div>
+
+                <div class="kpi-line">
+                    <span class="line-green"></span>
+                </div>
+
+            </div>
+
+
+            <!-- MODEL -->
+
+            <div class="kpi-card">
+
+                <div class="kpi-top">
+
+                    <div class="kpi-icon icon-orange">
+                        <i class="ri-brain-fill"></i>
+                    </div>
+
+                </div>
+
+                <div class="kpi-label">
+                    Model Accuracy
+                </div>
+
+                <div class="kpi-value">
+                    {{ model_accuracy }}%
+                </div>
+
+                <div class="kpi-description">
+                    Logistic Regression
+                </div>
+
+                <div class="kpi-line">
+                    <span class="line-orange"></span>
+                </div>
+
+            </div>
+
+
+            <!-- HIGH RISK -->
+
+            <div class="kpi-card">
+
+                <div class="kpi-top">
+
+                    <div class="kpi-icon icon-red">
+                        <i class="ri-shield-check-fill"></i>
+                    </div>
+
+                </div>
+
+                <div class="kpi-label">
+                    High Risk Customers
+                </div>
+
+                <div class="kpi-value">
+                    {{ high_risk_customers|length }}
+                </div>
+
+                <div class="kpi-description">
+                    Priority customers
+                </div>
+
+                <div class="kpi-line">
+                    <span class="line-risk"></span>
+                </div>
+
+            </div>
+
         </div>
 
-        <!-- Churn Rate -->
-        <div class="kpi-card" style="--delay: 80ms;">
-            <div class="kpi-icon-box red">
-                <i class="ri-user-unfollow-line"></i>
-            </div>
-            <div class="kpi-data">
-                <span class="kpi-label">Churn Rate</span>
-                <h2 class="kpi-value"><span data-count="{{ churn_rate }}">{{ churn_rate }}</span>%</h2>
-                <span class="kpi-subtext text-danger">{{ "{:,}".format(churned_customers) }} Churned Accounts</span>
-            </div>
-        </div>
-
-        <!-- Retention Rate -->
-        <div class="kpi-card" style="--delay: 160ms;">
-            <div class="kpi-icon-box green">
-                <i class="ri-user-heart-line"></i>
-            </div>
-            <div class="kpi-data">
-                <span class="kpi-label">Retention Rate</span>
-                <h2 class="kpi-value"><span data-count="{{ retention_rate }}">{{ retention_rate }}</span>%</h2>
-                <span class="kpi-subtext text-success">{{ "{:,}".format(retained_customers) }} Retained Accounts</span>
-            </div>
-        </div>
-
-        <!-- Model Accuracy -->
-        <div class="kpi-card" style="--delay: 240ms;">
-            <div class="kpi-icon-box purple">
-                <i class="ri-cpu-line"></i>
-            </div>
-            <div class="kpi-data">
-                <span class="kpi-label">Model Accuracy</span>
-                <h2 class="kpi-value"><span data-count="{{ model_accuracy }}">{{ model_accuracy }}</span>%</h2>
-                <span class="kpi-subtext text-accent">Scikit-learn Classifier</span>
-            </div>
-        </div>
     </section>
 
-    <!-- ========================================== -->
-    <!-- CHARTS & HIGH RISK ROW -->
-    <!-- ========================================== -->
-    <section class="dashboard-grid-2">
-        <!-- Churn Distribution Chart Card -->
-        <div class="card chart-card">
-            <div class="card-header">
-                <div>
-                    <h2>Customer Retention vs Churn</h2>
-                    <p class="card-subtitle">Dataset ratio of active vs churned subscribers</p>
-                </div>
-                <span class="badge-tag info">Live Data</span>
-            </div>
-            <div class="chart-wrapper doughnut-chart-wrap">
-                <canvas id="churnChart"></canvas>
-            </div>
-            <div class="chart-legend-summary">
-                <div class="legend-item">
-                    <span class="legend-dot bg-success"></span>
-                    <span>Retained: <strong>{{ "{:,}".format(retained_customers) }} ({{ retention_rate }}%)</strong></span>
-                </div>
-                <div class="legend-item">
-                    <span class="legend-dot bg-danger"></span>
-                    <span>Churned: <strong>{{ "{:,}".format(churned_customers) }} ({{ churn_rate }}%)</strong></span>
-                </div>
-            </div>
-        </div>
 
-        <!-- Top High-Risk Customers -->
-        <div class="card risk-card">
-            <div class="card-header">
-                <div>
-                    <h2>Top High-Risk Customers</h2>
-                    <p class="card-subtitle">Accounts with the highest calculated churn risk</p>
+    <!-- =====================================================
+         ANALYTICS
+    ====================================================== -->
+
+    <section>
+
+        <div class="analytics-grid">
+
+
+            <!-- CHURN DISTRIBUTION -->
+
+            <div class="card dashboard-card">
+
+                <div class="card-header">
+
+                    <h2>
+                        Customer Churn Distribution
+                    </h2>
+
+                    <span class="card-badge">
+                        LIVE
+                    </span>
+
                 </div>
-                <a href="{{ url_for('customers') }}" class="view-all-link">
-                    <span>View All</span>
-                    <i class="ri-arrow-right-line"></i>
-                </a>
+
+                <div class="doughnut-wrapper">
+
+                    <canvas id="churnChart"></canvas>
+
+                </div>
+
             </div>
 
-            <div class="risk-customer-list">
-                {% if high_risk_customers %}
-                    {% for customer in high_risk_customers %}
-                        <div class="risk-customer-item">
-                            <div class="customer-avatar">
-                                {{ customer.customer_id[:2] | upper }}
-                            </div>
-                            <div class="risk-customer-details">
-                                <div class="customer-id-row">
-                                    <a href="{{ url_for('customer_detail', customer_id=customer.customer_id) }}" class="customer-id-link">
-                                        {{ customer.customer_id }}
-                                    </a>
-                                    <span class="badge-risk {{ customer.risk_level | lower }}">
-                                        {{ customer.risk_level }}
-                                    </span>
-                                </div>
-                                <div class="customer-meta-row">
-                                    <span><i class="ri-file-list-3-line"></i> {{ customer.contract }}</span>
-                                    <span><i class="ri-money-dollar-circle-line"></i> ₹{{ "%.2f"|format(customer.monthly_charges) }}/mo</span>
-                                </div>
-                            </div>
-                            <div class="risk-score-display">
-                                <span class="score-number">{{ customer.score }}%</span>
-                                <span class="score-label">Risk Score</span>
-                            </div>
+
+            <!-- CHURN TREND AREA -->
+
+            <div class="card dashboard-card">
+
+                <div class="card-header">
+
+                    <h2>
+                        Customer Overview
+                    </h2>
+
+                    <span class="text-muted">
+                        Current Dataset
+                    </span>
+
+                </div>
+
+                <div class="chart-box">
+
+                    <canvas id="overviewChart"></canvas>
+
+                </div>
+
+            </div>
+
+
+            <!-- AI INSIGHTS -->
+
+            <div class="card dashboard-card insights-card">
+
+                <div class="card-header">
+
+                    <h2>
+                        AI Generated Insights
+                    </h2>
+
+                    <span class="card-badge">
+                        LIVE
+                    </span>
+
+                </div>
+
+
+                <div class="insights-list">
+
+
+                    <div class="insight-item">
+
+                        <div class="insight-icon">
+                            <i class="ri-pulse-line"></i>
                         </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="empty-risk-state">
-                        <i class="ri-checkbox-circle-line"></i>
-                        <p>No high-risk customer records found.</p>
+
+                        <div class="insight-content">
+
+                            <strong>
+                                Retention
+                            </strong>
+
+                            <p>
+                                Customer retention is currently
+                                {{ retention_rate }}% across
+                                {{ "{:,}".format(total_customers) }}
+                                customers.
+                            </p>
+
+                        </div>
+
                     </div>
-                {% endif %}
+
+
+                    <div class="insight-item">
+
+                        <div class="insight-icon">
+                            <i class="ri-alert-line"></i>
+                        </div>
+
+                        <div class="insight-content">
+
+                            <strong>
+                                High Risk Segment
+                            </strong>
+
+                            <p>
+                                {{ high_risk_segment.message }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="insight-item">
+
+                        <div class="insight-icon">
+                            <i class="ri-lightbulb-line"></i>
+                        </div>
+
+                        <div class="insight-content">
+
+                            <strong>
+                                Recommendation
+                            </strong>
+
+                            <p>
+                                Focus retention campaigns on
+                                high-risk customers and
+                                month-to-month contracts.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
+
         </div>
+
     </section>
 
-    <!-- ========================================== -->
-    <!-- DYNAMIC AI INSIGHTS -->
-    <!-- ========================================== -->
-    <section class="card insights-section">
-        <div class="card-header">
-            <div>
-                <h2>Data-Driven Retention Insights</h2>
-                <p class="card-subtitle">Algorithmic analysis of customer attrition patterns from the live dataset</p>
-            </div>
-            <span class="badge-tag live"><span class="pulse-dot"></span> LIVE INSIGHTS</span>
-        </div>
 
-        <div class="insights-grid">
-            {% for insight in insights %}
-                <div class="insight-card-item {{ insight.type }}">
-                    <div class="insight-icon-wrap">
-                        <i class="{{ insight.icon }}"></i>
-                    </div>
-                    <div class="insight-content">
-                        <h4>{{ insight.title }}</h4>
-                        <p>{{ insight.message }}</p>
-                    </div>
+    <!-- =====================================================
+         TABLES
+    ====================================================== -->
+
+    <section>
+
+        <div class="lower-grid">
+
+
+            <!-- HIGH RISK CUSTOMERS -->
+
+            <div class="card dashboard-card">
+
+                <div class="card-header">
+
+                    <h2>
+                        High Risk Customers
+                    </h2>
+
+                    <a href="{{ url_for('customers') }}"
+                       class="view-all">
+
+                        View All
+
+                    </a>
+
                 </div>
-            {% endfor %}
-        </div>
-    </section>
 
-    <!-- ========================================== -->
-    <!-- RECENT PREDICTIONS & QUICK ACTIONS -->
-    <!-- ========================================== -->
-    <section class="dashboard-grid-2">
-        <!-- Recent Predictions Table -->
-        <div class="card recent-predictions-card">
-            <div class="card-header">
-                <div>
-                    <h2>Recent Customer Predictions</h2>
-                    <p class="card-subtitle">Latest churn risk evaluations generated</p>
-                </div>
-                <a href="{{ url_for('prediction') }}" class="btn-primary btn-sm">
-                    <i class="ri-add-line"></i>
-                    <span>New Prediction</span>
-                </a>
-            </div>
 
-            <div class="table-responsive">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Customer ID</th>
-                            <th>Contract</th>
-                            <th>Monthly</th>
-                            <th>Prediction</th>
-                            <th>Risk Score</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if recent_customers %}
-                            {% for c in recent_customers %}
-                                <tr>
-                                    <td>
-                                        <strong>{{ c.customer_id }}</strong>
-                                    </td>
-                                    <td>{{ c.contract }}</td>
-                                    <td>₹{{ "%.2f"|format(c.monthly_charges) }}</td>
-                                    <td>
-                                        <span class="status-badge {{ c.status_class }}">
-                                            {{ c.prediction }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="table-risk-bar">
-                                            <span>{{ c.risk_score }}%</span>
-                                            <div class="mini-bar-track">
-                                                <div class="mini-bar-fill {% if c.risk_score >= 80 %}high{% elif c.risk_score >= 60 %}medium{% else %}low{% endif %}" style="width: {{ c.risk_score }}%;"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        {% else %}
+                <div style="overflow-x:auto;">
+
+                    <table class="dashboard-table">
+
+                        <thead>
+
                             <tr>
-                                <td colspan="5" class="text-center text-muted py-4">
-                                    No recent predictions available. Run a prediction to see history.
-                                </td>
+
+                                <th>
+                                    Customer ID
+                                </th>
+
+                                <th>
+                                    Risk Score
+                                </th>
+
+                                <th>
+                                    Risk
+                                </th>
+
                             </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for customer in high_risk_customers %}
+
+                            <tr>
+
+                                <td class="customer-id">
+
+                                    {{ customer.customer_id }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ customer.risk_score }}%
+
+                                </td>
+
+                                <td>
+
+                                    <span class="
+                                        risk-badge
+                                        {% if customer.risk_level == 'HIGH' %}
+                                            risk-high
+                                        {% elif customer.risk_level == 'MEDIUM' %}
+                                            risk-medium
+                                        {% else %}
+                                            risk-low
+                                        {% endif %}
+                                    ">
+
+                                        {{ customer.risk_level }}
+
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
             </div>
+
+
+            <!-- RECENT PREDICTIONS -->
+
+            <div class="card dashboard-card">
+
+                <div class="card-header">
+
+                    <h2>
+                        Recent Predictions
+                    </h2>
+
+                    <a href="{{ url_for('prediction') }}"
+                       class="view-all">
+
+                        View All
+
+                    </a>
+
+                </div>
+
+
+                <div style="
+                    padding: 25px 5px;
+                    text-align:center;
+                ">
+
+                    <div style="
+                        font-size:30px;
+                        margin-bottom:10px;
+                    ">
+                        🤖
+                    </div>
+
+                    <p style="
+                        color:#8e9aae;
+                        font-size:12px;
+                        margin-bottom:15px;
+                    ">
+
+                        Run the ML model to generate
+                        customer churn predictions.
+
+                    </p>
+
+                    <a href="{{ url_for('prediction') }}"
+                       class="dashboard-btn">
+
+                        Run Prediction
+
+                    </a>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <!-- Quick Navigation Actions & System Health -->
-        <div class="card quick-actions-card">
-            <div class="card-header">
-                <div>
-                    <h2>Quick Actions</h2>
-                    <p class="card-subtitle">Shortcuts to key platform tools</p>
-                </div>
-            </div>
-
-            <div class="action-buttons-grid">
-                <a href="{{ url_for('prediction') }}" class="quick-action-btn">
-                    <div class="action-btn-icon purple"><i class="ri-brain-line"></i></div>
-                    <div class="action-btn-text">
-                        <strong>Run Prediction</strong>
-                        <span>Score customer churn risk</span>
-                    </div>
-                    <i class="ri-arrow-right-s-line action-arrow"></i>
-                </a>
-
-                <a href="{{ url_for('customers') }}" class="quick-action-btn">
-                    <div class="action-btn-icon blue"><i class="ri-team-line"></i></div>
-                    <div class="action-btn-text">
-                        <strong>Customer Explorer</strong>
-                        <span>Search and filter records</span>
-                    </div>
-                    <i class="ri-arrow-right-s-line action-arrow"></i>
-                </a>
-
-                <a href="{{ url_for('analytics') }}" class="quick-action-btn">
-                    <div class="action-btn-icon green"><i class="ri-line-chart-line"></i></div>
-                    <div class="action-btn-text">
-                        <strong>Analytics Charts</strong>
-                        <span>View segment breakdowns</span>
-                    </div>
-                    <i class="ri-arrow-right-s-line action-arrow"></i>
-                </a>
-
-                <a href="{{ url_for('reports') }}" class="quick-action-btn">
-                    <div class="action-btn-icon yellow"><i class="ri-file-chart-line"></i></div>
-                    <div class="action-btn-text">
-                        <strong>Executive Reports</strong>
-                        <span>Export CSV & summarize</span>
-                    </div>
-                    <i class="ri-arrow-right-s-line action-arrow"></i>
-                </a>
-            </div>
-
-            <!-- Health Status -->
-            <div class="system-health-panel">
-                <div class="health-header">
-                    <span><i class="ri-heart-pulse-line"></i> System Health</span>
-                    <span class="health-status-tag ok">All Systems Operational</span>
-                </div>
-                <div class="health-badges-row">
-                    <div class="health-badge"><span class="dot-green"></span> Flask Backend: <strong>Running</strong></div>
-                    <div class="health-badge"><span class="dot-green"></span> Dataset: <strong>7,043 Records</strong></div>
-                    <div class="health-badge"><span class="dot-green"></span> ML Model: <strong>Loaded</strong></div>
-                </div>
-            </div>
-        </div>
     </section>
+
+
+    <!-- =====================================================
+         QUICK ACTIONS
+    ====================================================== -->
+
+    <section>
+
+        <div class="card dashboard-card">
+
+            <div class="card-header">
+
+                <h2>
+                    Quick Actions
+                </h2>
+
+            </div>
+
+
+            <div class="quick-actions"
+                 style="
+                    display:grid;
+                    grid-template-columns:
+                    repeat(4,1fr);
+                 ">
+
+
+                <a href="{{ url_for('prediction') }}"
+                   class="quick-action">
+
+                    <div class="quick-action-icon">
+                        <i class="ri-brain-line"></i>
+                    </div>
+
+                    <div class="quick-action-text">
+
+                        <strong>
+                            Predict Churn
+                        </strong>
+
+                        <span>
+                            Run AI prediction
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <a href="{{ url_for('customers') }}"
+                   class="quick-action">
+
+                    <div class="quick-action-icon">
+                        <i class="ri-team-line"></i>
+                    </div>
+
+                    <div class="quick-action-text">
+
+                        <strong>
+                            Customers
+                        </strong>
+
+                        <span>
+                            Explore customer data
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <a href="{{ url_for('analytics') }}"
+                   class="quick-action">
+
+                    <div class="quick-action-icon">
+                        <i class="ri-bar-chart-line"></i>
+                    </div>
+
+                    <div class="quick-action-text">
+
+                        <strong>
+                            Analytics
+                        </strong>
+
+                        <span>
+                            Business insights
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <a href="{{ url_for('reports') }}"
+                   class="quick-action">
+
+                    <div class="quick-action-icon">
+                        <i class="ri-file-chart-line"></i>
+                    </div>
+
+                    <div class="quick-action-text">
+
+                        <strong>
+                            Reports
+                        </strong>
+
+                        <span>
+                            Download reports
+                        </span>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         AI BUSINESS ASSISTANT
+    ====================================================== -->
+
+    <section>
+
+        <div class="card ai-assistant">
+
+            <div class="ai-assistant-content">
+
+                <div class="ai-assistant-header">
+
+                    <h2>
+                        AI Business Assistant
+                    </h2>
+
+                    <span class="online-badge">
+                        ● Online
+                    </span>
+
+                </div>
+
+
+                <div class="ai-message">
+
+                    High churn probability detected among
+                    Month-to-Month contract customers.
+
+                </div>
+
+
+                <div style="
+                    color:#ffffff;
+                    font-size:11px;
+                    font-weight:700;
+                    margin-bottom:10px;
+                ">
+
+                    Recommended Actions
+
+                </div>
+
+
+                <div class="ai-actions">
+
+                    <button class="ai-action">
+                        Offer Loyalty Discount
+                    </button>
+
+                    <button class="ai-action">
+                        Promote Annual Plan
+                    </button>
+
+                    <button class="ai-action">
+                        Schedule Follow-up Call
+                    </button>
+
+                    <a href="{{ url_for('analytics') }}"
+                       class="ai-action primary"
+                       style="text-decoration:none;">
+
+                        Open AI Assistant
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         SYSTEM HEALTH + DATA SUMMARY
+    ====================================================== -->
+
+    <section>
+
+        <div class="bottom-grid">
+
+
+            <!-- SYSTEM HEALTH -->
+
+            <div class="card dashboard-card">
+
+                <div class="card-header">
+
+                    <h2>
+                        System Health
+                    </h2>
+
+                </div>
+
+
+                <div class="health-list">
+
+                    <div class="health-row">
+
+                        <span>
+                            <i class="ri-server-line"></i>
+                            Backend
+                        </span>
+
+                        <span class="health-status">
+                            Running
+                        </span>
+
+                    </div>
+
+
+                    <div class="health-row">
+
+                        <span>
+                            <i class="ri-database-2-line"></i>
+                            Database
+                        </span>
+
+                        <span class="health-status">
+                            Connected
+                        </span>
+
+                    </div>
+
+
+                    <div class="health-row">
+
+                        <span>
+                            <i class="ri-brain-line"></i>
+                            ML Model
+                        </span>
+
+                        <span class="health-status">
+                            Loaded
+                        </span>
+
+                    </div>
+
+
+                    <div class="health-row">
+
+                        <span>
+                            <i class="ri-shield-check-line"></i>
+                            Prediction Service
+                        </span>
+
+                        <span class="health-status">
+                            Active
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DATA SUMMARY -->
+
+            <div class="card dashboard-card">
+
+                <div class="card-header">
+
+                    <h2>
+                        Data Summary
+                    </h2>
+
+                </div>
+
+
+                <div class="summary-list">
+
+                    <div class="summary-row">
+
+                        <span>
+                            Dataset
+                        </span>
+
+                        <span>
+                            {{ "{:,}".format(total_customers) }}
+                            records
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            Churned
+                        </span>
+
+                        <span>
+                            {{ "{:,}".format(churned_customers) }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            Retained
+                        </span>
+
+                        <span>
+                            {{ "{:,}".format(retained_customers) }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            Model
+                        </span>
+
+                        <span>
+                            Logistic Regression
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            Accuracy
+                        </span>
+
+                        <span>
+                            {{ model_accuracy }}%
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="dashboard-footer">
+
+        © 2026 Customer Intelligence Dashboard
+        &nbsp; | &nbsp;
+        Version 1.0.0
+        &nbsp; | &nbsp;
+        Developed by Team A16–A14–A29 💜
+
+    </footer>
 
 </div>
 
-<!-- Pass Real Dataset Stats to Dashboard JS -->
+
+<!-- =====================================================
+     CHART DATA
+====================================================== -->
+
 <script>
+
     window.dashboardData = {
-        churnedCustomers: {{ churned_customers | default(0) }},
-        retainedCustomers: {{ retained_customers | default(0) }},
-        totalCustomers: {{ total_customers | default(0) }},
-        churnRate: {{ churn_rate | default(0) }},
-        retentionRate: {{ retention_rate | default(0) }},
-        modelAccuracy: {{ model_accuracy | default(80.94) }}
+
+        churnedCustomers:
+            {{ churned_customers | default(0) }},
+
+        retainedCustomers:
+            {{ retained_customers | default(0) }},
+
+        totalCustomers:
+            {{ total_customers | default(0) }},
+
+        churnRate:
+            {{ churn_rate | default(0) }},
+
+        retentionRate:
+            {{ retention_rate | default(0) }}
+
     };
+
 </script>
+
+
+<!-- Chart.js -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 {% endblock %}
 
+
 {% block extra_js %}
-<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-{% endblock %}
+
+<script src="{{ url_for(
+    'static',
+    filename='js/dashboard.js'
+) }}"></script>
+
+{% endblock %}

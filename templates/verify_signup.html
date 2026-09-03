@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Verify Account | Customer Intelligence Hub{% endblock %}
+
+{% block page_title %}Verify Account{% endblock %}
+{% block breadcrumb %}Enter the OTP generated for your account{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="auth-page">
+
+    <div class="auth-card">
+
+        <div class="auth-header">
+
+            <div class="auth-logo">
+                <i class="ri-shield-check-line"></i>
+            </div>
+
+            <h1>Verify Account</h1>
+
+            <p>
+                Enter the 6-digit OTP shown in the server console.
+            </p>
+
+        </div>
+
+        {% if error %}
+        <div class="auth-alert error">
+            <i class="ri-error-warning-line"></i>
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST">
+
+            <div class="form-group">
+
+                <label for="otp">
+                    Verification OTP
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="ri-key-line"></i>
+
+                    <input
+                        type="text"
+                        id="otp"
+                        name="otp"
+                        maxlength="6"
+                        inputmode="numeric"
+                        placeholder="Enter 6-digit OTP"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <button
+                type="submit"
+                class="btn-primary auth-submit"
+            >
+
+                <i class="ri-check-line"></i>
+
+                Verify Account
+
+            </button>
+
+        </form>
+
+        <div class="auth-footer">
+
+            <a href="{{ url_for('signup') }}">
+                Back to Signup
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

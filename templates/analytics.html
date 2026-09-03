@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Analytics & Business Intelligence | Customer Intelligence Hub{% endblock %}
+{% block title %}Analytics | Customer Intelligence Hub{% endblock %}
 {% block page_title %}Analytics & Segmentation{% endblock %}
 {% block breadcrumb %}Visual Distribution & Churn Correlation Analysis{% endblock %}
 
@@ -9,187 +9,580 @@
 {% endblock %}
 
 {% block content %}
+
 <div class="analytics-container fade-in">
 
-    <!-- ========================================== -->
-    <!-- SUMMARY KPI ROW -->
-    <!-- ========================================== -->
-    <section class="analytics-kpi-grid">
-        <div class="card summary-kpi-card" style="--accent-border: #EF4444;">
-            <div class="kpi-icon red"><i class="ri-user-unfollow-line"></i></div>
-            <div class="kpi-info">
-                <span class="kpi-label">Churned Subscribers</span>
-                <h2 class="kpi-val text-danger">{{ "{:,}".format(analytics.churned) }}</h2>
-                <span class="kpi-sub">{{ analytics.churn_rate }}% total attrition</span>
+    <!-- =====================================================
+         PAGE INTRO
+    ====================================================== -->
+    <section class="analytics-hero">
+        <div>
+            <div class="hero-eyebrow">
+                <i class="ri-bar-chart-box-line"></i>
+                BUSINESS INTELLIGENCE
             </div>
+
+            <h1>Customer Analytics</h1>
+
+            <p>
+                Explore customer behavior, churn patterns, contract
+                distribution and retention risk using the real dataset.
+            </p>
         </div>
 
-        <div class="card summary-kpi-card" style="--accent-border: #10B981;">
-            <div class="kpi-icon green"><i class="ri-user-heart-line"></i></div>
-            <div class="kpi-info">
-                <span class="kpi-label">Retained Subscribers</span>
-                <h2 class="kpi-val text-success">{{ "{:,}".format(analytics.retained) }}</h2>
-                <span class="kpi-sub">{{ analytics.retention_rate }}% active retention</span>
-            </div>
-        </div>
-
-        <div class="card summary-kpi-card" style="--accent-border: #8B5CF6;">
-            <div class="kpi-icon purple"><i class="ri-money-dollar-circle-line"></i></div>
-            <div class="kpi-info">
-                <span class="kpi-label">Avg. Monthly Charge</span>
-                <h2 class="kpi-val text-accent">₹{{ "%.2f"|format(analytics.avg_monthly_charges) }}</h2>
-                <span class="kpi-sub">Per subscriber monthly ARPU</span>
-            </div>
-        </div>
-
-        <div class="card summary-kpi-card" style="--accent-border: #06B6D4;">
-            <div class="kpi-icon cyan"><i class="ri-time-line"></i></div>
-            <div class="kpi-info">
-                <span class="kpi-label">Avg. Customer Tenure</span>
-                <h2 class="kpi-val text-cyan">{{ analytics.avg_tenure }} mo</h2>
-                <span class="kpi-sub">Mean customer lifespan</span>
-            </div>
+        <div class="hero-status">
+            <span class="status-dot"></span>
+            Live Dataset
+            <strong>{{ "{:,}".format(analytics.total) }}</strong>
+            Customers
         </div>
     </section>
 
-    <!-- ========================================== -->
-    <!-- 6-CHART VISUALIZATION MATRIX -->
-    <!-- ========================================== -->
+
+    <!-- =====================================================
+         KPI CARDS
+    ====================================================== -->
+    <section class="analytics-kpi-grid">
+
+        <!-- Churn -->
+        <div class="card summary-kpi-card danger-card">
+
+            <div class="kpi-icon red">
+                <i class="ri-user-unfollow-line"></i>
+            </div>
+
+            <div class="kpi-info">
+                <span class="kpi-label">Churned Customers</span>
+
+                <h2 class="kpi-val">
+                    {{ "{:,}".format(analytics.churned) }}
+                </h2>
+
+                <span class="kpi-sub danger-text">
+                    {{ analytics.churn_rate }}% churn rate
+                </span>
+            </div>
+
+        </div>
+
+
+        <!-- Retained -->
+        <div class="card summary-kpi-card success-card">
+
+            <div class="kpi-icon green">
+                <i class="ri-user-heart-line"></i>
+            </div>
+
+            <div class="kpi-info">
+                <span class="kpi-label">Retained Customers</span>
+
+                <h2 class="kpi-val">
+                    {{ "{:,}".format(analytics.retained) }}
+                </h2>
+
+                <span class="kpi-sub success-text">
+                    {{ analytics.retention_rate }}% retention
+                </span>
+            </div>
+
+        </div>
+
+
+        <!-- Revenue -->
+        <div class="card summary-kpi-card purple-card">
+
+            <div class="kpi-icon purple">
+                <i class="ri-money-dollar-circle-line"></i>
+            </div>
+
+            <div class="kpi-info">
+                <span class="kpi-label">Avg. Monthly Charges</span>
+
+                <h2 class="kpi-val">
+                    ₹{{ "%.2f"|format(analytics.avg_monthly_charges) }}
+                </h2>
+
+                <span class="kpi-sub">
+                    Average monthly revenue
+                </span>
+            </div>
+
+        </div>
+
+
+        <!-- Tenure -->
+        <div class="card summary-kpi-card cyan-card">
+
+            <div class="kpi-icon cyan">
+                <i class="ri-time-line"></i>
+            </div>
+
+            <div class="kpi-info">
+                <span class="kpi-label">Average Tenure</span>
+
+                <h2 class="kpi-val">
+                    {{ analytics.avg_tenure }}
+                    <small>months</small>
+                </h2>
+
+                <span class="kpi-sub">
+                    Customer lifespan
+                </span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CHART GRID
+    ====================================================== -->
     <section class="charts-matrix-grid">
 
-        <!-- Chart 1: Churn Status Doughnut -->
+
+        <!-- =================================================
+             CHART 1
+        ================================================== -->
         <div class="card chart-card">
+
             <div class="card-header">
+
                 <div>
-                    <h3>1. Churn Ratio</h3>
-                    <p class="card-subtitle">Active vs churned distribution</p>
+                    <div class="chart-title-row">
+                        <span class="chart-number red-number">01</span>
+                        <h3>Churn Ratio</h3>
+                    </div>
+
+                    <p class="card-subtitle">
+                        Retained vs churned customers
+                    </p>
                 </div>
-                <span class="badge-tag info">Status</span>
+
+                <span class="badge-tag danger">
+                    Churn
+                </span>
+
             </div>
+
             <div class="chart-canvas-wrap">
                 <canvas id="churnDistChart"></canvas>
             </div>
+
         </div>
 
-        <!-- Chart 2: Contract Distribution -->
+
+        <!-- =================================================
+             CHART 2
+        ================================================== -->
         <div class="card chart-card">
+
             <div class="card-header">
+
                 <div>
-                    <h3>2. Contract Commitment</h3>
-                    <p class="card-subtitle">Subscriber distribution by contract type</p>
+                    <div class="chart-title-row">
+                        <span class="chart-number purple-number">02</span>
+                        <h3>Contract Distribution</h3>
+                    </div>
+
+                    <p class="card-subtitle">
+                        Customers grouped by contract type
+                    </p>
                 </div>
-                <span class="badge-tag purple">Contracts</span>
+
+                <span class="badge-tag purple">
+                    Contracts
+                </span>
+
             </div>
+
             <div class="chart-canvas-wrap">
                 <canvas id="contractDistChart"></canvas>
             </div>
+
         </div>
 
-        <!-- Chart 3: Churn Rate by Contract -->
+
+        <!-- =================================================
+             CHART 3
+        ================================================== -->
         <div class="card chart-card">
+
             <div class="card-header">
+
                 <div>
-                    <h3>3. Churn by Contract Type</h3>
-                    <p class="card-subtitle">Attrition rate across contract duration tiers</p>
+                    <div class="chart-title-row">
+                        <span class="chart-number orange-number">03</span>
+                        <h3>Churn by Contract</h3>
+                    </div>
+
+                    <p class="card-subtitle">
+                        Retained and churned customers by contract
+                    </p>
                 </div>
-                <span class="badge-tag warning">Risk Driver</span>
+
+                <span class="badge-tag warning">
+                    Risk Driver
+                </span>
+
             </div>
+
             <div class="chart-canvas-wrap">
                 <canvas id="churnByContractChart"></canvas>
             </div>
+
         </div>
 
-        <!-- Chart 4: Payment Method Preferences -->
+
+        <!-- =================================================
+             CHART 4
+        ================================================== -->
         <div class="card chart-card">
+
             <div class="card-header">
+
                 <div>
-                    <h3>4. Payment Method Breakdown</h3>
-                    <p class="card-subtitle">Customer billing preferences</p>
+                    <div class="chart-title-row">
+                        <span class="chart-number cyan-number">04</span>
+                        <h3>Payment Methods</h3>
+                    </div>
+
+                    <p class="card-subtitle">
+                        Customer billing preferences
+                    </p>
                 </div>
-                <span class="badge-tag green">Billing</span>
+
+                <span class="badge-tag info">
+                    Billing
+                </span>
+
             </div>
+
             <div class="chart-canvas-wrap">
                 <canvas id="paymentDistChart"></canvas>
             </div>
+
         </div>
 
-        <!-- Chart 5: Internet Service Distribution -->
+
+        <!-- =================================================
+             CHART 5
+        ================================================== -->
         <div class="card chart-card">
+
             <div class="card-header">
+
                 <div>
-                    <h3>5. Internet Service Type</h3>
-                    <p class="card-subtitle">Fiber optic vs DSL vs No internet</p>
+                    <div class="chart-title-row">
+                        <span class="chart-number blue-number">05</span>
+                        <h3>Internet Services</h3>
+                    </div>
+
+                    <p class="card-subtitle">
+                        Distribution of internet service types
+                    </p>
                 </div>
-                <span class="badge-tag info">Service</span>
+
+                <span class="badge-tag info">
+                    Services
+                </span>
+
             </div>
+
             <div class="chart-canvas-wrap">
                 <canvas id="internetDistChart"></canvas>
             </div>
+
         </div>
 
-        <!-- Chart 6: Churn by Tenure Cohort -->
+
+        <!-- =================================================
+             CHART 6
+        ================================================== -->
         <div class="card chart-card">
+
             <div class="card-header">
+
                 <div>
-                    <h3>6. Churn by Tenure Lifecycle</h3>
-                    <p class="card-subtitle">Retention attrition per subscriber lifecycle group</p>
+                    <div class="chart-title-row">
+                        <span class="chart-number green-number">06</span>
+                        <h3>Tenure Lifecycle</h3>
+                    </div>
+
+                    <p class="card-subtitle">
+                        Churn distribution across customer tenure
+                    </p>
                 </div>
-                <span class="badge-tag danger">Lifecycle</span>
+
+                <span class="badge-tag success">
+                    Lifecycle
+                </span>
+
             </div>
+
             <div class="chart-canvas-wrap">
                 <canvas id="tenureCohortChart"></canvas>
             </div>
+
         </div>
 
     </section>
 
-    <!-- ========================================== -->
-    <!-- ANALYTICAL TAKEAWAYS -->
-    <!-- ========================================== -->
-    <section class="card analytics-takeaways-card">
+
+    <!-- =====================================================
+         INSIGHT SUMMARY
+    ====================================================== -->
+    <section class="card analytics-summary-card">
+
         <div class="card-header">
+
             <div>
-                <h2>Key Strategic Takeaways</h2>
-                <p class="card-subtitle">Synthesized findings from statistical data distributions</p>
+                <div class="section-eyebrow">
+                    <i class="ri-lightbulb-flash-line"></i>
+                    ANALYTICAL SUMMARY
+                </div>
+
+                <h2>What the Data Says</h2>
+
+                <p class="card-subtitle">
+                    Key observations from the customer dataset
+                </p>
             </div>
-            <span class="badge-tag live"><i class="ri-sparkling-fill"></i> AI Executive Brief</span>
+
+            <span class="badge-tag live">
+                <i class="ri-pulse-line"></i>
+                DATA DRIVEN
+            </span>
+
         </div>
 
-        <div class="takeaways-grid">
-            <div class="takeaway-box">
-                <div class="takeaway-num">01</div>
-                <div>
-                    <h4>Contract Length is the #1 Retention Factor</h4>
-                    <p>Month-to-month subscribers account for over 88% of all churn events. Transitioning month-to-month users into 1-year plans reduces attrition risk by more than 60%.</p>
+
+        <div class="insight-grid">
+
+
+            <!-- Insight 1 -->
+            <div class="insight-card">
+
+                <div class="insight-icon red">
+                    <i class="ri-contract-line"></i>
                 </div>
+
+                <div>
+                    <span class="insight-label">
+                        CONTRACT RISK
+                    </span>
+
+                    <h3>Month-to-Month Contracts</h3>
+
+                    <p>
+                        Month-to-month customers represent the largest
+                        contract segment and should receive additional
+                        retention attention.
+                    </p>
+                </div>
+
             </div>
 
-            <div class="takeaway-box">
-                <div class="takeaway-num">02</div>
-                <div>
-                    <h4>First Year (0-12 Months) Critical Drop-off</h4>
-                    <p>Subscribers with tenure under 12 months experience the steepest attrition. Onboarding support and proactive satisfaction touchpoints during months 1-3 yield maximum ROI.</p>
+
+            <!-- Insight 2 -->
+            <div class="insight-card">
+
+                <div class="insight-icon orange">
+                    <i class="ri-time-line"></i>
                 </div>
+
+                <div>
+                    <span class="insight-label">
+                        CUSTOMER LIFECYCLE
+                    </span>
+
+                    <h3>Early Tenure Requires Attention</h3>
+
+                    <p>
+                        Customers in their initial months have less
+                        established loyalty, making onboarding and
+                        early engagement important.
+                    </p>
+                </div>
+
             </div>
 
-            <div class="takeaway-box">
-                <div class="takeaway-num">03</div>
-                <div>
-                    <h4>Electronic Check Vulnerability</h4>
-                    <p>Customers paying with electronic checks churn at twice the rate of automated credit card or bank transfer users. Incentivizing auto-pay adoption stabilizes recurring revenue.</p>
+
+            <!-- Insight 3 -->
+            <div class="insight-card">
+
+                <div class="insight-icon cyan">
+                    <i class="ri-bank-card-line"></i>
                 </div>
+
+                <div>
+                    <span class="insight-label">
+                        BILLING BEHAVIOR
+                    </span>
+
+                    <h3>Payment Method Matters</h3>
+
+                    <p>
+                        Payment-method distributions can help identify
+                        customer segments that require additional
+                        retention analysis.
+                    </p>
+                </div>
+
             </div>
+
+
         </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         DATA SNAPSHOT
+    ====================================================== -->
+    <section class="analytics-bottom-grid">
+
+
+        <!-- Dataset Snapshot -->
+        <div class="card snapshot-card">
+
+            <div class="card-header">
+
+                <div>
+                    <h3>
+                        <i class="ri-database-2-line"></i>
+                        Dataset Snapshot
+                    </h3>
+
+                    <p class="card-subtitle">
+                        Current customer population
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="snapshot-list">
+
+                <div class="snapshot-row">
+                    <span>Total Customers</span>
+                    <strong>
+                        {{ "{:,}".format(analytics.total) }}
+                    </strong>
+                </div>
+
+                <div class="snapshot-row">
+                    <span>Churned</span>
+                    <strong class="danger-text">
+                        {{ "{:,}".format(analytics.churned) }}
+                    </strong>
+                </div>
+
+                <div class="snapshot-row">
+                    <span>Retained</span>
+                    <strong class="success-text">
+                        {{ "{:,}".format(analytics.retained) }}
+                    </strong>
+                </div>
+
+                <div class="snapshot-row">
+                    <span>Average Monthly Charges</span>
+                    <strong>
+                        ₹{{ "%.2f"|format(analytics.avg_monthly_charges) }}
+                    </strong>
+                </div>
+
+                <div class="snapshot-row">
+                    <span>Average Tenure</span>
+                    <strong>
+                        {{ analytics.avg_tenure }} months
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Contract Summary -->
+        <div class="card snapshot-card">
+
+            <div class="card-header">
+
+                <div>
+                    <h3>
+                        <i class="ri-file-list-3-line"></i>
+                        Contract Summary
+                    </h3>
+
+                    <p class="card-subtitle">
+                        Current subscriber distribution
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="contract-summary">
+
+                <div class="contract-item purple-item">
+
+                    <span>Month-to-month</span>
+
+                    <strong>
+                        {{ "{:,}".format(analytics.month_to_month) }}
+                    </strong>
+
+                </div>
+
+
+                <div class="contract-item blue-item">
+
+                    <span>One year</span>
+
+                    <strong>
+                        {{ "{:,}".format(analytics.one_year) }}
+                    </strong>
+
+                </div>
+
+
+                <div class="contract-item cyan-item">
+
+                    <span>Two year</span>
+
+                    <strong>
+                        {{ "{:,}".format(analytics.two_year) }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </section>
 
 </div>
 
-<!-- Real Analytics Dataset for Chart.js -->
+
+<!-- =========================================================
+     SEND REAL PYTHON DATA TO JAVASCRIPT
+========================================================== -->
+
 <script>
     window.analyticsData = {{ analytics | tojson }};
 </script>
+
 {% endblock %}
 
+
 {% block extra_js %}
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+<!-- Analytics Controller -->
 <script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+
 {% endblock %}
