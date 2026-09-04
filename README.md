@@ -130,7 +130,7 @@ python app.py
 
 ## Team Members
 
-Andy
+Aditya(andy)
 
 - Machine Learning
 - Data Science
